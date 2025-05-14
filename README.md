@@ -33,7 +33,7 @@ Convo 專案：一個使用現代 Web 技術開發的即時聊天應用程式。
 
 1.  **Clone (複製) 專案儲存庫**：
     \`\`\`bash
-    git clone <你的 GitHub 儲存庫 URL>
+    git clone https://github.com/piercelin11/convo.git
     cd Convo
     \`\`\`
 2.  **安裝根目錄依賴**：
@@ -100,7 +100,7 @@ npm run format
     npm run test:coverage
     \`\`\`
 
-## 主要技術棧
+## 主要技術
 
 * **前端**: React (Vite), TypeScript, Tailwind CSS (規劃中), React Router, Vitest
 * **後端**: Node.js, Express.js, TypeScript (ESM), PostgreSQL (Neon), \`node-pg-migrate\`, Socket.IO (規劃中), Jest
