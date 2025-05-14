@@ -1,0 +1,34 @@
+# OS 和系統產生的檔案
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDE 和編輯器相關的設定檔/快取
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sublime-project
+*.sublime-workspace
+
+# Log 檔案
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 根目錄的 node_modules (如果你在根目錄也安裝了套件，例如 npm-run-all)
+# 使用 /node_modules/ 來確保只忽略根目錄下的 node_modules
+/node_modules/
+
+# 如果你有全域的 .env 檔案在根目錄 (通常不建議，.env 應放在各自專案內)
+/.env
+/.env.*
+!/.env.example
+
+# 整個專案的建置輸出資料夾 (如果有的話)
+/build/
+/coverage/

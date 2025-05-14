@@ -1,0 +1,24 @@
+# 依賴套件
+/node_modules/
+
+# TypeScript 編譯輸出
+/dist/
+
+# 環境變數檔案
+.env
+.env.*
+!.env.example
+!.env.sample
+
+.DS_Store
+
+# Log 檔案
+*.log
+logs/
+*.log.*
+
+# ESLint 快取 (如果有的話)
+.eslintcache
+
+# 測試覆蓋率報告 (Jest 測試產生在 server 目錄下)
+/coverage/

@@ -1,0 +1,10 @@
+# 依賴套件 (如果 shared 套件有自己的依賴，例如 zod, typescript)
+/node_modules/
+
+# TypeScript 編譯輸出
+/dist/
+
+# Log 檔案
+*.log
+
+.DS_Store
