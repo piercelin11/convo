@@ -5,6 +5,7 @@ import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginJSDoc from "eslint-plugin-jsdoc";
 
 export default tseslint.config(
 	{
@@ -12,6 +13,7 @@ export default tseslint.config(
 	},
 
 	js.configs.recommended,
+	eslintPluginJSDoc.configs["flat/recommended"],
 
 	...tseslint.configs.recommended,
 
@@ -21,6 +23,7 @@ export default tseslint.config(
 			react: eslintPluginReact,
 			"react-hooks": eslintPluginReactHooks,
 			"react-refresh": eslintPluginReactRefresh,
+			jsdoc: eslintPluginJSDoc,
 		},
 		languageOptions: {
 			parserOptions: {
@@ -35,10 +38,68 @@ export default tseslint.config(
 			react: {
 				version: "detect",
 			},
+			jsdoc: {
+				mode: "typescript",
+			},
 		},
 		rules: {
 			...(eslintPluginReact.configs.recommended?.rules || {}),
 			...(eslintPluginReactHooks.configs.recommended?.rules || {}),
+
+			"jsdoc/require-jsdoc": [
+				"warn",
+				{
+					publicOnly: true,
+					require: {
+						FunctionDeclaration: false,
+						MethodDefinition: false,
+						ClassDeclaration: false,
+					},
+					contexts: [
+						"TSEnumDeclaration",
+						"TSInterfaceDeclaration",
+						"TSTypeAliasDeclaration",
+					],
+					enableFixer: false,
+				},
+			],
+
+			"jsdoc/check-tag-names": [
+				"error",
+				{
+					definedTags: [
+						"remarks",
+						"experimental",
+						"internal",
+						"public",
+						"private",
+						"protected",
+						"see",
+						"example",
+						"deprecated",
+						"defaultValue",
+					],
+				},
+			],
+			"jsdoc/require-param": [
+				"warn",
+				{
+					// 如果函式有參數且寫了 JSDoc，建議為每個參數寫 @param
+					checkConstructors: false,
+					checkDestructuredRoots: false,
+				},
+			],
+			"jsdoc/require-param-description": "warn",
+			"jsdoc/require-returns": "warn",
+			"jsdoc/require-returns-description": "warn",
+			"jsdoc/require-description": "warn",
+
+			"jsdoc/no-types": "error",
+			"jsdoc/require-param-type": "off",
+			"jsdoc/require-returns-type": "off",
+
+			"jsdoc/check-alignment": "warn",
+			"jsdoc/check-indentation": "warn",
 
 			"react/react-in-jsx-scope": "off",
 			"react/jsx-uses-react": "off",
@@ -46,6 +107,10 @@ export default tseslint.config(
 			"react-refresh/only-export-components": [
 				"warn",
 				{ allowConstantExport: true },
+			],
+			"@typescript-eslint/no-unused-vars": [
+				"warn",
+				{ argsIgnorePattern: "^_" },
 			],
 			"@typescript-eslint/no-explicit-any": "warn",
 		},
