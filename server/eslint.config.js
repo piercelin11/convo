@@ -84,6 +84,7 @@ export default tseslint.config(
 				{ argsIgnorePattern: "^_" },
 			],
 			"@typescript-eslint/no-explicit-any": "warn",
+			"no-console": ["warn", { allow: ["warn", "error"] }],
 		},
 	},
 	eslintPluginPrettierRecommended,
