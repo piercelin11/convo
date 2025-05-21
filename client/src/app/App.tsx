@@ -1,11 +1,9 @@
+import routes from "@/config/routes";
+import { useRoutes } from "react-router-dom";
+
 function App() {
-	return (
-		<div className="flex h-screen w-screen">
-			<div className="m-auto text-center">
-				<h1 className="text-xl font-medium">Convo</h1>
-			</div>
-		</div>
-	);
+	const element = useRoutes(routes);
+	return <>{element}</>;
 }
 
 export default App;

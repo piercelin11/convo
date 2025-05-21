@@ -46,6 +46,8 @@ export default tseslint.config(
 			...(eslintPluginReact.configs.recommended?.rules || {}),
 			...(eslintPluginReactHooks.configs.recommended?.rules || {}),
 
+			allowObjectTypes: "unknown",
+
 			"jsdoc/require-jsdoc": [
 				"warn",
 				{
