@@ -113,7 +113,7 @@ export default tseslint.config(
 				{ argsIgnorePattern: "^_" },
 			],
 			"@typescript-eslint/no-explicit-any": "warn",
-			"no-console": ["warn", { allow: ["warn", "error"] }],
+			"no-console": ["warn", { allow: ["warn", "error", "info"] }],
 		},
 	},
 	eslintPluginPrettierRecommended,
