@@ -4,11 +4,6 @@ import colors from "tailwindcss/colors";
 export default {
 	content: ["./index/html", "./src/**/*.{js,ts,jsx,tsx,mdx}"],
 	theme: {
-		fontFamily: {
-			sans: "var(--font-poppins)",
-			serif: "var(--font-geist-mono)",
-			numeric: "var(--font-raleway)",
-		},
 		container: {
 			center: true,
 		},
@@ -28,7 +23,7 @@ export default {
 				},
 				neutral: colors.zinc,
 				success: colors.green,
-				warning: colors.yellow,
+				warning: colors.orange,
 				danger: colors.red,
 			},
 		},
