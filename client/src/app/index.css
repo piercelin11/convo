@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 
 @theme {
 	--font-sans: "Poppins", "sans";
 
-	--spacing-sidebar-lg: 500px;
+	--spacing-sidebar-lg: 400px;
 	--spacing-header: 60px;
 
 	--color-primary-50: oklch(0.969 0.016 293.756);
@@ -63,15 +63,37 @@
 	}
 
 	.text-description {
-		@apply text-neutral-500 text-sm
+		@apply text-sm text-neutral-500;
 	}
 }
 
 html {
 	font-family: var(--font-sans);
-	@apply scroll-smooth bg-neutral-950 font-normal text-neutral-100;
+	@apply scroll-smooth bg-neutral-950 text-neutral-100 font-light;
 }
 
 h2 {
-	@apply font-semibold text-xl
+	@apply text-xl font-semibold;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+::-webkit-scrollbar-button {
+	background: transparent;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-track-piece {
+	background: transparent;
+}
+
+:hover::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	@apply bg-neutral-800;
+}
+
+::-webkit-scrollbar-track {
+	box-shadow: transparent;
 }
