@@ -1,4 +1,7 @@
+import dotenv from "dotenv";
 import { z } from "zod";
+
+dotenv.config();
 
 const EnvSchema = z.object({
 	DATABASE_URL: z.string().min(1, { message: "DATABASE_URL 環境變數未設定！" }),

@@ -46,8 +46,6 @@ export default tseslint.config(
 			...(eslintPluginReact.configs.recommended?.rules || {}),
 			...(eslintPluginReactHooks.configs.recommended?.rules || {}),
 
-			allowObjectTypes: "unknown",
-
 			"jsdoc/require-jsdoc": [
 				"warn",
 				{
@@ -99,6 +97,7 @@ export default tseslint.config(
 			"jsdoc/no-types": "error",
 			"jsdoc/require-param-type": "off",
 			"jsdoc/require-returns-type": "off",
+			"jsdoc/tag-lines": "off",
 
 			"jsdoc/check-alignment": "warn",
 			"jsdoc/check-indentation": "warn",

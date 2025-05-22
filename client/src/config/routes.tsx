@@ -1,3 +1,4 @@
+import AuthLayout from "@/components/layouts/AuthLayout";
 import ChatPage from "@/pages/ChatPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
@@ -9,12 +10,17 @@ const routesConfig: RouteObject[] = [
 		element: <ChatPage />,
 	},
 	{
-		path: "/register",
-		element: <RegisterPage />,
-	},
-	{
-		path: "/login",
-		element: <LoginPage />,
+		element: <AuthLayout />,
+		children: [
+			{
+				path: "/register",
+				element: <RegisterPage />,
+			},
+			{
+				path: "/login",
+				element: <LoginPage />,
+			},
+		],
 	},
 ];
 
