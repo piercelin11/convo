@@ -1,5 +1,5 @@
-import Button from "@/components/shared/button/Button";
-import FormInput from "@/components/shared/form/FormInput";
+import Button from "@/components/ui/Button";
+import FormInput from "@/components/ui/FormInput";
 
 export default function RegisterPage() {
 	return (

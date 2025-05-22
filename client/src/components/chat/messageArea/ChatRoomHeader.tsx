@@ -1,3 +1,4 @@
+import Avatar from "@/components/ui/Avatar";
 import { USER_PLACEHOLDER } from "@/config/constants";
 import { MoreVertical, Search } from "react-feather";
 
@@ -9,12 +10,7 @@ export default function ChatRoomHeader() {
 	return (
 		<div className="h-header flex items-center justify-between px-4">
 			<div className="flex items-center gap-2">
-				<img
-					src={USER_PLACEHOLDER}
-					width={40}
-					height={40}
-					className="rounded-full"
-				/>
+				<Avatar src={USER_PLACEHOLDER} size={40} />
 				<p className="text-neutral-300">Chat room</p>
 			</div>
 			<div className="flex items-center gap-2">

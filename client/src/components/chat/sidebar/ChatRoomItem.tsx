@@ -1,3 +1,4 @@
+import Avatar from "@/components/ui/Avatar";
 import { USER_PLACEHOLDER } from "@/config/constants";
 
 /**
@@ -7,12 +8,7 @@ import { USER_PLACEHOLDER } from "@/config/constants";
 export default function ChatRoomItem() {
 	return (
 		<li className="flex items-center gap-2 rounded-xl p-2 hover:bg-neutral-800">
-			<img
-				src={USER_PLACEHOLDER}
-				width={55}
-				height={55}
-				className="rounded-full"
-			/>
+			<Avatar src={USER_PLACEHOLDER} size={55} />
 			<div className="flex-1">
 				<div className="flex items-center">
 					<p>Chat room</p>
