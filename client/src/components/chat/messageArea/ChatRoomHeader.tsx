@@ -1,4 +1,5 @@
 import Avatar from "@/components/ui/Avatar";
+import IconBtn from "@/components/ui/IconBtn";
 import { USER_PLACEHOLDER } from "@/config/constants";
 import { MoreVertical, Search } from "react-feather";
 
@@ -14,8 +15,12 @@ export default function ChatRoomHeader() {
 				<p className="text-neutral-300">Chat room</p>
 			</div>
 			<div className="flex items-center gap-2">
-				<Search className="text-neutral-500" />
-				<MoreVertical className="text-neutral-500" />
+				<IconBtn>
+					<Search className="text-neutral-500" />
+				</IconBtn>
+				<IconBtn>
+					<MoreVertical className="text-neutral-500" />
+				</IconBtn>
 			</div>
 		</div>
 	);

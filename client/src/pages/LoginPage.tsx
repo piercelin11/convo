@@ -5,7 +5,7 @@ export default function LoginPage() {
 	return (
 		<div className="m-auto w-2/3 max-w-[500px] space-y-14">
 			<div>
-				<h2 className="text-center">Welcome back</h2>
+				<h1 className="text-title text-center">Welcome back</h1>
 				<p className="text-description text-center">
 					Enter your name and password to log in.
 				</p>

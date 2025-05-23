@@ -5,7 +5,7 @@ export default function RegisterPage() {
 	return (
 		<div className="m-auto w-2/3 max-w-[500px] space-y-14">
 			<div>
-				<h2 className="text-center">Sign Up And Chat</h2>
+				<h1 className="text-title text-center">Sign Up And Chat</h1>
 				<p className="text-description text-center">
 					Enter your name, password, and email to sign up and chat.
 				</p>
