@@ -1,8 +1,10 @@
-import AuthLayout from "@/components/layouts/AuthLayout";
-import ChatPage from "@/pages/ChatPage";
-import LoginPage from "@/pages/LoginPage";
-import RegisterPage from "@/pages/RegisterPage";
+import React from "react";
 import type { RouteObject } from "react-router-dom";
+
+const AuthLayout = React.lazy(() => import("@/components/layouts/AuthLayout"));
+const ChatPage = React.lazy(() => import("@/pages/ChatPage"));
+const LoginPage = React.lazy(() => import("@/pages/LoginPage"));
+const RegisterPage = React.lazy(() => import("@/pages/RegisterPage"));
 
 const routesConfig: RouteObject[] = [
 	{

@@ -8,6 +8,11 @@ type DropdownProps = {
 	 * 觸發下拉選單的 `button` 元素
 	 */
 	trigger: React.ReactElement<React.ComponentPropsWithoutRef<"button">>;
+	/**
+	 * 下拉選單對齊觸發器的位置
+	 * @default left
+	 */
+	align?: "left" | "right";
 	children: React.ReactNode;
 };
 
@@ -16,6 +21,7 @@ type DropdownProps = {
  *
  * @param props - Dropdown 元件的屬性
  * @param props.trigger - 觸發下拉選單的元素，目前必須是 `button` 元素。**必填**。
+ * @param props.align - （可選）下拉選單對齊觸發器的位置。
  * @param props.children - 下拉選單內的內容。建議由 `DropdownItem` {@link DropdownItem} 或 `<li>` 元素構成。**必填**。
  * @returns 一個能透過點擊觸發下拉選單的 JSX 元素。
  *
@@ -28,7 +34,11 @@ type DropdownProps = {
  * </Dropdown>
  * ```
  */
-export default function Dropdown({ trigger, children }: DropdownProps) {
+export default function Dropdown({
+	trigger,
+	align = "left",
+	children,
+}: DropdownProps) {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const clonedTrigger = cloneElement(trigger, {
@@ -46,11 +56,12 @@ export default function Dropdown({ trigger, children }: DropdownProps) {
 						{
 							"pointer-events-none -mt-2 opacity-0": !isOpen,
 							"mt-2 opacity-100": isOpen,
+							"right-0": align === "right",
 						}
 					)}
 					aria-hidden={!isOpen}
 				>
-					<ul>{children}</ul>
+					<ul role="menu">{children}</ul>
 				</div>
 			</div>
 			<div
