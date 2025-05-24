@@ -1,37 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
-@config "@/../tailwind.config.ts";
 
+@theme {
+	--font-sans: "Poppins", "sans";
 
-:root {
-	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-	line-height: 1.5;
-	font-weight: 400;
+	--spacing-sidebar-lg: 400px;
+	--spacing-header: 60px;
 
-	color-scheme: light dark;
-	color: rgba(255, 255, 255, 0.87);
-	background-color: #242424;
+	--color-primary-50: oklch(0.969 0.016 293.756);
+	--color-primary-100: oklch(0.943 0.029 294.588);
+	--color-primary-200: oklch(0.894 0.057 293.283);
+	--color-primary-300: oklch(0.811 0.111 293.571);
+	--color-primary-400: oklch(0.702 0.183 293.541);
+	--color-primary-500: oklch(0.606 0.25 292.717);
+	--color-primary-600: oklch(0.541 0.281 293.009);
+	--color-primary-700: oklch(0.491 0.27 292.581);
+	--color-primary-800: oklch(0.432 0.232 292.759);
+	--color-primary-900: oklch(0.38 0.189 293.745);
+	--color-primary-950: oklch(0.283 0.141 291.089);
 
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	--color-danger-50: oklch(0.971 0.013 17.38);
+	--color-danger-100: oklch(0.936 0.032 17.717);
+	--color-danger-200: oklch(0.885 0.062 18.334);
+	--color-danger-300: oklch(0.808 0.114 19.571);
+	--color-danger-400: oklch(0.704 0.191 22.216);
+	--color-danger-500: oklch(0.637 0.237 25.331);
+	--color-danger-600: oklch(0.577 0.245 27.325);
+	--color-danger-700: oklch(0.505 0.213 27.518);
+	--color-danger-800: oklch(0.444 0.177 26.899);
+	--color-danger-900: oklch(0.396 0.141 25.723);
+	--color-danger-950: oklch(0.258 0.092 26.042);
+
+	--color-warning-50: oklch(0.98 0.016 73.684);
+	--color-warning-100: oklch(0.954 0.038 75.164);
+	--color-warning-200: oklch(0.901 0.076 70.697);
+	--color-warning-300: oklch(0.837 0.128 66.29);
+	--color-warning-400: oklch(0.75 0.183 55.934);
+	--color-warning-500: oklch(0.705 0.213 47.604);
+	--color-warning-600: oklch(0.646 0.222 41.116);
+	--color-warning-700: oklch(0.553 0.195 38.402);
+	--color-warning-800: oklch(0.47 0.157 37.304);
+	--color-warning-900: oklch(0.408 0.123 38.172);
+	--color-warning-950: oklch(0.266 0.079 36.259);
+
+	--color-success-50: oklch(0.982 0.018 155.826);
+	--color-success-100: oklch(0.962 0.044 156.743);
+	--color-success-200: oklch(0.925 0.084 155.995);
+	--color-success-300: oklch(0.871 0.15 154.449);
+	--color-success-400: oklch(0.792 0.209 151.711);
+	--color-success-500: oklch(0.723 0.219 149.579);
+	--color-success-600: oklch(0.627 0.194 149.214);
+	--color-success-700: oklch(0.527 0.154 150.069);
+	--color-success-800: oklch(0.448 0.119 151.328);
+	--color-success-900: oklch(0.393 0.095 152.535);
+	--color-success-950: oklch(0.266 0.065 152.934);
 }
 
-a {
+@layer components {
+	.bg-auth {
+		background-image: url("auth-bg-img.webp");
+		background-size: cover;
+	}
 
+	.text-title {
+		@apply text-xl font-semibold;
+	}
+
+	.text-description {
+		@apply text-sm text-neutral-500;
+	}
 }
-a:hover {
 
+html {
+	font-family: var(--font-sans);
+	@apply scroll-smooth bg-neutral-950 font-light text-neutral-100;
 }
 
+html,
 body {
-
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }
 
-h1 {
-
+::-webkit-scrollbar {
+	width: 5px;
 }
 
-button {
+::-webkit-scrollbar-button {
+	background: transparent;
+	border-radius: 4px;
+}
 
+::-webkit-scrollbar-track-piece {
+	background: transparent;
+}
+
+:hover::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	@apply bg-neutral-800;
+}
+
+::-webkit-scrollbar-track {
+	box-shadow: transparent;
 }

@@ -1,17 +1,14 @@
-import dotenv from "dotenv";
 import pg from "pg";
 import { env } from "./env.js";
-
-dotenv.config();
 
 const { Pool } = pg;
 
 const databaseUrl = env.DATABASE_URL;
 
 if (!databaseUrl) {
-	console.error("嚴重錯誤：DATABASE_URL 環境變數未設定！");
+	console.error("[資料庫]嚴重錯誤：DATABASE_URL 環境變數未設定！");
 	console.error(
-		"請檢查你的 .env 檔案是否正確配置，並且包含了 Neon 資料庫的完整連線 URI。"
+		"[資料庫]請檢查你的 .env 檔案是否正確配置，並且包含了 Neon 資料庫的完整連線 URI。"
 	);
 	process.exit(1);
 }
@@ -27,7 +24,7 @@ pool.on("connect", () => {
 
 // 監聽連線池的 'error' 事件，處理閒置客戶端發生的錯誤
 pool.on("error", (err) => {
-	console.error("資料庫連線池發生未預期的錯誤 (閒置客戶端錯誤):", err);
+	console.error("[資料庫]資料庫連線池發生未預期的錯誤 (閒置客戶端錯誤):", err);
 });
 
 console.info("PostgreSQL 連線池已設定完成。");
@@ -44,7 +41,7 @@ export async function testDbConnection(): Promise<void> {
 		const result = await client.query("SELECT NOW() AS now");
 		console.info("資料庫連線測試成功！ Neon DB 目前時間:", result.rows[0].now);
 	} catch (err) {
-		console.error("資料庫連線測試失敗:", err);
+		console.error("[資料庫]資料庫連線測試失敗:", err);
 	} finally {
 		if (client) {
 			client.release();
