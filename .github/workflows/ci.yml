@@ -39,11 +39,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install client dependencies
         uses: bahmutov/npm-install@v1
-        with:
-          working-directory: ./client # 指定要在哪個目錄下執行 npm install
 
       - name: Build client application
         working-directory: ./client
