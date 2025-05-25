@@ -1,4 +1,4 @@
-name: Main CI Pipeline
+name: Monorepo CI Pipeline
 
 on:
   push:
@@ -7,50 +7,36 @@ on:
     branches: [main]
 
 jobs:
-  build-test-lint-client:
-    name: Build, Test, and Lint Client
+  build-test-lint:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup Node.js
+
+      - name: Setup Node.js with cache
         uses: actions/setup-node@v4
         with:
-          node-version-file: ".nvmrc" # 讀取根目錄的 .nvmrc
+          node-version-file: ".nvmrc"
           cache: "npm"
-          cache-dependency-path: client/package-lock.json
-      - name: Install client dependencies
-        run: npm ci
-      - name: Run client linters
+
+      - name: Install Monorepo dependencies
+        run: npm install
+
+      - name: Run Monorepo Lint
         run: npm run lint
+
       - name: Build client application
         run: npm run build --if-present
+        working-directory: ./client
+
       - name: Run client tests
         run: npm test
+        working-directory: ./client
 
-  build-test-lint-server:
-    name: Build, Test, and Lint Server
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc" # 讀取根目錄的 .nvmrc
-          cache: "npm"
-          cache-dependency-path: server/package-lock.json
-      - name: Install server dependencies
-        run: npm ci
-      - name: Run server linters
-        run: npm run lint
       - name: Build server application
         run: npm run build --if-present
+        working-directory: ./server
+
       - name: Run server tests
         run: npm test
+        working-directory: ./server
