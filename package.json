@@ -6,14 +6,15 @@
     "server",
     "shared"
   ],
+  "engines": {
+    "node": "22.16.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev:client": "npm run dev --workspace=client",
     "dev:server": "npm run dev --workspace=server",
     "dev:shared": "npm run dev --workspace=@convo/shared",
-    "lint:client": "npm run lint --workspace=client",
-    "lint:server": "npm run lint --workspace=server",
-    "dev": "npm-run-all --parallel dev:client dev:server dev:shared",
-    "lint": "npm-run-all --parallel lint:client lint:server"
+    "dev": "npm-run-all --parallel dev:client dev:server dev:shared"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
