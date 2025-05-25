@@ -39,11 +39,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: package-lock.json
 
       - name: Install client dependencies
-        uses: bahmutov/npm-install@v1
+        run: npm ci
 
       - name: Build client application
         working-directory: ./client
@@ -68,7 +68,7 @@ jobs:
           cache: "npm"
           cache-dependency-path: package-lock.json # 依賴根目錄的 package-lock.json
 
-      - name: Install all workspace dependencies
+      - name: Install server dependencies
         run: npm ci
 
       - name: Build server application
