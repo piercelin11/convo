@@ -43,7 +43,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install all workspace dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build client application
         working-directory: ./client
