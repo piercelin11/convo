@@ -14,7 +14,7 @@ export function DropdownItem({ children }: DropdownItemProps) {
 			<button
 				role="menuitem"
 				tabIndex={-1}
-				className="w-full rounded-lg px-4 py-2 text-left hover:bg-neutral-950"
+				className="w-full rounded-lg px-4 py-2 text-left hover:bg-neutral-950 focus:bg-neutral-950"
 			>
 				{children}
 			</button>

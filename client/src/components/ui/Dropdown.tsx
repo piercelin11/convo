@@ -1,7 +1,7 @@
 import { cn } from "@sglara/cn";
 import type React from "react";
-import { cloneElement, useEffect, useRef, useState } from "react";
 import { DropdownItem } from "./DropdownItem";
+import useDropdown from "@/hooks/useDropdown";
 
 type DropdownProps = {
 	/**
@@ -39,42 +39,13 @@ export default function Dropdown({
 	align = "left",
 	children,
 }: DropdownProps) {
-	const [isOpen, setIsOpen] = useState(false);
-	const dropdownRef = useRef<HTMLUListElement>(null);
-	const triggerRef = useRef<HTMLButtonElement>(null);
-
-	const clonedTrigger = cloneElement(trigger, {
-		onClick: () => setIsOpen((prev) => !prev),
-		ref: triggerRef,
-		"aria-haspopup": "menu",
-		"aria-expanded": isOpen,
-	});
-
-	useEffect(() => {
-		function handleClickOutside(e: MouseEvent) {
-			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(e.target as Node) &&
-				!triggerRef.current?.contains(e.target as Node)
-			) {
-				setIsOpen(false);
-			}
-		}
-
-		if (isOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
-		} else {
-			document.removeEventListener("mousedown", handleClickOutside);
-		}
-
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, [isOpen]);
+	const { clonedTrigger, dropdownRef, isOpen, setIsOpen, handleKeyDown } =
+		useDropdown(trigger);
 
 	return (
 		<>
 			<div className="relative z-10">
 				{clonedTrigger}
-
 				<ul
 					role="menu"
 					ref={dropdownRef}
@@ -88,6 +59,8 @@ export default function Dropdown({
 					)}
 					onClick={() => setIsOpen(false)}
 					aria-hidden={!isOpen}
+					onKeyDown={handleKeyDown}
+					tabIndex={-1}
 				>
 					{children}
 				</ul>

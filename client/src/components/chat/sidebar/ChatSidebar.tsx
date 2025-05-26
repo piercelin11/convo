@@ -10,7 +10,10 @@ export default function ChatSidebar() {
 	return (
 		<aside className="w-sidebar-lg flex h-full flex-col border-r border-neutral-800 bg-neutral-900">
 			<ChatSidebarHeader />
-			<div className="flex-grow overflow-y-auto overscroll-contain p-2">
+			<div
+				className="flex-grow overflow-y-auto overscroll-contain p-2"
+				tabIndex={-1}
+			>
 				<ul>
 					{array.map((index) => (
 						<ChatRoomItem key={index} />
