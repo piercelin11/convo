@@ -1,13 +1,13 @@
 import { cn } from "@sglara/cn";
 import type React from "react";
-import { cloneElement, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import { DropdownItem } from "./DropdownItem";
 
 type DropdownProps = {
 	/**
 	 * 觸發下拉選單的 `button` 元素
 	 */
-	trigger: React.ReactElement<React.ComponentPropsWithoutRef<"button">>;
+	trigger: React.ReactElement<React.ComponentProps<"button">>;
 	/**
 	 * 下拉選單對齊觸發器的位置
 	 * @default left
@@ -40,17 +40,44 @@ export default function Dropdown({
 	children,
 }: DropdownProps) {
 	const [isOpen, setIsOpen] = useState(false);
+	const dropdownRef = useRef<HTMLUListElement>(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
 
 	const clonedTrigger = cloneElement(trigger, {
 		onClick: () => setIsOpen((prev) => !prev),
+		ref: triggerRef,
 		"aria-haspopup": "menu",
 		"aria-expanded": isOpen,
 	});
+
+	useEffect(() => {
+		function handleClickOutside(e: MouseEvent) {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(e.target as Node) &&
+				!triggerRef.current?.contains(e.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		}
+
+		if (isOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+		} else {
+			document.removeEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, [isOpen]);
+
 	return (
 		<>
 			<div className="relative z-10">
 				{clonedTrigger}
-				<div
+
+				<ul
+					role="menu"
+					ref={dropdownRef}
 					className={cn(
 						"absolute min-w-[200px] rounded-xl border border-neutral-800 bg-neutral-900/95 p-1 text-sm shadow-lg shadow-neutral-950/30 transition-all duration-200",
 						{
@@ -59,16 +86,12 @@ export default function Dropdown({
 							"right-0": align === "right",
 						}
 					)}
+					onClick={() => setIsOpen(false)}
 					aria-hidden={!isOpen}
 				>
-					<ul role="menu">{children}</ul>
-				</div>
+					{children}
+				</ul>
 			</div>
-			<div
-				className="absolute top-0 left-0 h-screen w-screen overflow-hidden"
-				onClick={() => setIsOpen(false)}
-				hidden={!isOpen}
-			/>
 		</>
 	);
 }
