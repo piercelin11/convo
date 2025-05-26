@@ -11,7 +11,8 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest --watch",
-		"prettier": "prettier --write ."
+		"prettier": "prettier --write .",
+		"typecheck": "tsc -b"
 	},
 	"dependencies": {
 		"@convo/shared": "*",

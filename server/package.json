@@ -15,7 +15,8 @@
 		"migrate:create": "node-pg-migrate create -j ts --tsx",
 		"migrate:up": "node-pg-migrate up --tsx",
 		"migrate:down": "node-pg-migrate down --tsx",
-		"migrate:status": "node-pg-migrate status --tsx"
+		"migrate:status": "node-pg-migrate status --tsx",
+		"typecheck": "tsc -b"
 	},
 	"keywords": [],
 	"author": "",

@@ -16,7 +16,8 @@
 		"skipLibCheck": true,
 		"resolveJsonModule": true, // 如果你需要 import JSON 檔案
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": true,
+		"noEmit": true,
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "**/*.test.ts"]
