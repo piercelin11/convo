@@ -1,5 +1,5 @@
 import pool from "@/config/database.js";
-import { hashPassword } from "@/utils/password.utils.js";
+import { hashPassword } from "@/utils/index.js";
 
 async function seedUser() {
 	const client = await pool.connect();

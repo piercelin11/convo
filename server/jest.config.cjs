@@ -16,4 +16,5 @@ module.exports = {
 		"json",
 		"node",
 	],
+	setupFiles: ["<rootDir>/jest.setup.ts"],
 };
