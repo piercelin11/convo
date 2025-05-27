@@ -17,4 +17,6 @@ module.exports = {
 		"node",
 	],
 	setupFiles: ["<rootDir>/jest.setup.ts"],
+	clearMocks: true,
+	collectCoverage: true,
 };

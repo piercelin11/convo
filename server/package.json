@@ -11,6 +11,8 @@
 		"prettier": "prettier --write \"src/**/*.ts\"",
 		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
 		"test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watchAll",
+		"vitest": "vitest",
+		"vitest:watch": "vitest --watch",
 		"migrate": "node-pg-migrate --tsx",
 		"migrate:create": "node-pg-migrate create -j ts --tsx",
 		"migrate:up": "node-pg-migrate up --tsx",
