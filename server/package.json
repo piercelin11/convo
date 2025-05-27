@@ -16,7 +16,8 @@
 		"migrate:up": "node-pg-migrate up --tsx",
 		"migrate:down": "node-pg-migrate down --tsx",
 		"migrate:status": "node-pg-migrate status --tsx",
-		"typecheck": "tsc -b"
+		"typecheck": "tsc -b",
+		"db:seed": "tsx src/scripts/seedUser.ts"
 	},
 	"keywords": [],
 	"author": "",
