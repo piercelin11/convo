@@ -2,11 +2,11 @@ import { Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
 	return (
-		<div className="flex h-dvh">
-			<div className="h-full flex-1/2 p-4">
+		<div className="flex h-dvh flex-col md:flex-row">
+			<div className="h-full flex-1/5 p-4 md:flex-1/2">
 				<div className="bg-auth h-full w-full rounded-2xl" />
 			</div>
-			<div className="flex flex-1/2">
+			<div className="flex h-full flex-1/2">
 				<Outlet />
 			</div>
 		</div>

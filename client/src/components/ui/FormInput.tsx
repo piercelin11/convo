@@ -5,6 +5,7 @@ type FormInputProps = {
 	id: string;
 	name: string;
 	className?: string;
+	errorMessage?: string;
 	label?: string;
 } & Omit<React.ComponentProps<"input">, "id" | "name">;
 
@@ -16,6 +17,7 @@ type FormInputProps = {
  * @param props.name - 輸入欄位的名稱，用於表單提交。**必填**。
  * @param props.className - (可選) 為 input 添加樣式，若與預設樣式衝突會直接覆蓋預設樣式。
  * @param props.label - (可選) 顯示在輸入欄位上方的標籤文字。
+ * @param props.errorMessage - (可選) 顯示在輸入欄位下方的錯誤訊息。
  * @returns 一個包含 `<label>` 和 `<input>` 的 JSX 元素。
  * @example
  * ```tsx
@@ -35,6 +37,7 @@ export default function FormInput({
 	name,
 	label,
 	className,
+	errorMessage,
 	...props
 }: FormInputProps) {
 	return (
@@ -50,6 +53,7 @@ export default function FormInput({
 				autoComplete="off"
 				{...props}
 			/>
+			{errorMessage && <p className="text-danger">{errorMessage}</p>}
 		</label>
 	);
 }
