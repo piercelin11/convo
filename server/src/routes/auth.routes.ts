@@ -5,6 +5,7 @@ import pool from "@/config/database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { env } from "@/config/env.js";
+import { UserPayloadType } from "@/middlewares/authenticateToken.js";
 
 const router = Router();
 
@@ -44,8 +45,13 @@ router.post(
 			const token = jwt.sign(
 				{ id: user.id, username: user.username, email: user.email },
 				env.JWT_PRIVATE_KEY,
-				{ expiresIn: "1d", algorithm: "HS256" }
+				{ expiresIn: "1d" }
 			);
+
+			const userPayload = jwt.verify(
+				token,
+				env.JWT_PRIVATE_KEY
+			) as UserPayloadType;
 
 			response = {
 				success: true,
@@ -58,6 +64,7 @@ router.post(
 					avatar_url: user.avatar_url,
 				},
 				token,
+				expiredAt: userPayload.exp,
 			};
 			res.status(200).json(response);
 		} catch (error) {

@@ -13,8 +13,9 @@ export const loginSchema = z.object({
 export type LoginSchemaType = z.infer<typeof loginSchema>;
 
 export type LoginResponseType = {
-	success: boolean,
-	message: string,
-	token?: string,
-	user?: UserDTO,
-}
+	success: boolean;
+	message: string;
+	token?: string;
+	user?: UserDTO;
+	expiredAt?: number;
+};
