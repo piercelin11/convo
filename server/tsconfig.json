@@ -5,7 +5,7 @@
 		"moduleResolution": "NodeNext",
 		"baseUrl": "./src",
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
 		},
 		"types": ["node", "jest"],
 		"outDir": "./dist",

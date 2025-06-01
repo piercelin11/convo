@@ -5,6 +5,9 @@ dotenv.config();
 
 const EnvSchema = z.object({
 	DATABASE_URL: z.string().min(1, { message: "DATABASE_URL 環境變數未設定！" }),
+	JWT_PRIVATE_KEY: z
+		.string()
+		.min(1, { message: "JWT_PRIVATE_KEY 環境變數未設定！" }),
 });
 
 /**
