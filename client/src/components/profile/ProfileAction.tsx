@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProfileModal from "./ProfileModal";
-import FaceIcon from "@mui/icons-material/Face";
 import Button from "../ui/Button";
+import { X } from "react-feather";
 
 // type ProfileActionProps = {
 
@@ -18,7 +18,7 @@ export default function ProfileAction() {
 		<div>
 			{isOpen && <ProfileModal closeHandler={editHandler} isOpen={isOpen} />}
 			<Button onClick={editHandler}>
-				<FaceIcon />
+				<X />
 			</Button>
 		</div>
 	);
