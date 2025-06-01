@@ -5,14 +5,6 @@ const { Pool } = pg;
 
 const databaseUrl = env.DATABASE_URL;
 
-if (!databaseUrl) {
-	console.error("[資料庫]嚴重錯誤：DATABASE_URL 環境變數未設定！");
-	console.error(
-		"[資料庫]請檢查你的 .env 檔案是否正確配置，並且包含了 Neon 資料庫的完整連線 URI。"
-	);
-	process.exit(1);
-}
-
 const pool = new Pool({
 	connectionString: databaseUrl,
 });

@@ -41,7 +41,7 @@ export default function Button({
 	return (
 		<button
 			className={cn(
-				"hover:bg-primary-950 w-full rounded-xl bg-neutral-100 px-4 py-3 font-medium text-neutral-950 hover:text-neutral-100",
+				"hover:bg-primary-950 w-full rounded-xl bg-neutral-100 px-4 py-3 text-neutral-950 hover:text-neutral-100",
 				className
 			)}
 			type={type}

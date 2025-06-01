@@ -11,12 +11,15 @@
 		"prettier": "prettier --write \"src/**/*.ts\"",
 		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
 		"test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watchAll",
+		"vitest": "vitest",
+		"vitest:watch": "vitest --watch",
 		"migrate": "node-pg-migrate --tsx",
 		"migrate:create": "node-pg-migrate create -j ts --tsx",
 		"migrate:up": "node-pg-migrate up --tsx",
 		"migrate:down": "node-pg-migrate down --tsx",
 		"migrate:status": "node-pg-migrate status --tsx",
-		"typecheck": "tsc -b"
+		"typecheck": "tsc -b",
+		"db:seed": "tsx src/scripts/seedUser.ts"
 	},
 	"keywords": [],
 	"author": "",
@@ -24,9 +27,12 @@
 	"description": "",
 	"dependencies": {
 		"@convo/shared": "*",
+		"@types/jsonwebtoken": "^9.0.9",
+		"bcryptjs": "^3.0.2",
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
 		"express": "^5.1.0",
+		"jsonwebtoken": "^9.0.2",
 		"pg": "^8.16.0",
 		"socket.io": "^4.8.1",
 		"zod": "^3.25.20"

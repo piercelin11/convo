@@ -5,8 +5,10 @@
 		"moduleResolution": "NodeNext",
 		"baseUrl": "./src",
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"@convo/shared": ["../shared/src"] // 或你實際的 shared 出口位置
 		},
+		"types": ["node", "jest"],
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"esModuleInterop": true,
@@ -18,6 +20,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"noEmit": true,
+		"isolatedModules": true
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "**/*.test.ts"]

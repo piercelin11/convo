@@ -1,3 +1,4 @@
+import PrivateRoute from "@/components/auth/PrivateRoute";
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 
@@ -9,12 +10,17 @@ const AuthLayout = React.lazy(() => import("@/components/layouts/AuthLayout"));
 
 const routesConfig: RouteObject[] = [
 	{
-		path: "/",
-		element: <HomePage />,
-	},
-	{
-		path: "/:chatRoomId",
-		element: <ChatRoomPage />,
+		element: <PrivateRoute />,
+		children: [
+			{
+				path: "/",
+				element: <HomePage />,
+			},
+			{
+				path: "/:chatRoomId",
+				element: <ChatRoomPage />,
+			},
+		],
 	},
 	{
 		element: <AuthLayout />,

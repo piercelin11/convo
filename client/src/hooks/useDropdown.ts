@@ -95,7 +95,9 @@ export default function useDropdown(
 			}
 			case "ArrowUp": {
 				e.preventDefault();
-				newIndex = (focusedItemIndex - 1 + items.length) % items.length;
+				if (focusedItemIndex === -1)
+					newIndex = (focusedItemIndex + items.length) % items.length;
+				else newIndex = (focusedItemIndex - 1 + items.length) % items.length;
 				break;
 			}
 			case "Escape": {

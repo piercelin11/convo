@@ -1,29 +1,27 @@
 {
-  "name": "@convo/shared",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc -w"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "Shared schemas, types, and utilities for the Convo project",
-  "dependencies": {
-    "zod": "^3.24.4"
-  },
-  "devDependencies": {
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
+	"name": "@convo/shared",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"tsc": "tsc",
+		"dev": "tsup --watch"
+	},
+	"dependencies": {
+		"zod": "^3.24.4"
+	},
+	"devDependencies": {
+		"prettier": "^3.5.3",
+		"tsup": "^8.5.0",
+		"typescript": "^5.8.3"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	}
 }
