@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Button from "../ui/Button";
 import FormInput from "../ui/FormInput";
 import Modal from "../ui/Modal";
@@ -86,6 +86,7 @@ export default function ProfileModal({
 							value={username}
 							onChange={handleUsernameChange}
 						/>
+						<p>{usernameError}</p>
 						<FormInput
 							id="age"
 							name="Age"
@@ -93,6 +94,7 @@ export default function ProfileModal({
 							value={age}
 							onChange={handleAgeChange}
 						/>
+						<p>{ageError}</p>
 					</div>
 					<div className="flex gap-10 pt-10">
 						<Button onClick={closeHandler}>cancel</Button>
