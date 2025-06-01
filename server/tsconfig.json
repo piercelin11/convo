@@ -6,6 +6,7 @@
 		"baseUrl": "./src",
 		"paths": {
 			"@/*": ["./*"],
+			"@convo/shared": ["../shared/src/index"] // 或你實際的 shared 出口位置
 		},
 		"types": ["node", "jest"],
 		"outDir": "./dist",
@@ -19,7 +20,7 @@
 		"allowJs": true,
 		"checkJs": true,
 		"noEmit": true,
-		"isolatedModules": true,
+		"isolatedModules": true
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "**/*.test.ts"]

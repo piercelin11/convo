@@ -27,8 +27,9 @@
 		"noUncheckedSideEffectImports": true,
 		"baseUrl": "./src",
 		"paths": {
-			"@/*": ["./*"]
-		},
+			"@/*": ["./*"],
+			"@convo/shared": ["../shared/src/index"]
+		}
 	},
 	"include": ["src", "vitest.setup.ts"]
 }
