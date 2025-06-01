@@ -1,5 +1,5 @@
 import React from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import { X } from "react-feather";
 
 type ModalProps = {
 	closeHandler?: () => void;
@@ -23,7 +23,7 @@ export default function Modal({ isOpen, closeHandler, children }: ModalProps) {
 			>
 				<div className="flex justify-end">
 					<button onClick={closeHandler}>
-						<CloseIcon />
+						<X />
 					</button>
 				</div>
 
