@@ -28,7 +28,7 @@
 		"baseUrl": "./src",
 		"paths": {
 			"@/*": ["./*"],
-			"@convo/shared": ["../shared/src/index"]
+			"@convo/shared": ["../shared/src"]
 		}
 	},
 	"include": ["src", "vitest.setup.ts"]
