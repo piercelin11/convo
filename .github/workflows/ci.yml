@@ -44,6 +44,10 @@ jobs:
 
       - name: Install all workspace dependencies
         run: npm ci
+      
+      - name: Build shared workspace
+        working-directory: ./shared
+        run: npm run build
 
       - name: Run Type Check
         run: npm run typecheck
@@ -65,6 +69,10 @@ jobs:
 
       - name: Install client dependencies
         run: npm ci
+      
+      - name: Build client application
+        working-directory: ./shared
+        run: npm run build --if-present
 
       - name: Build client application
         working-directory: ./client
@@ -91,6 +99,10 @@ jobs:
 
       - name: Install server dependencies
         run: npm ci
+      
+      - name: Build client application
+        working-directory: ./shared
+        run: npm run build --if-present
 
       - name: Build server application
         working-directory: ./server
