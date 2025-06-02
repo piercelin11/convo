@@ -47,19 +47,6 @@ importers:
       zod:
         specifier: ^3.25.47
         version: 3.25.48
-    optionalDependencies:
-      '@tailwindcss/oxide-linux-arm64-musl':
-        specifier: ^4.0.1
-        version: 4.1.8
-      '@tailwindcss/oxide-linux-x64-musl':
-        specifier: ^4.0.1
-        version: 4.1.8
-      lightningcss-linux-arm64-musl:
-        specifier: ^1.29.1
-        version: 1.30.1
-      lightningcss-linux-x64-musl:
-        specifier: ^1.29.1
-        version: 1.30.1
     devDependencies:
       '@eslint/js':
         specifier: ^9.25.0
@@ -1598,6 +1585,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@tailwindcss/oxide-linux-x64-gnu@4.1.8:
@@ -1615,6 +1603,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@tailwindcss/oxide-wasm32-wasi@4.1.8:
@@ -5165,6 +5154,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /lightningcss-linux-x64-gnu@1.30.1:
@@ -5182,6 +5172,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /lightningcss-win32-arm64-msvc@1.30.1:
