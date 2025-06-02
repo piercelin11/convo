@@ -6,6 +6,12 @@ import { loginSchema, type LoginSchemaType } from "@convo/shared";
 import { AxiosError } from "axios";
 import { authService } from "@/api/api";
 import { useAuth } from "@/store/auth/useAuth";
+import ResponseMessage from "@/components/ui/ResponseMessage";
+
+const defaultError = {
+	username: undefined,
+	password: undefined,
+};
 
 export default function LoginPage() {
 	const [loading, setLoading] = useState(false);
@@ -13,10 +19,7 @@ export default function LoginPage() {
 		username: "",
 		password: "",
 	});
-	const [errors, setErrors] = useState<Partial<LoginSchemaType>>({
-		username: undefined,
-		password: undefined,
-	});
+	const [errors, setErrors] = useState<Partial<LoginSchemaType>>(defaultError);
 	const [apiError, setApiError] = useState<string | null>(null);
 	const { login } = useAuth();
 
@@ -53,7 +56,9 @@ export default function LoginPage() {
 			if (error instanceof AxiosError) {
 				console.error("[登入]登入過程出現問題", error.response);
 				setApiError(error.response?.data.message);
-			} else console.error("[登入]登入過程出現未預期的問題:", error);
+			} else {
+				console.error("[登入]登入過程出現未預期的問題:", error);
+			}
 		} finally {
 			setLoading(false);
 		}
@@ -88,7 +93,7 @@ export default function LoginPage() {
 				<Button type="submit" disabled={loading}>
 					{loading ? "Loading..." : "Log In"}
 				</Button>
-				{apiError && <p className="text-danger">{apiError}</p>}
+				{apiError && <ResponseMessage type="error" message={apiError} />}
 			</form>
 		</div>
 	);

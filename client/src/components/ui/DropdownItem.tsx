@@ -14,7 +14,7 @@ export function DropdownItem({ children, ...props }: DropdownItemProps) {
 			<button
 				role="menuitem"
 				tabIndex={-1}
-				className="w-full rounded-lg px-4 py-2 text-left hover:bg-neutral-950 focus:bg-neutral-950"
+				className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-left text-neutral-400 hover:bg-neutral-950 hover:text-neutral-100 focus:bg-neutral-950"
 				{...props}
 			>
 				{children}

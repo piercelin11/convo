@@ -1,6 +1,9 @@
-import { Outlet } from "react-router-dom";
+import { useAuth } from "@/store/auth/useAuth";
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
+	const { isAuthenticated } = useAuth();
+	if (isAuthenticated) return <Navigate to={"/"} replace />;
 	return (
 		<div className="flex h-dvh flex-col md:flex-row">
 			<div className="h-full flex-1/5 p-4 md:flex-1/2">
