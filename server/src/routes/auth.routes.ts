@@ -3,6 +3,7 @@ import { Router } from "express";
 import { loginSchema, registerSchema } from "@convo/shared";
 import { handleLogin, handleRegister } from "@/controllers/auth.controller.js";
 
+
 const router = Router();
 
 router.post("/login", validateRequest({ body: loginSchema }), handleLogin);
