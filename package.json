@@ -7,7 +7,7 @@
     "shared"
   ],
   "engines": {
-    "node": "20",
+    "node": "22.16.0",
     "npm": ">=9.0.0"
   },
   "scripts": {
