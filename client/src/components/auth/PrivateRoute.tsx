@@ -1,16 +1,11 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "@/store/auth/useAuth";
+import { Outlet } from "react-router-dom";
 
 export default function PrivateRoute() {
-	const token = localStorage.getItem("authToken");
-	const expiredAt = Number(localStorage.getItem("expiredAt")) * 1000;
+	const { isAuthenticated, expiredAt, logout } = useAuth();
 
-	const isExpired = !isNaN(expiredAt) ? Date.now() > expiredAt : true;
+	const isExpired = expiredAt ? Date.now() > expiredAt * 1000 : true;
 
-	if (!token || isExpired) {
-		localStorage.removeItem("authToken");
-		localStorage.removeItem("expiredAt");
-		return <Navigate to={"/login"} replace />;
-	}
-
+	if (!isAuthenticated || isExpired) logout();
 	return <Outlet />;
 }

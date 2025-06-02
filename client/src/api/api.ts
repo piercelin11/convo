@@ -1,4 +1,8 @@
-import type { LoginResponseType, LoginSchemaType } from "@convo/shared";
+import type {
+	AuthResponseType,
+	LoginSchemaType,
+	RegisterSchemaType,
+} from "@convo/shared";
 import axios, { AxiosError } from "axios";
 
 const axiosClient = axios.create({
@@ -38,8 +42,14 @@ axiosClient.interceptors.response.use(
 );
 
 export const authService = {
-	login: async (credentials: LoginSchemaType): Promise<LoginResponseType> => {
+	login: async (credentials: LoginSchemaType): Promise<AuthResponseType> => {
 		const response = await axiosClient.post("/auth/login", credentials);
+		return response.data;
+	},
+	register: async (
+		credentials: RegisterSchemaType
+	): Promise<AuthResponseType> => {
+		const response = await axiosClient.post("/auth/register", credentials);
 		return response.data;
 	},
 };
