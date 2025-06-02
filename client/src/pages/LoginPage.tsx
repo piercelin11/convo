@@ -5,7 +5,7 @@ import { useState } from "react";
 import { loginSchema, type LoginSchemaType } from "@convo/shared";
 import { AxiosError } from "axios";
 import { authService } from "@/api/api";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/store/auth/useAuth";
 
 export default function LoginPage() {
 	const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function LoginPage() {
 		password: undefined,
 	});
 	const [apiError, setApiError] = useState<string | null>(null);
-	const navigate = useNavigate();
+	const { login } = useAuth();
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const name = e.target.name;
@@ -34,6 +34,7 @@ export default function LoginPage() {
 		setLoading(true);
 		try {
 			const validated = loginSchema.safeParse(formInput);
+
 			if (!validated.success) {
 				const formErrors = validated.error.flatten().fieldErrors;
 				setErrors({
@@ -42,14 +43,12 @@ export default function LoginPage() {
 				});
 				return;
 			}
+
 			const result = await authService.login(validated.data);
 
-			if (result.token) localStorage.setItem("authToken", result.token);
-			if (result.expiredAt)
-				localStorage.setItem("expiredAt", result.expiredAt.toString());
-			if (result.user)
-				localStorage.setItem("user", JSON.stringify(result.user));
-			navigate("/");
+			if (result.user && result.token && result.expiredAt) {
+				login(result.user, result.token, result.expiredAt);
+			}
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				console.error("[登入]登入過程出現問題", error.response);
