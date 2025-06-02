@@ -21,29 +21,9 @@
 
 	--color-danger: oklch(0.577 0.245 27.325);
 
-	--color-warning-50: oklch(0.98 0.016 73.684);
-	--color-warning-100: oklch(0.954 0.038 75.164);
-	--color-warning-200: oklch(0.901 0.076 70.697);
-	--color-warning-300: oklch(0.837 0.128 66.29);
-	--color-warning-400: oklch(0.75 0.183 55.934);
-	--color-warning-500: oklch(0.705 0.213 47.604);
-	--color-warning-600: oklch(0.646 0.222 41.116);
-	--color-warning-700: oklch(0.553 0.195 38.402);
-	--color-warning-800: oklch(0.47 0.157 37.304);
-	--color-warning-900: oklch(0.408 0.123 38.172);
-	--color-warning-950: oklch(0.266 0.079 36.259);
+	--color-warning: oklch(0.75 0.183 55.934);
 
-	--color-success-50: oklch(0.982 0.018 155.826);
-	--color-success-100: oklch(0.962 0.044 156.743);
-	--color-success-200: oklch(0.925 0.084 155.995);
-	--color-success-300: oklch(0.871 0.15 154.449);
-	--color-success-400: oklch(0.792 0.209 151.711);
-	--color-success-500: oklch(0.723 0.219 149.579);
-	--color-success-600: oklch(0.627 0.194 149.214);
-	--color-success-700: oklch(0.527 0.154 150.069);
-	--color-success-800: oklch(0.448 0.119 151.328);
-	--color-success-900: oklch(0.393 0.095 152.535);
-	--color-success-950: oklch(0.266 0.065 152.934);
+	--color-success: oklch(0.723 0.219 149.579);
 }
 
 @layer components {

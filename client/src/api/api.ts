@@ -33,6 +33,7 @@ axiosClient.interceptors.response.use(
 				localStorage.removeItem("user");
 			}
 		}
+		return Promise.reject(error);
 	}
 );
 

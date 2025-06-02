@@ -50,7 +50,7 @@ export default function Dropdown({
 					role="menu"
 					ref={dropdownRef}
 					className={cn(
-						"absolute min-w-[200px] rounded-xl border border-neutral-800 bg-neutral-900/95 p-1 text-sm shadow-lg shadow-neutral-950/30 transition-all duration-200",
+						"absolute min-w-[200px] rounded-xl border border-neutral-800 bg-neutral-900/98 p-1 text-sm shadow-lg shadow-neutral-950/30 transition-all duration-200",
 						{
 							"pointer-events-none -mt-2 opacity-0": !isOpen,
 							"mt-2 opacity-100": isOpen,
