@@ -7,6 +7,7 @@ import { AxiosError } from "axios";
 import { authService } from "@/api/api";
 import { useAuth } from "@/store/auth/useAuth";
 import ResponseMessage from "@/components/ui/ResponseMessage";
+import z from "zod/v4";
 
 const defaultError = {
 	username: undefined,
@@ -39,12 +40,15 @@ export default function LoginPage() {
 			const validated = loginSchema.safeParse(formInput);
 
 			if (!validated.success) {
-				const formErrors = validated.error.flatten().fieldErrors;
+				const formErrors = z.flattenError(validated.error).fieldErrors;
 				setErrors({
 					username: formErrors.username && formErrors.username[0],
 					password: formErrors.password && formErrors.password[0],
 				});
+				setApiError(null);
 				return;
+			} else {
+				setErrors(defaultError);
 			}
 
 			const result = await authService.login(validated.data);

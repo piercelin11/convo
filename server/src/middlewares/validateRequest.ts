@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import { ZodError, ZodSchema, z } from "zod";
+import { ZodError, z, ZodType } from "zod/v4";
 
 type RequestValidationSchemas = {
-	body?: ZodSchema<any>;
-	query?: ZodSchema<any>;
-	params?: ZodSchema<any>;
+	body?: ZodType<any>;
+	query?: ZodType<any>;
+	params?: ZodType<any>;
 };
 
 export function validateRequest<S extends RequestValidationSchemas>(
@@ -17,10 +17,10 @@ export function validateRequest<S extends RequestValidationSchemas>(
 				req.body = await schemas.body.parseAsync(req.body);
 			}
 			if (schemas.params) {
-				req.params = await schemas.params.parseAsync(req.params);
+				req.params = (await schemas.params.parseAsync(req.params)) as any;
 			}
 			if (schemas.query) {
-				req.query = await schemas.query.parseAsync(req.query);
+				req.query = (await schemas.query.parseAsync(req.query)) as any;
 			}
 			return next();
 		} catch (error) {
@@ -38,9 +38,9 @@ export function validateRequest<S extends RequestValidationSchemas>(
 			return next(error);
 		}
 	} as RequestHandler<
-		S["params"] extends ZodSchema ? z.infer<S["params"]> : any,
+		S["params"] extends ZodType<any> ? z.infer<S["params"]> : any,
 		any,
-		S["body"] extends ZodSchema ? z.infer<S["body"]> : any,
-		S["query"] extends ZodSchema ? z.infer<S["query"]> : any
+		S["body"] extends ZodType<any> ? z.infer<S["body"]> : any,
+		S["query"] extends ZodType<any> ? z.infer<S["query"]> : any
 	>;
 }
