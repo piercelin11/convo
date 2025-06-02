@@ -27,7 +27,6 @@
 	"description": "",
 	"dependencies": {
 		"@convo/shared": "*",
-		"@types/jsonwebtoken": "^9.0.9",
 		"bcryptjs": "^3.0.2",
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
@@ -42,7 +41,8 @@
 		"@types/cors": "^2.8.18",
 		"@types/express": "^5.0.1",
 		"@types/jest": "^29.5.14",
-		"@types/node": "^22.15.17",
+		"@types/jsonwebtoken": "^9.0.9",
+		"@types/node": "^22.15.29",
 		"@types/pg": "^8.15.1",
 		"@typescript-eslint/eslint-plugin": "^8.32.1",
 		"@typescript-eslint/parser": "^8.32.1",
