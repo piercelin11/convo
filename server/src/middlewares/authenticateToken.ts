@@ -1,4 +1,5 @@
 import { env } from "@/config/env.js";
+import { AuthorizationError } from "@/utils/error.utils.js";
 import { NextFunction, Request, Response } from "express";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 
@@ -38,16 +39,13 @@ export default function authenticateToken(
 		const userPayload = jwt.verify(token, env.JWT_PRIVATE_KEY);
 		req.user = userPayload as UserPayloadType;
 	} catch (error) {
+		console.warn("[權限驗證中間件]權限驗證失敗");
 		if (error instanceof JsonWebTokenError) {
 			if (error.name === "TokenExpiredError") {
-				console.error("[身份驗證]Token 已過期:", error);
-				res.status(401).json({ success: false, message: "令牌過期請重新登入" });
-				return;
+				throw new AuthorizationError("令牌過期請重新登入");
 			}
 			if (error.name === "JsonWebTokenError") {
-				console.error("[身份驗證]Token 無效。:", error);
-				res.status(401).json({ success: false, message: "令牌無效" });
-				return;
+				throw new AuthorizationError("令牌無效");
 			}
 		}
 		next(error);

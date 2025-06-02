@@ -2,7 +2,7 @@ import { LoginResponseType } from "@convo/shared";
 import { NextFunction, Request, Response } from "express";
 import { authenticateUserLogin } from "@/services/auth.service.js";
 
-export default async function handleLoginasync(
+export async function handleLogin(
 	req: Request,
 	res: Response,
 	next: NextFunction
@@ -30,17 +30,8 @@ export default async function handleLoginasync(
 		};
 		res.status(200).json(response);
 	} catch (error) {
-		if (error instanceof Error) {
-			if (error.message === "帳號或密碼不正確") {
-				response = {
-					success: false,
-					message: "帳號或密碼不正確",
-				};
-				console.error("[登入]帳號或密碼不正確");
-				res.status(401).json(response);
-				return;
-			}
-		}
+		console.warn("[身份驗證]登入失敗");
+		console.warn(`登入失敗的使用者名稱: ${username}`);
 		next(error);
 	}
 }

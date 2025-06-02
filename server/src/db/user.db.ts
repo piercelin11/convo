@@ -1,4 +1,5 @@
 import pool from "@/config/database.js";
+import { DatabaseError } from "@/utils/error.utils.js";
 import { UserRecord } from "@convo/shared";
 
 export async function findUserByUsername(
@@ -17,6 +18,10 @@ export async function findUserByUsername(
 			`[db]: 獲取使用者名稱為 ${username} 的資料時發生錯誤:`,
 			error
 		);
-		throw error;
+		throw new DatabaseError(
+			`獲取使用者名稱為 ${username} 的資料時發生錯誤`,
+			false,
+			{ cause: error }
+		);
 	}
 }

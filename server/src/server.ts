@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import authRouter from "@/routes/auth.routes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,8 @@ app.use(
 );
 
 app.use("/api/auth", authRouter);
+
+app.use(errorHandler);
 
 app.listen(port, () => {
 	console.info(`Server running on port ${port}.`);
