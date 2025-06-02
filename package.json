@@ -8,12 +8,14 @@
   ],
   "engines": {
     "node": "22.16.0",
-    "npm": ">=9.0.0"
+    "pnpm": ">=8.0.0"
   },
+  "engineStrict": true,
   "scripts": {
     "dev": "concurrently \"pnpm --filter shared run dev\" \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
     "lint": "pnpm -r run lint",
-    "typecheck": "pnpm -r run typecheck"
+    "typecheck": "pnpm -r run typecheck",
+    "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

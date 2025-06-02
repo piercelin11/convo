@@ -32,3 +32,5 @@ pnpm-debug.log*
 # 整個專案的建置輸出資料夾 (如果有的話)
 /build/
 /coverage/
+
+package-lock.json
