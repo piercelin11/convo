@@ -2,7 +2,7 @@ import Avatar from "@/components/ui/Avatar";
 import Dropdown from "@/components/ui/Dropdown";
 import { DropdownItem } from "@/components/ui/DropdownItem";
 import IconBtn from "@/components/ui/IconBtn";
-import { USER_PLACEHOLDER } from "@/config/constants";
+import { env } from "@/config/env";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { ArrowLeft, MoreVertical, Search } from "react-feather";
 import { Link } from "react-router-dom";
@@ -26,7 +26,7 @@ export default function ChatRoomHeader() {
 						/>
 					</Link>
 				)}
-				<Avatar src={USER_PLACEHOLDER} size={40} />
+				<Avatar src={env.VITE_USER_IMG_PLACEHOLDER} size={40} />
 				<p className="text-neutral-300">Chat room</p>
 			</div>
 			<div className="flex items-center gap-2">
