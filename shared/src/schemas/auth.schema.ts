@@ -20,7 +20,5 @@ export type RegisterSchemaType = z.infer<typeof registerSchema>;
 export type AuthResponseType = {
 	success: boolean;
 	message: string;
-	token?: string;
 	user?: UserDTO;
-	expiredAt?: number;
 };

@@ -1,8 +1,13 @@
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import { Router } from "express";
 import { loginSchema, registerSchema } from "@convo/shared";
-import { handleLogin, handleRegister } from "@/controllers/auth.controller.js";
-
+import {
+	handleSession,
+	handleLogin,
+	handleLogout,
+	handleRegister,
+} from "@/controllers/auth.controller.js";
+import authenticateToken from "@/middlewares/authenticateToken.js";
 
 const router = Router();
 
@@ -13,5 +18,9 @@ router.post(
 	validateRequest({ body: registerSchema }),
 	handleRegister
 );
+
+router.post("/logout", handleLogout);
+
+router.get("/session", authenticateToken, handleSession);
 
 export default router;

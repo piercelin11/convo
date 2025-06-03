@@ -53,8 +53,8 @@ export default function LoginPage() {
 
 			const result = await authService.login(validated.data);
 
-			if (result.user && result.token && result.expiredAt) {
-				login(result.user, result.token, result.expiredAt);
+			if (result.user) {
+				login(result.user);
 			}
 		} catch (error) {
 			if (error instanceof AxiosError) {
