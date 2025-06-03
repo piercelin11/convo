@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "@/store/auth/useAuth";
 import { chatRoomsService } from "@/api/api";
 import type { ChatRoomRecord } from "@convo/shared";
+import { Link } from "react-router-dom";
 
 /**
  * 聊天界面的側邊欄
@@ -45,11 +46,9 @@ export default function ChatSidebar() {
 			>
 				<ul>
 					{chatRooms.map((item) => (
-						<ChatRoomItem
-							key={item.id}
-							name={item.name!}
-							updateAt={item.updated_at}
-						/>
+						<Link key={item.id} to={`/${item.id}`}>
+							<ChatRoomItem name={item.name!} updateAt={item.updated_at} />
+						</Link>
 					))}
 				</ul>
 			</div>

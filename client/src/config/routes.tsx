@@ -1,4 +1,5 @@
 import PrivateRoute from "@/components/auth/PrivateRoute";
+import ChatLayout from "@/components/layouts/ChatLayout";
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 
@@ -13,12 +14,17 @@ const routesConfig: RouteObject[] = [
 		element: <PrivateRoute />,
 		children: [
 			{
-				path: "/",
-				element: <HomePage />,
-			},
-			{
-				path: "/:chatRoomId",
-				element: <ChatRoomPage />,
+				element: <ChatLayout />,
+				children: [
+					{
+						path: "/",
+						element: <HomePage />,
+					},
+					{
+						path: "/:chatRoomId",
+						element: <ChatRoomPage />,
+					},
+				],
 			},
 		],
 	},
