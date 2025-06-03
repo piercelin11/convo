@@ -14,18 +14,21 @@ export default function Modal({ isOpen, closeHandler, children }: ModalProps) {
 
 	return (
 		<div
-			className={`bg-overlay-100 fixed top-0 z-10 mx-auto h-dvh w-full`}
+			className="fixed top-0 z-50 mx-auto flex h-dvh w-full bg-neutral-950/70"
 			onClick={closeHandler}
 		>
 			<div
-				className={`${isOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"} fixed top-0 right-0 z-10 h-dvh w-105 overflow-scroll p-6 transition duration-700 ease-in`}
+				className={
+					"relative m-auto min-w-105 overscroll-contain rounded-xl border border-neutral-800 bg-neutral-900 p-6"
+				}
 				onClick={(e) => e.stopPropagation()}
 			>
-				<div className="flex justify-end">
-					<button onClick={closeHandler}>
-						<X />
-					</button>
-				</div>
+				<button
+					className="absolute top-3 right-3 text-neutral-500 hover:text-neutral-100"
+					onClick={closeHandler}
+				>
+					<X size={16} />
+				</button>
 
 				{children}
 			</div>
