@@ -1,10 +1,10 @@
 import { env } from "@/config/env.js";
 import { AuthorizationError } from "@/utils/error.utils.js";
 import { NextFunction, Request, Response } from "express";
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 /**
- * JWT 的使用者 Payload
+ * JWT 的使用者 Payload 型別
  */
 export type UserPayloadType = {
 	id: string;
@@ -27,12 +27,10 @@ export default function authenticateToken(
 	res: Response,
 	next: NextFunction
 ) {
-	const authHeader = req.headers["authorization"];
-	const token = authHeader && authHeader.split(" ")[1];
+	const token = req.cookies.authToken;
 
 	if (!token) {
-		res.status(401).json({ message: "Unauthorized request." });
-		return;
+		throw new AuthorizationError("為授權的請求");
 	}
 
 	try {
@@ -40,7 +38,7 @@ export default function authenticateToken(
 		req.user = userPayload as UserPayloadType;
 	} catch (error) {
 		console.warn("[權限驗證中間件]權限驗證失敗");
-		if (error instanceof JsonWebTokenError) {
+		if (error instanceof Error) {
 			if (error.name === "TokenExpiredError") {
 				throw new AuthorizationError("令牌過期請重新登入");
 			}

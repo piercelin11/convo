@@ -59,6 +59,28 @@ export async function findUserByEmail(email: string): Promise<UserRecord> {
 }
 
 /**
+ * 透過 id 獲取唯一使用者資料
+ * @param id - 使用者 id。**必填**。
+ * @returns 唯一使用者資料。
+ */
+export async function findUserById(id: string): Promise<UserRecord> {
+	const query = `SELECT * FROM users WHERE id = $1`;
+	const values = [id];
+
+	try {
+		const result = await pool.query(query, values);
+		const user: UserRecord = result.rows[0];
+
+		return user;
+	} catch (error) {
+		console.error(`[db]: 獲取 id 為 ${id} 的使用者資料時發生錯誤:`, error);
+		throw new DatabaseError(`獲取 id 為 ${id} 的使用者資料時發生錯誤`, false, {
+			cause: error,
+		});
+	}
+}
+
+/**
  * 輸入使用者資料
  * @param username - 使用者名稱。**必填**。
  * @param email - 電子郵件。**必填**。

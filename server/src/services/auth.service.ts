@@ -1,9 +1,10 @@
-import { env } from "@/config/env.js";
 import * as userDb from "@/db/user.db.js";
-import { UserPayloadType } from "@/middlewares/authenticateToken.js";
-import { AuthenticationError, hashPassword } from "@/utils/index.js";
+import {
+	AuthenticationError,
+	generateAuthToken,
+	hashPassword,
+} from "@/utils/index.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 export async function loginUser(username: string, password: string) {
 	const user = await userDb.findUserByUsername(username);
@@ -12,15 +13,17 @@ export async function loginUser(username: string, password: string) {
 	if (!passwordIsMatched || !user)
 		throw new AuthenticationError("帳號或密碼不正確");
 
-	const token = jwt.sign(
-		{ id: user.id, username: user.username, email: user.email },
-		env.JWT_PRIVATE_KEY,
-		{ expiresIn: "1d" }
-	);
+	const userDTO = {
+		id: user.id,
+		username: user.username,
+		email: user.email,
+		age: user.age,
+		avatar_url: user.avatar_url,
+	};
 
-	const userJWTPayload = jwt.decode(token) as UserPayloadType;
+	const { token } = generateAuthToken(user);
 
-	return { user, token, userJWTPayload };
+	return { user: userDTO, token };
 }
 
 export async function registerUser(
@@ -35,13 +38,27 @@ export async function registerUser(
 
 	const user = await userDb.createUser(username, email, hashPassword(password));
 
-	const token = jwt.sign(
-		{ id: user.id, username: user.username, email: user.email },
-		env.JWT_PRIVATE_KEY,
-		{ expiresIn: "1d" }
-	);
+	const userDTO = {
+		id: user.id,
+		username: user.username,
+		email: user.email,
+		age: user.age,
+		avatar_url: user.avatar_url,
+	};
 
-	const userJWTPayload = jwt.decode(token) as UserPayloadType;
+	const { token } = generateAuthToken(user);
 
-	return { user, token, userJWTPayload };
+	return { user: userDTO, token };
+}
+
+export async function getUserSession(id: string) {
+	const user = await userDb.findUserById(id);
+	const userDTO = {
+		id: user.id,
+		username: user.username,
+		email: user.email,
+		age: user.age,
+		avatar_url: user.avatar_url,
+	};
+	return userDTO;
 }

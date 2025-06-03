@@ -45,6 +45,7 @@ export default async function errorHandler(
 		return;
 	}
 
+	console.error("伺服器發生未預期的錯誤:", err);
 	res.status(500).json({
 		success: false,
 		message:

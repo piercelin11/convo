@@ -5,21 +5,21 @@
 	"main": "src/server.ts",
 	"scripts": {
 		"build": "tsc",
-		"start": "node dist/server.js",
-		"dev": "nodemon --exec tsx src/server.ts",
+		"start": "cross-env NODE_ENV=production node dist/server.js",
+		"dev": "cross-env NODE_ENV=development nodemon --exec tsx src/server.ts",
 		"lint": "eslint . --ext .ts --fix",
 		"prettier": "prettier --write \"src/**/*.ts\"",
 		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
 		"test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watchAll",
-		"vitest": "vitest",
-		"vitest:watch": "vitest --watch",
+		"vitest": "cross-env NODE_ENV=test vitest",
+		"vitest:watch": "cross-env NODE_ENV=test vitest --watch",
 		"migrate": "node-pg-migrate --tsx",
 		"migrate:create": "node-pg-migrate create -j ts --tsx",
 		"migrate:up": "node-pg-migrate up --tsx",
 		"migrate:down": "node-pg-migrate down --tsx",
 		"migrate:status": "node-pg-migrate status --tsx",
 		"typecheck": "tsc -b",
-		"db:seed": "tsx src/scripts/seedUser.ts"
+		"db:seed": "cross-env NODE_ENV=development tsx src/scripts/seedUser.ts"
 	},
 	"keywords": [],
 	"author": "",
@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@convo/shared": "*",
 		"bcryptjs": "^3.0.2",
+		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
 		"express": "^5.1.0",
@@ -38,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.26.0",
+		"@types/cookie-parser": "^1.4.8",
 		"@types/cors": "^2.8.18",
 		"@types/express": "^5.0.1",
 		"@types/jest": "^29.5.14",
