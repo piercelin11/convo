@@ -1,14 +1,13 @@
-import ChatRoom from "@/components/chat/ChatRoom";
-import ChatSidebar from "@/components/sidebar/ChatSidebar";
-import useMediaQuery from "@/hooks/useMediaQuery";
+import ChatRoomHeader from "@/components/chat/ChatRoomHeader";
+import MessageInputArea from "@/components/chat/MessageInputArea";
+import MessageContainer from "@/components/chat/MessageContainer";
 
 export default function ChatRoomPage() {
-	const isMobile = useMediaQuery("max", 640);
-
 	return (
-		<div className="flex h-dvh">
-			{!isMobile && <ChatSidebar />}
-			<ChatRoom />
-		</div>
+		<section className="flex flex-1 flex-col">
+			<ChatRoomHeader />
+			<MessageContainer />
+			<MessageInputArea />
+		</section>
 	);
 }
