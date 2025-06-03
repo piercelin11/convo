@@ -1,4 +1,4 @@
-import * as userDb from "@/db/user.db.js";
+import * as userDb from "@/db/users.db.js";
 import {
 	AuthenticationError,
 	generateAuthToken,

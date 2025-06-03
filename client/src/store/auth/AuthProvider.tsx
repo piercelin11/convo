@@ -1,7 +1,7 @@
 import type { UserDTO } from "@convo/shared";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
+import { authContext } from "./authContext";
 import { authService } from "@/api/api";
 import { AxiosError } from "axios";
 
@@ -15,7 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		async function checkUserSession() {
 			try {
-				const response = await authService.authenticateUser();
+				const response = await authService.getSession();
 
 				if (response.success && response.user) {
 					setUser(response.user);
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	if (isLoadong) return <p>身份驗證中⋯⋯</p>;
 
 	return (
-		<AuthContext.Provider
+		<authContext.Provider
 			value={{
 				isAuthenticated,
 				user,
@@ -61,6 +61,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			}}
 		>
 			{children}
-		</AuthContext.Provider>
+		</authContext.Provider>
 	);
 }
