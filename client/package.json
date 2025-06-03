@@ -18,6 +18,7 @@
 		"@convo/shared": "*",
 		"@sglara/cn": "^1.0.0",
 		"axios": "^1.9.0",
+		"date-fns": "^4.1.0",
 		"prettier-plugin-tailwindcss": "^0.6.11",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",

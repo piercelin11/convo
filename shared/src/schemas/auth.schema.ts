@@ -16,9 +16,3 @@ export const registerSchema = z.object({
 });
 
 export type RegisterSchemaType = z.infer<typeof registerSchema>;
-
-export type AuthResponseType = {
-	success: boolean;
-	message: string;
-	user?: UserDTO;
-};

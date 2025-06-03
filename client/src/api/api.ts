@@ -2,6 +2,7 @@ import type {
 	AuthResponseType,
 	LoginSchemaType,
 	RegisterSchemaType,
+	ChatRoomsResponseType,
 } from "@convo/shared";
 import axios from "axios";
 
@@ -44,8 +45,15 @@ export const authService = {
 		const response = await axiosClient.post("/auth/logout");
 		return response.data;
 	},
-	authenticateUser: async (): Promise<AuthResponseType> => {
+	getSession: async (): Promise<AuthResponseType> => {
 		const response = await axiosClient.get("/auth/session");
+		return response.data;
+	},
+};
+
+export const chatRoomsService = {
+	getUserChatRooms: async (): Promise<ChatRoomsResponseType> => {
+		const response = await axiosClient.get("/chat-rooms");
 		return response.data;
 	},
 };
