@@ -1,6 +1,10 @@
 import { useState } from "react";
-import modalContext, { type ModalKeyType } from "./modalContext";
+import ModalContext, { type ModalKeyType } from "./ModalContext";
 
+/**
+ * 控制彈跳視窗的 context provider
+ * @returns 控制彈跳視窗的 context provider
+ */
 export default function ModalProvider({
 	children,
 }: {
@@ -8,10 +12,10 @@ export default function ModalProvider({
 }) {
 	const [modalKey, setModalKey] = useState<ModalKeyType | null>(null);
 	return (
-		<modalContext.Provider
+		<ModalContext.Provider
 			value={{ modalKey, setModalKey: (key) => setModalKey(key) }}
 		>
 			{children}
-		</modalContext.Provider>
+		</ModalContext.Provider>
 	);
 }
