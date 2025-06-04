@@ -5,7 +5,7 @@ type FormInputProps = {
 	id: string;
 	name: string;
 	className?: string;
-	errorMessage?: string;
+	errorMessage?: string | null;
 	label?: string;
 } & Omit<React.ComponentProps<"input">, "id" | "name">;
 
@@ -41,7 +41,10 @@ export default function FormInput({
 	...props
 }: FormInputProps) {
 	return (
-		<label className="flex flex-col gap-2 text-sm" htmlFor={id}>
+		<label
+			className="flex flex-col gap-2 text-sm text-neutral-500"
+			htmlFor={id}
+		>
 			{label}
 			<input
 				className={cn(

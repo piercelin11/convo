@@ -1,8 +1,9 @@
+import { env } from "@/config/env";
 import { cn } from "@sglara/cn";
 import type React from "react";
 
 type AvatarProps = {
-	src: string;
+	src?: string | null;
 	/**
 	 * @default 50
 	 */
@@ -20,8 +21,8 @@ type AvatarProps = {
 export default function Avatar({ src, size = 50, className }: AvatarProps) {
 	return (
 		<img
-			src={src}
-			className={cn("rounded-full", className)}
+			src={src || env.VITE_USER_IMG_PLACEHOLDER}
+			className={cn("aspect-square rounded-full", className)}
 			width={size}
 			height={size}
 		/>

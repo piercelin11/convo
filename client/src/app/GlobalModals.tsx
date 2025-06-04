@@ -1,3 +1,4 @@
+import CreateGroupChatForm from "@/components/chat/form/CreateGroupChatForm";
 import Modal from "@/components/ui/Modal";
 import useModalContext from "@/store/modal/useModalContext";
 
@@ -9,7 +10,7 @@ export default function GlobalModals() {
 	function getModalContent() {
 		switch (modalKey) {
 			case "createChatRoom": {
-				return <p>createChatRoom</p>;
+				return <CreateGroupChatForm />;
 			}
 			default: {
 				return <p>default</p>;
