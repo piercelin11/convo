@@ -8,6 +8,9 @@ type ModalContextType = {
 	setModalKey: (key: ModalKeyType) => void;
 };
 
-const modalContext = createContext<ModalContextType | undefined>(undefined);
+const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-export default modalContext;
+/**
+ * 控制彈跳視窗的 context
+ */
+export default ModalContext;

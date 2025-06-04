@@ -1,7 +1,7 @@
 import type { UserDTO } from "@convo/shared";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authContext } from "./authContext";
+import AuthContext from "./AuthContext";
 import { authService } from "@/api/api";
 import { AxiosError } from "axios";
 
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	if (isLoadong) return <p>身份驗證中⋯⋯</p>;
 
 	return (
-		<authContext.Provider
+		<AuthContext.Provider
 			value={{
 				isAuthenticated,
 				user,
@@ -61,6 +61,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			}}
 		>
 			{children}
-		</authContext.Provider>
+		</AuthContext.Provider>
 	);
 }

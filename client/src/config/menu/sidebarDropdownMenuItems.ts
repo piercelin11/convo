@@ -1,7 +1,7 @@
-import type { ModalKeyType } from "@/store/modal/modalContext";
 import { LogOut, MessageSquare } from "react-feather";
 import useModalContext from "@/store/modal/useModalContext";
 import ModalProvider from "@/store/modal/ModalProvider";
+import type { ModalKeyType } from "@/store/modal/ModalContext";
 
 /**
  * 側邊欄下拉選單的項目型別。
