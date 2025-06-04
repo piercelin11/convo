@@ -3,6 +3,8 @@ import type {
 	LoginSchemaType,
 	RegisterSchemaType,
 	ChatRoomsResponseType,
+	FriendshipsResponseType,
+	CreateGroupChatSchemaType,
 } from "@convo/shared";
 import axios from "axios";
 
@@ -54,6 +56,19 @@ export const authService = {
 export const chatRoomsService = {
 	getUserChatRooms: async (): Promise<ChatRoomsResponseType> => {
 		const response = await axiosClient.get("/chat-rooms");
+		return response.data;
+	},
+	createGroupChat: async (
+		formData: CreateGroupChatSchemaType
+	): Promise<ChatRoomsResponseType> => {
+		const response = await axiosClient.post("/chat-rooms/group", formData);
+		return response.data;
+	},
+};
+
+export const friendshipsService = {
+	getUserFriends: async (): Promise<FriendshipsResponseType> => {
+		const response = await axiosClient.get("/friendships");
 		return response.data;
 	},
 };

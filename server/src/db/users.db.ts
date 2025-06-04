@@ -92,7 +92,9 @@ export async function createUser(
 	email: string,
 	password: string
 ): Promise<UserRecord> {
-	const query = `INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *`;
+	const query = `
+		INSERT INTO users (username, email, password_hash) 
+		VALUES ($1, $2, $3) RETURNING *`;
 	const values = [username, email, password];
 
 	try {

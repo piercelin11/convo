@@ -1,5 +1,5 @@
 import { ChatRoomRecord } from "./db.types";
-import { UserDTO } from "./dto.types";
+import { FriendshipDto, UserDTO } from "./dto.types";
 
 export type ApiResponseType = {
 	success: boolean;
@@ -12,4 +12,9 @@ export type AuthResponseType = ApiResponseType & {
 
 export type ChatRoomsResponseType = ApiResponseType & {
 	chatRooms: ChatRoomRecord[];
+};
+
+
+export type FriendshipsResponseType = ApiResponseType & {
+	friendships: FriendshipDto[];
 };
