@@ -8,6 +8,7 @@ import { authService } from "@/api/api";
 import { useAuth } from "@/store/auth/useAuth";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import z from "zod/v4";
+import { Link } from "react-router-dom";
 
 const defaultError = {
 	username: undefined,
@@ -70,16 +71,16 @@ export default function LoginPage() {
 	return (
 		<div className="m-auto w-2/3 max-w-[500px] space-y-14">
 			<div>
-				<h1 className="text-title text-center">Welcome back</h1>
+				<h1 className="text-title text-center">歡迎回來</h1>
 				<p className="text-description text-center">
-					Enter your name and password to log in.
+					輸入使用者名稱與密碼並登入帳號吧
 				</p>
 			</div>
 			<form className="space-y-6" onSubmit={handleSubmit}>
 				<FormInput
 					id="username"
 					name="username"
-					label="username"
+					label="使用者名稱"
 					placeholder="eg. John"
 					onChange={handleInputChange}
 					value={formInput.username}
@@ -88,16 +89,24 @@ export default function LoginPage() {
 				<FormInput
 					id="password"
 					name="password"
-					label="password"
+					label="密碼"
 					placeholder="Enter your password"
 					onChange={handleInputChange}
 					value={formInput.password}
 					errorMessage={errors.password}
 				/>
 				<Button type="submit" disabled={loading}>
-					{loading ? "Loading..." : "Log In"}
+					{loading ? "登入中..." : "登入"}
 				</Button>
 				{apiError && <ResponseMessage type="error" message={apiError} />}
+				<p className="text-center text-sm text-neutral-400">
+					尚未有帳號？
+					<Link to={"/register"}>
+						<span className="hover:text-neutral-100 hover:underline">
+							點擊註冊
+						</span>
+					</Link>
+				</p>
 			</form>
 		</div>
 	);

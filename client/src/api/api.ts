@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import type {
 	AuthResponseType,
 	LoginSchemaType,
@@ -9,7 +10,7 @@ import type {
 import axios from "axios";
 
 const axiosClient = axios.create({
-	baseURL: `${import.meta.env.VITE_API_DATABASE_URL}/api`,
+	baseURL: `${env.VITE_API_DATABASE_URL}/api`,
 	timeout: 10000,
 	withCredentials: true,
 });
