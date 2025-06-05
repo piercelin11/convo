@@ -7,7 +7,7 @@ type ResponseMessageProps = {
 	border?: boolean;
 };
 
-const ICON_SIZE = 16;
+const ICON_SIZE = 18;
 
 export default function ResponseMessage({
 	type,
@@ -16,7 +16,7 @@ export default function ResponseMessage({
 }: ResponseMessageProps) {
 	return (
 		<div
-			className={cn("flex items-center gap-1", {
+			className={cn("flex items-center gap-2", {
 				"rounded-xl border px-3 py-4": border,
 				"text-success": type === "success",
 				"text-danger": type === "error",

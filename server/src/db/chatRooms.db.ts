@@ -23,13 +23,23 @@ export async function findChatRoomByUserId(
 			`[db]: 獲取使用者 id 為 ${userId} 的聊天室時發生錯誤:`,
 			error
 		);
-		throw new DatabaseError(
-			`獲取使用者 id 為 ${userId} 的聊天室時發生錯誤`,
-			false,
-			{
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[chatDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
 				cause: error,
-			}
-		);
+			});
+		} else
+			throw new DatabaseError(
+				`獲取使用者 id 為 ${userId} 的聊天室時發生錯誤`,
+				false,
+				{
+					cause: error,
+				}
+			);
 	}
 }
 
@@ -75,12 +85,22 @@ export async function createGroupChat(
 			`[chatRoomDB]: 使用者 ${creatorId} 在建立名稱為 ${name} 的聊天室時發生錯誤:`,
 			error
 		);
-		throw new DatabaseError(
-			`使用者 ${creatorId} 在建立名稱為 ${name} 的聊天室時發生錯誤`,
-			false,
-			{
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[chatDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
 				cause: error,
-			}
-		);
+			});
+		} else
+			throw new DatabaseError(
+				`使用者 ${creatorId} 在建立名稱為 ${name} 的聊天室時發生錯誤`,
+				false,
+				{
+					cause: error,
+				}
+			);
 	}
 }
