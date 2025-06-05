@@ -20,14 +20,24 @@ export async function findUserByUsername(
 		return user;
 	} catch (error) {
 		console.error(
-			`[db]: 獲取使用者名稱為 ${username} 的資料時發生錯誤:`,
+			`[userDb]: 獲取使用者名稱為 ${username} 的資料時發生錯誤:`,
 			error
 		);
-		throw new DatabaseError(
-			`獲取使用者名稱為 ${username} 的資料時發生錯誤`,
-			false,
-			{ cause: error }
-		);
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
+				cause: error,
+			});
+		} else
+			throw new DatabaseError(
+				`獲取使用者名稱為 ${username} 的資料時發生錯誤`,
+				false,
+				{ cause: error }
+			);
 	}
 }
 
@@ -47,14 +57,24 @@ export async function findUserByEmail(email: string): Promise<UserRecord> {
 		return user;
 	} catch (error) {
 		console.error(
-			`[db]: 獲取電子郵件為 ${email} 的使用者資料時發生錯誤:`,
+			`[userDb]: 獲取電子郵件為 ${email} 的使用者資料時發生錯誤:`,
 			error
 		);
-		throw new DatabaseError(
-			`獲取電子郵件為 ${email} 的使用者資料時發生錯誤`,
-			false,
-			{ cause: error }
-		);
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
+				cause: error,
+			});
+		} else
+			throw new DatabaseError(
+				`獲取電子郵件為 ${email} 的使用者資料時發生錯誤`,
+				false,
+				{ cause: error }
+			);
 	}
 }
 
@@ -73,10 +93,20 @@ export async function findUserById(id: string): Promise<UserRecord> {
 
 		return user;
 	} catch (error) {
-		console.error(`[db]: 獲取 id 為 ${id} 的使用者資料時發生錯誤:`, error);
-		throw new DatabaseError(`獲取 id 為 ${id} 的使用者資料時發生錯誤`, false, {
-			cause: error,
-		});
+		console.error(`[userDb]獲取 id 為 ${id} 的使用者資料時發生錯誤:`, error);
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
+				cause: error,
+			});
+		} else
+			throw new DatabaseError(`發生未預期錯誤`, false, {
+				cause: error,
+			});
 	}
 }
 
@@ -103,9 +133,19 @@ export async function createUser(
 
 		return user;
 	} catch (error) {
-		console.error(`[db]: 輸入使用者 ${username} 資料時發生錯誤:`, error);
-		throw new DatabaseError(`輸入使用者 ${username} 資料時發生錯誤`, false, {
-			cause: error,
-		});
+		console.error(`[userDb]: 輸入使用者 ${username} 資料時發生錯誤:`, error);
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
+				cause: error,
+			});
+		} else
+			throw new DatabaseError(`輸入使用者 ${username} 資料時發生錯誤`, false, {
+				cause: error,
+			});
 	}
 }
