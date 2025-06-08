@@ -2,9 +2,9 @@ import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import type React from "react";
 import { useState } from "react";
-import { loginSchema, type LoginSchemaType } from "@convo/shared";
+import { LoginSchema, type LoginSchemaType } from "@convo/shared";
 import { AxiosError } from "axios";
-import { authService } from "@/api/api";
+import { authService } from "@/api";
 import { useAuth } from "@/store/auth/useAuth";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import z from "zod/v4";
@@ -38,7 +38,7 @@ export default function LoginPage() {
 		e.preventDefault();
 		setLoading(true);
 		try {
-			const validated = loginSchema.safeParse(formInput);
+			const validated = LoginSchema.safeParse(formInput);
 
 			if (!validated.success) {
 				const formErrors = z.flattenError(validated.error).fieldErrors;

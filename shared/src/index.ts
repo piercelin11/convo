@@ -1,5 +1,10 @@
 export * from "./schemas/auth.schema";
+export * from "./schemas/db.schema";
+export * from "./schemas/dto.schema";
 export * from "./schemas/chat.schema";
-export * from "./types/db.types"
-export * from "./types/dto.types"
-export * from "./types/apiResponse.types"
+export * from "./schemas/common.schema";
+export * from "./schemas/api.schema";
+export * from "./schemas/friendship.schema";
+//export * from "./types/db.types"
+//export * from "./types/dto.types"
+

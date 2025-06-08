@@ -1,9 +1,9 @@
-import { authService } from "@/api/api";
+import { authService } from "@/api";
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import { useAuth } from "@/store/auth/useAuth";
-import { registerSchema, type RegisterSchemaType } from "@convo/shared";
+import { RegisterSchema, type RegisterSchemaType } from "@convo/shared";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -42,7 +42,7 @@ export default function RegisterPage() {
 		e.preventDefault();
 		setLoading(true);
 		try {
-			const validated = registerSchema.safeParse(formInput);
+			const validated = RegisterSchema.safeParse(formInput);
 
 			if (!validated.success) {
 				const formErrors = z.flattenError(validated.error).fieldErrors;
