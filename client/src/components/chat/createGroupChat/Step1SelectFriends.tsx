@@ -1,4 +1,4 @@
-import { friendshipsService } from "@/api/api";
+import { friendshipService } from "@/api";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import CheckBox from "@/components/ui/CheckBox";
@@ -31,7 +31,7 @@ export default function Step1SelectFriends({
 	useEffect(() => {
 		async function fetchFriends() {
 			try {
-				const response = await friendshipsService.getUserFriends();
+				const response = await friendshipService.getUserFriends();
 				setFriends(response.friendships);
 			} catch (error) {
 				console.error("[CreateChatRoomForm]獲取好友關係時發生錯誤:", error);

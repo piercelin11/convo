@@ -1,4 +1,4 @@
-import CreateGroupChatForm from "@/components/chat/form/CreateGroupChatForm";
+import CreateGroupChatForm from "@/components/chat/createGroupChat/CreateGroupChatForm";
 import Modal from "@/components/ui/Modal";
 import useModalContext from "@/store/modal/useModalContext";
 

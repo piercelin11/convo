@@ -2,7 +2,7 @@ import type { UserDTO } from "@convo/shared";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
-import { authService } from "@/api/api";
+import { authService } from "@/api";
 import { AxiosError } from "axios";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

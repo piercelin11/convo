@@ -3,10 +3,9 @@ import ChatRoomItem from "./ChatRoomItem";
 import SidebarHeader from "./SidebarHeader";
 import { cn } from "@sglara/cn";
 import { useEffect, useState } from "react";
-import { useSession } from "@/store/auth/useAuth";
-import { chatRoomsService } from "@/api/api";
 import type { ChatRoomRecord } from "@convo/shared";
 import { Link } from "react-router-dom";
+import { chatService } from "@/api";
 
 /**
  * 聊天界面的側邊欄
@@ -15,19 +14,18 @@ import { Link } from "react-router-dom";
 export default function ChatSidebar() {
 	const isMobile = useMediaQuery("max", 640);
 	const [chatRooms, setChatRooms] = useState<ChatRoomRecord[]>([]);
-	const user = useSession();
 
 	useEffect(() => {
 		async function fetchChatRooms() {
 			try {
-				const response = await chatRoomsService.getUserChatRooms();
+				const response = await chatService.getUserChatRooms();
 				setChatRooms(response.chatRooms);
 			} catch (error) {
 				console.error("[ChatSidebar]獲取使用者聊天室時發生錯誤:", error);
 			}
 		}
 		fetchChatRooms();
-	}, [user]);
+	}, []);
 
 	return (
 		<aside

@@ -1,11 +1,11 @@
-import { chatRoomsService } from "@/api/api";
+import { chatService } from "@/api";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import { useSession } from "@/store/auth/useAuth";
 import {
-	createGroupChatSchema,
+	CreateGroupChatSchema,
 	type CreateGroupChatSchemaType,
 	type FriendshipDto,
 } from "@convo/shared";
@@ -57,7 +57,7 @@ export default function Step2EnterRoomInfo({
 		e.preventDefault();
 		setLoading(true);
 		try {
-			const validated = createGroupChatSchema.safeParse(formInput);
+			const validated = CreateGroupChatSchema.safeParse(formInput);
 
 			if (!validated.success) {
 				const formErrors = z.flattenError(validated.error).fieldErrors;
@@ -68,7 +68,7 @@ export default function Step2EnterRoomInfo({
 				setError(null);
 			}
 
-			await chatRoomsService.createGroupChat({
+			await chatService.createGroupChat({
 				name: formInput.name,
 				members: [...formInput.members, user.id],
 			});

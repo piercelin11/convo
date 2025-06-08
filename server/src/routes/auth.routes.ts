@@ -1,6 +1,6 @@
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import { Router } from "express";
-import { loginSchema, registerSchema } from "@convo/shared";
+import { LoginSchema, RegisterSchema } from "@convo/shared";
 import {
 	handleSession,
 	handleLogin,
@@ -11,11 +11,11 @@ import authenticateToken from "@/middlewares/authenticateToken.js";
 
 const router = Router();
 
-router.post("/login", validateRequest({ body: loginSchema }), handleLogin);
+router.post("/login", validateRequest({ body: LoginSchema }), handleLogin);
 
 router.post(
 	"/register",
-	validateRequest({ body: registerSchema }),
+	validateRequest({ body: RegisterSchema }),
 	handleRegister
 );
 
