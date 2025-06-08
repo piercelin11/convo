@@ -1,4 +1,5 @@
 import {
+	AuthResponseSchema,
 	type AuthResponseType,
 	type LoginSchemaType,
 	type RegisterSchemaType,
@@ -8,20 +9,20 @@ import axiosClient from "./client";
 export const authService = {
 	login: async (credentials: LoginSchemaType): Promise<AuthResponseType> => {
 		const { data } = await axiosClient.post("/auth/login", credentials);
-		return data;
+		return AuthResponseSchema.parse(data);
 	},
 	register: async (
 		credentials: RegisterSchemaType
 	): Promise<AuthResponseType> => {
 		const { data } = await axiosClient.post("/auth/register", credentials);
-		return data;
+		return AuthResponseSchema.parse(data);
 	},
 	logout: async (): Promise<AuthResponseType> => {
 		const { data } = await axiosClient.post("/auth/logout");
-		return data;
+		return AuthResponseSchema.parse(data);
 	},
 	getSession: async (): Promise<AuthResponseType> => {
 		const { data } = await axiosClient.get("/auth/session");
-		return data;
+		return AuthResponseSchema.parse(data);
 	},
 };

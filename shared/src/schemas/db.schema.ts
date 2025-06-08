@@ -13,8 +13,8 @@ export const UserRecordSchema = z.object({
 	password_hash: z.string().min(1, "密碼雜湊不可為空").max(255),
 	age: z.number().int("年齡必須是整數").positive("年齡必須是正數").nullable(),
 	avatar_url: z.url("無效的 URL 格式").nullable(),
-	created_at: z.date(),
-	updated_at: z.date(),
+	created_at: z.coerce.date(),
+	updated_at: z.coerce.date(),
 });
 export type UserRecord = z.infer<typeof UserRecordSchema>;
 
@@ -25,7 +25,7 @@ export const UserPreferenceRecordSchema = z.object({
 	user_id: z.uuid(),
 	theme: z.string().max(20).default("light"),
 	notifications_enabled: z.boolean().default(true),
-	updated_at: z.date(),
+	updated_at: z.coerce.date(),
 });
 export type UserPreferenceRecord = z.infer<typeof UserPreferenceRecordSchema>;
 
@@ -41,8 +41,8 @@ export const ChatRoomRecordSchema = z.object({
 	name: z.string().max(100).nullable(),
 	type: ChatRoomTypeSchema,
 	creator_id: z.uuid().nullable(),
-	created_at: z.date(),
-	updated_at: z.date(),
+	created_at: z.coerce.date(),
+	updated_at: z.coerce.date(),
 });
 export type ChatRoomRecord = z.infer<typeof ChatRoomRecordSchema>;
 
@@ -61,8 +61,8 @@ export const FriendshipRecordSchema = z.object({
 	requester_id: z.uuid(),
 	addressee_id: z.uuid(),
 	status: FriendshipStatusSchema.default("pending"),
-	created_at: z.date(),
-	updated_at: z.date(),
+	created_at: z.coerce.date(),
+	updated_at: z.coerce.date(),
 });
 export type FriendshipRecord = z.infer<typeof FriendshipRecordSchema>;
 
@@ -72,9 +72,9 @@ export type FriendshipRecord = z.infer<typeof FriendshipRecordSchema>;
 export const RoomMemberRecordSchema = z.object({
 	room_id: z.uuid(),
 	user_id: z.uuid(),
-	joined_at: z.date(),
+	joined_at: z.coerce.date(),
 	// 如果未來加入 last_read_at，可以這樣寫：
-	// last_read_at: z.date().nullable().optional(),
+	// last_read_at: z.coerce.date().nullable().optional(),
 });
 export type RoomMemberRecord = z.infer<typeof RoomMemberRecordSchema>;
 
@@ -87,6 +87,6 @@ export const MessageRecordSchema = z.object({
 	room_id: z.uuid(),
 	sender_id: z.uuid(),
 	content: z.string().min(1, "訊息內容不可為空"),
-	created_at: z.date(),
+	created_at: z.coerce.date(),
 });
 export type MessageRecord = z.infer<typeof MessageRecordSchema>;
