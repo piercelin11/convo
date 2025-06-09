@@ -10,17 +10,19 @@ export default function GlobalModals() {
 	function getModalContent() {
 		switch (modalKey) {
 			case "createChatRoom": {
-				return <CreateGroupChatForm />;
+				return { children: <CreateGroupChatForm />, title: "創建聊天室" };
 			}
 			default: {
-				return <p>default</p>;
+				return;
 			}
 		}
 	}
 
 	return (
-		<Modal isOpen={!!modalKey} closeHandler={() => setModalKey(null)}>
-			{getModalContent()}
-		</Modal>
+		<Modal
+			isOpen={!!modalKey}
+			closeHandler={() => setModalKey(null)}
+			{...getModalContent()}
+		/>
 	);
 }
