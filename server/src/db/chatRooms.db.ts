@@ -78,7 +78,7 @@ export async function createGroupChat(
 		await client.query(creatRoomMembersQuery, memberValues);
 		await client.query("COMMIT");
 
-		return result.rows[0];
+		return result.rows;
 	} catch (error) {
 		await client.query("ROLLBACK");
 		console.error(

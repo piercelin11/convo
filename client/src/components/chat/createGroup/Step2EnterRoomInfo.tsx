@@ -1,15 +1,15 @@
-import { chatService } from "@/api";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
+import useCreateGroup from "@/queries/chat/useCreateGroup";
 import { useSession } from "@/store/auth/useAuth";
+import useModalContext from "@/store/modal/useModalContext";
 import {
 	CreateGroupChatSchema,
 	type CreateGroupChatSchemaType,
 	type FriendshipDto,
 } from "@convo/shared";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import { X } from "react-feather";
 import z from "zod/v4";
@@ -26,14 +26,13 @@ export default function Step2EnterRoomInfo({
 	prevStep,
 }: Step2EnterRoomInfoProps) {
 	const user = useSession();
+	const { setModalKey } = useModalContext();
 	const selectedFriendIds = selectedFriends.map((friend) => friend.id);
-	const [loading, setLoading] = useState(false);
 	const [formInput, setFormInput] = useState<CreateGroupChatSchemaType>({
 		name: "",
 		members: selectedFriendIds,
 	});
 	const [error, setError] = useState<string | null>(null);
-	const [apiError, setApiError] = useState<string | null>(null);
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		setFormInput((prev) => ({
@@ -53,35 +52,24 @@ export default function Step2EnterRoomInfo({
 		}));
 	}
 
+	const { mutateAsync, error: mutationError, isPending } = useCreateGroup();
+
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setLoading(true);
-		try {
-			const validated = CreateGroupChatSchema.safeParse(formInput);
-
-			if (!validated.success) {
-				const formErrors = z.flattenError(validated.error).fieldErrors;
-				setError(formErrors.name ? formErrors.name[0] : null);
-				setApiError(null);
-				return;
-			} else {
-				setError(null);
-			}
-
-			await chatService.createGroupChat({
-				name: formInput.name,
-				members: [...formInput.members, user.id],
-			});
-		} catch (error) {
-			if (error instanceof AxiosError) {
-				console.error("[登入]登入過程出現問題", error.response);
-				setApiError(error.response?.data.message);
-			} else {
-				console.error("[登入]登入過程出現未預期的問題:", error);
-			}
-		} finally {
-			setLoading(false);
+		const validated = CreateGroupChatSchema.safeParse(formInput);
+		if (!validated.success) {
+			const formErrors = z.flattenError(validated.error).fieldErrors;
+			setError(formErrors.name ? formErrors.name[0] : null);
+			return;
+		} else {
+			setError(null);
 		}
+
+		const result = await mutateAsync({
+			name: formInput.name,
+			members: [...formInput.members, user.id],
+		});
+		if (result.success) setModalKey(null);
 	}
 
 	return (
@@ -117,17 +105,22 @@ export default function Step2EnterRoomInfo({
 						</div>
 					))}
 				</div>
-				{apiError && <ResponseMessage message={apiError} type="error" />}
+				{mutationError?.response && (
+					<ResponseMessage
+						message={mutationError.response.data.message}
+						type="error"
+					/>
+				)}
 				<div className="mt-auto flex gap-2">
 					<Button
 						className="bg-neutral-800 text-neutral-400"
 						onClick={prevStep}
-						disabled={loading}
+						disabled={isPending}
 					>
-						Previous Step
+						{isPending ? "Loading..." : "Previous Step"}
 					</Button>
-					<Button disabled={loading} type="submit">
-						Create Room
+					<Button disabled={isPending} type="submit">
+						{isPending ? "Loading..." : "Create Room"}
 					</Button>
 				</div>
 			</form>
