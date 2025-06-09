@@ -61,8 +61,8 @@ export default function RegisterPage() {
 
 			const result = await authService.register(validated.data);
 
-			if (result.user) {
-				login(result.user);
+			if (result.data) {
+				login(result.data);
 			}
 		} catch (error) {
 			if (error instanceof AxiosError) {

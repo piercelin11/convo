@@ -17,7 +17,7 @@ export default function Step1SelectFriends({
 }: Step1SelectFriendsProps) {
 	const selectedIds = selectedFriends.map((user) => user.id);
 
-	const { data } = useFriendshipQuery();
+	const { data: response } = useFriendshipQuery();
 
 	function handleClick(user: FriendshipDto) {
 		if (selectedIds.includes(user.id)) {
@@ -33,7 +33,7 @@ export default function Step1SelectFriends({
 		<>
 			<p className="text-neutral-400">選擇好友</p>
 			<div className="space-y-2 pb-26">
-				{data?.friendships.map((friend) => (
+				{response?.data.map((friend) => (
 					<div
 						key={friend.id}
 						className="flex items-center gap-2 rounded-md select-none"

@@ -11,6 +11,6 @@ export async function handleGetFriendships(req: Request, res: Response) {
 	res.status(200).json({
 		success: true,
 		message: "成功獲取使用者的好友",
-		friendships,
+		data: friendships,
 	});
 }

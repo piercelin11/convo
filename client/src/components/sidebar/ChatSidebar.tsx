@@ -11,7 +11,7 @@ import { useChatQuery } from "@/queries/chat/useChatQuery";
  */
 export default function ChatSidebar() {
 	const isMobile = useMediaQuery("max", 640);
-	const { data: chatResponse } = useChatQuery();
+	const { data: response } = useChatQuery();
 
 	return (
 		<aside
@@ -29,7 +29,7 @@ export default function ChatSidebar() {
 				tabIndex={-1}
 			>
 				<ul>
-					{chatResponse?.chatRooms.map((item) => (
+					{response?.data.map((item) => (
 						<Link key={item.id} to={`/${item.id}`}>
 							<ChatRoomItem name={item.name!} updateAt={item.updated_at} />
 						</Link>

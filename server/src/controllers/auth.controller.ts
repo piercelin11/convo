@@ -25,7 +25,7 @@ export async function handleLogin(
 		response = {
 			success: true,
 			message: "成功登入",
-			user,
+			data: user,
 		};
 
 		res.cookie("authToken", token, {
@@ -56,7 +56,7 @@ export async function handleRegister(
 		response = {
 			success: true,
 			message: "成功註冊並登入",
-			user,
+			data: user,
 		};
 
 		res.cookie("authToken", token, {
@@ -89,5 +89,5 @@ export async function handleSession(req: Request, res: Response) {
 
 	const user = await getUserSession(userPayload.id);
 
-	res.status(200).json({ success: true, message: "身份驗證成功", user: user });
+	res.status(200).json({ success: true, message: "身份驗證成功", data: user });
 }
