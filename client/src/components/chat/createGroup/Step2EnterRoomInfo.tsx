@@ -73,57 +73,57 @@ export default function Step2EnterRoomInfo({
 	}
 
 	return (
-		<>
-			<h1>Create Group</h1>
-			<form className="flex h-full flex-col space-y-5" onSubmit={handleSubmit}>
-				<FormInput
-					id="group-name"
-					name="group"
-					label="Group name"
-					type="text"
-					placeholder="eg: Convo"
-					onChange={handleInputChange}
-					errorMessage={error}
-				/>
-				<div className="flex flex-wrap gap-2">
-					<div className="flex items-center gap-1 rounded-full border border-neutral-700 px-2 py-1">
-						<Avatar src={user.avatar_url} size={30} />
-						<p className="me-2 text-sm text-neutral-400">{user.username}</p>
-					</div>
-					{selectedFriends.map((friend) => (
-						<div
-							key={friend.id}
-							className="flex items-center gap-1 rounded-full border border-neutral-700 px-2 py-1"
-						>
-							<Avatar src={friend.avatar_url} size={30} />
-							<p className="me-2 text-sm text-neutral-400">{friend.username}</p>
-							<X
-								size={14}
-								className="text-neutral-500 hover:text-neutral-100"
-								onClick={() => handleXClick(friend.id)}
-							/>
-						</div>
-					))}
+		<form
+			className="flex h-full flex-col space-y-5 pb-26"
+			onSubmit={handleSubmit}
+		>
+			<FormInput
+				id="group-name"
+				name="group"
+				label="聊天室名稱"
+				type="text"
+				placeholder="eg: Convo"
+				onChange={handleInputChange}
+				errorMessage={error}
+			/>
+			<div className="flex flex-wrap gap-2">
+				<div className="flex items-center gap-1 rounded-full border border-neutral-700 px-2 py-1">
+					<Avatar src={user.avatar_url} size={30} />
+					<p className="me-2 text-sm text-neutral-400">{user.username}</p>
 				</div>
-				{mutationError?.response && (
-					<ResponseMessage
-						message={mutationError.response.data.message}
-						type="error"
-					/>
-				)}
-				<div className="mt-auto flex gap-2">
-					<Button
-						className="bg-neutral-800 text-neutral-400"
-						onClick={prevStep}
-						disabled={isPending}
+				{selectedFriends.map((friend) => (
+					<div
+						key={friend.id}
+						className="flex items-center gap-1 rounded-full border border-neutral-700 px-2 py-1"
 					>
-						{isPending ? "Loading..." : "Previous Step"}
-					</Button>
-					<Button disabled={isPending} type="submit">
-						{isPending ? "Loading..." : "Create Room"}
-					</Button>
-				</div>
-			</form>
-		</>
+						<Avatar src={friend.avatar_url} size={30} />
+						<p className="me-2 text-sm text-neutral-400">{friend.username}</p>
+						<X
+							size={14}
+							className="text-neutral-500 hover:text-neutral-100"
+							onClick={() => handleXClick(friend.id)}
+						/>
+					</div>
+				))}
+			</div>
+			{mutationError?.response && (
+				<ResponseMessage
+					message={mutationError.response.data.message}
+					type="error"
+				/>
+			)}
+			<div className="absolute bottom-0 left-0 mt-auto flex w-full gap-2 bg-neutral-900 p-6">
+				<Button
+					className="bg-neutral-800 text-neutral-400"
+					onClick={prevStep}
+					disabled={isPending}
+				>
+					{isPending ? "建立中..." : "上一步"}
+				</Button>
+				<Button disabled={isPending} type="submit">
+					{isPending ? "建立中..." : "建立"}
+				</Button>
+			</div>
+		</form>
 	);
 }

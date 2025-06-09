@@ -1,9 +1,8 @@
-import { friendshipService } from "@/api";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import CheckBox from "@/components/ui/CheckBox";
+import { useFriendshipQuery } from "@/queries/friendship/useFriendshipQuery";
 import type { FriendshipDto } from "@convo/shared";
-import { useEffect, useState } from "react";
 
 type Step1SelectFriendsProps = {
 	selectedFriends: FriendshipDto[];
@@ -16,8 +15,9 @@ export default function Step1SelectFriends({
 	setSelectedFriends,
 	nextStep,
 }: Step1SelectFriendsProps) {
-	const [friends, setFriends] = useState<FriendshipDto[]>([]);
 	const selectedIds = selectedFriends.map((user) => user.id);
+
+	const { data } = useFriendshipQuery();
 
 	function handleClick(user: FriendshipDto) {
 		if (selectedIds.includes(user.id)) {
@@ -28,22 +28,12 @@ export default function Step1SelectFriends({
 			setSelectedFriends((prev) => [...prev, user]);
 		}
 	}
-	useEffect(() => {
-		async function fetchFriends() {
-			try {
-				const response = await friendshipService.getUserFriends();
-				setFriends(response.friendships);
-			} catch (error) {
-				console.error("[CreateChatRoomForm]獲取好友關係時發生錯誤:", error);
-			}
-		}
-		fetchFriends();
-	}, []);
+
 	return (
 		<>
-			<h1 className="text-neutral-300">Select Friends</h1>
-			<div className="space-y-2">
-				{friends.map((friend) => (
+			<p className="text-neutral-400">選擇好友</p>
+			<div className="space-y-2 pb-26">
+				{data?.friendships.map((friend) => (
 					<div
 						key={friend.id}
 						className="flex items-center gap-2 rounded-md select-none"
@@ -58,9 +48,9 @@ export default function Step1SelectFriends({
 					</div>
 				))}
 			</div>
-			<Button className="mt-auto" onClick={nextStep}>
-				Next Step
-			</Button>
+			<div className="absolute bottom-0 left-0 mt-auto w-full bg-neutral-900 p-6">
+				<Button onClick={nextStep}>下一步</Button>
+			</div>
 		</>
 	);
 }
