@@ -12,7 +12,7 @@ export async function handleUsersChatRoom(req: Request, res: Response) {
 	res.status(200).json({
 		success: true,
 		message: "成功獲取使用者的全部聊天室",
-		chatRooms,
+		data: chatRooms,
 	});
 }
 
@@ -26,6 +26,6 @@ export async function handleCreateGroupChat(req: Request, res: Response) {
 	res.status(200).json({
 		success: true,
 		message: "成功創建聊天室",
-		chatRooms,
+		data: chatRooms,
 	});
 }

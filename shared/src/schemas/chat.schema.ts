@@ -10,7 +10,7 @@ export const CreateGroupChatSchema = z.object({
 export type CreateGroupChatSchemaType = z.infer<typeof CreateGroupChatSchema>;
 
 export const ChatResponseSchema = ApiResponseSchema.extend({
-	chatRooms: z.array(ChatRoomRecordSchema),
+	data: z.array(ChatRoomRecordSchema),
 });
 
 export type ChatResponseType = z.infer<typeof ChatResponseSchema>;

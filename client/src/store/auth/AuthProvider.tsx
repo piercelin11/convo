@@ -17,8 +17,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			try {
 				const response = await authService.getSession();
 
-				if (response.success && response.user) {
-					setUser(response.user);
+				if (response.success && response.data) {
+					setUser(response.data);
 					setIsAuthenticated(true);
 				}
 			} catch (error) {

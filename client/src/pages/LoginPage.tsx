@@ -54,8 +54,8 @@ export default function LoginPage() {
 
 			const result = await authService.login(validated.data);
 
-			if (result.user) {
-				login(result.user);
+			if (result.data) {
+				login(result.data);
 			}
 		} catch (error) {
 			if (error instanceof AxiosError) {
