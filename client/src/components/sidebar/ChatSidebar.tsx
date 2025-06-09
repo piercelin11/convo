@@ -2,10 +2,8 @@ import useMediaQuery from "@/hooks/useMediaQuery";
 import ChatRoomItem from "./ChatRoomItem";
 import SidebarHeader from "./SidebarHeader";
 import { cn } from "@sglara/cn";
-import { useEffect, useState } from "react";
-import type { ChatRoomRecord } from "@convo/shared";
 import { Link } from "react-router-dom";
-import { chatService } from "@/api";
+import { useChatQuery } from "@/queries/chat/useChatQuery";
 
 /**
  * 聊天界面的側邊欄
@@ -13,19 +11,7 @@ import { chatService } from "@/api";
  */
 export default function ChatSidebar() {
 	const isMobile = useMediaQuery("max", 640);
-	const [chatRooms, setChatRooms] = useState<ChatRoomRecord[]>([]);
-
-	useEffect(() => {
-		async function fetchChatRooms() {
-			try {
-				const response = await chatService.getUserChatRooms();
-				setChatRooms(response.chatRooms);
-			} catch (error) {
-				console.error("[ChatSidebar]獲取使用者聊天室時發生錯誤:", error);
-			}
-		}
-		fetchChatRooms();
-	}, []);
+	const { data: chatResponse } = useChatQuery();
 
 	return (
 		<aside
@@ -43,7 +29,7 @@ export default function ChatSidebar() {
 				tabIndex={-1}
 			>
 				<ul>
-					{chatRooms.map((item) => (
+					{chatResponse?.chatRooms.map((item) => (
 						<Link key={item.id} to={`/${item.id}`}>
 							<ChatRoomItem name={item.name!} updateAt={item.updated_at} />
 						</Link>
