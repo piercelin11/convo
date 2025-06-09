@@ -1,16 +1,16 @@
 import type { UserDTO } from "@convo/shared";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
 import { authService } from "@/api";
 import { AxiosError } from "axios";
+import { useLogout } from "@/queries/auth/useLogout";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<UserDTO | null>(null);
 	const [isLoadong, setIsLoadong] = useState(true);
 
-	const navigate = useNavigate();
+	const { mutate } = useLogout();
 
 	useEffect(() => {
 		async function checkUserSession() {
@@ -38,14 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	function login(user: UserDTO) {
 		setUser(user);
 		setIsAuthenticated(true);
-		navigate("/");
 	}
 
-	async function logout() {
-		await authService.logout();
+	function logout() {
+		mutate();
 		setUser(null);
 		setIsAuthenticated(false);
-		navigate("/login");
 	}
 
 	if (isLoadong) return <p>身份驗證中⋯⋯</p>;

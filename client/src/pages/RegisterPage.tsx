@@ -1,10 +1,9 @@
-import { authService } from "@/api";
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
+import { useRegister } from "@/queries/auth/useRegister";
 import { useAuth } from "@/store/auth/useAuth";
 import { RegisterSchema, type RegisterSchemaType } from "@convo/shared";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { z } from "zod/v4";
@@ -17,7 +16,6 @@ const defaultError = {
 };
 
 export default function RegisterPage() {
-	const [loading, setLoading] = useState(false);
 	const [formInput, setFormInput] = useState<RegisterSchemaType>({
 		username: "",
 		email: "",
@@ -26,8 +24,9 @@ export default function RegisterPage() {
 	});
 	const [errors, setErrors] =
 		useState<Partial<RegisterSchemaType>>(defaultError);
-	const [apiError, setApiError] = useState<string | null>(null);
 	const { login } = useAuth();
+
+	const { mutateAsync, isPending, error } = useRegister();
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const name = e.target.name;
@@ -40,39 +39,29 @@ export default function RegisterPage() {
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setLoading(true);
+		const validated = RegisterSchema.safeParse(formInput);
+
+		if (!validated.success) {
+			const formErrors = z.flattenError(validated.error).fieldErrors;
+			setErrors({
+				username: formErrors.username && formErrors.username[0],
+				password: formErrors.password && formErrors.password[0],
+				email: formErrors.email && formErrors.email[0],
+				comfirmPassword:
+					formErrors.comfirmPassword && formErrors.comfirmPassword[0],
+			});
+			return;
+		} else {
+			setErrors(defaultError);
+		}
 		try {
-			const validated = RegisterSchema.safeParse(formInput);
-
-			if (!validated.success) {
-				const formErrors = z.flattenError(validated.error).fieldErrors;
-				setErrors({
-					username: formErrors.username && formErrors.username[0],
-					password: formErrors.password && formErrors.password[0],
-					email: formErrors.email && formErrors.email[0],
-					comfirmPassword:
-						formErrors.comfirmPassword && formErrors.comfirmPassword[0],
-				});
-				setApiError(null);
-				return;
-			} else {
-				setErrors(defaultError);
-			}
-
-			const result = await authService.register(validated.data);
+			const result = await mutateAsync(validated.data);
 
 			if (result.data) {
 				login(result.data);
 			}
 		} catch (error) {
-			if (error instanceof AxiosError) {
-				console.error("[註冊]註冊過程出現問題", error.response);
-				setApiError(error.response?.data.message);
-			} else {
-				console.error("[註冊]註冊過程出現未預期的問題:", error);
-			}
-		} finally {
-			setLoading(false);
+			console.error("註冊時發生錯誤:", error);
 		}
 	}
 	return (
@@ -118,10 +107,12 @@ export default function RegisterPage() {
 					onChange={handleInputChange}
 					errorMessage={errors.comfirmPassword}
 				/>
-				<Button type="submit" disabled={loading}>
-					註冊
+				<Button type="submit" disabled={isPending}>
+					{isPending ? "註冊中..." : "註冊"}
 				</Button>
-				{apiError && <ResponseMessage type="error" message={apiError} />}
+				{error?.response && (
+					<ResponseMessage type="error" message={error.response.data.message} />
+				)}
 				<p className="text-center text-sm text-neutral-400">
 					已經有帳號了？
 					<Link to={"/login"}>
