@@ -3,12 +3,11 @@ import FormInput from "@/components/ui/FormInput";
 import type React from "react";
 import { useState } from "react";
 import { LoginSchema, type LoginSchemaType } from "@convo/shared";
-import { AxiosError } from "axios";
-import { authService } from "@/api";
 import { useAuth } from "@/store/auth/useAuth";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import z from "zod/v4";
 import { Link } from "react-router-dom";
+import useLogin from "@/queries/auth/useLogoin";
 
 const defaultError = {
 	username: undefined,
@@ -16,14 +15,14 @@ const defaultError = {
 };
 
 export default function LoginPage() {
-	const [loading, setLoading] = useState(false);
 	const [formInput, setFormInput] = useState<LoginSchemaType>({
 		username: "",
 		password: "",
 	});
 	const [errors, setErrors] = useState<Partial<LoginSchemaType>>(defaultError);
-	const [apiError, setApiError] = useState<string | null>(null);
 	const { login } = useAuth();
+
+	const { mutateAsync, isPending, error } = useLogin();
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const name = e.target.name;
@@ -36,36 +35,27 @@ export default function LoginPage() {
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setLoading(true);
+		const validated = LoginSchema.safeParse(formInput);
+
+		if (!validated.success) {
+			const formErrors = z.flattenError(validated.error).fieldErrors;
+			setErrors({
+				username: formErrors.username && formErrors.username[0],
+				password: formErrors.password && formErrors.password[0],
+			});
+			return;
+		} else {
+			setErrors(defaultError);
+		}
+
 		try {
-			const validated = LoginSchema.safeParse(formInput);
-
-			if (!validated.success) {
-				const formErrors = z.flattenError(validated.error).fieldErrors;
-				setErrors({
-					username: formErrors.username && formErrors.username[0],
-					password: formErrors.password && formErrors.password[0],
-				});
-				setApiError(null);
-				return;
-			} else {
-				setErrors(defaultError);
-			}
-
-			const result = await authService.login(validated.data);
+			const result = await mutateAsync(validated.data);
 
 			if (result.data) {
 				login(result.data);
 			}
 		} catch (error) {
-			if (error instanceof AxiosError) {
-				console.error("[登入]登入過程出現問題", error.response);
-				setApiError(error.response?.data.message);
-			} else {
-				console.error("[登入]登入過程出現未預期的問題:", error);
-			}
-		} finally {
-			setLoading(false);
+			console.error("登入時發生錯誤:", error);
 		}
 	}
 	return (
@@ -90,15 +80,17 @@ export default function LoginPage() {
 					id="password"
 					name="password"
 					label="密碼"
-					placeholder="Enter your password"
+					placeholder="輸入你的密碼"
 					onChange={handleInputChange}
 					value={formInput.password}
 					errorMessage={errors.password}
 				/>
-				<Button type="submit" disabled={loading}>
-					{loading ? "登入中..." : "登入"}
+				<Button type="submit" disabled={isPending}>
+					{isPending ? "登入中..." : "登入"}
 				</Button>
-				{apiError && <ResponseMessage type="error" message={apiError} />}
+				{error?.response && (
+					<ResponseMessage type="error" message={error.response.data.message} />
+				)}
 				<p className="text-center text-sm text-neutral-400">
 					尚未有帳號？
 					<Link to={"/register"}>
