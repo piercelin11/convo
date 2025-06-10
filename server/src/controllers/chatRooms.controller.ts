@@ -1,5 +1,5 @@
 import * as chatRoomsDB from "@/db/chatRooms.db.js";
-import { AuthorizationError } from "@/utils/error.utils.js";
+import { AuthorizationError, NotFoundError } from "@/utils/error.utils.js";
 import { CreateGroupChatSchemaType } from "@convo/shared";
 import { Request, Response } from "express";
 
@@ -20,6 +20,7 @@ export async function getChatRoomHandler(req: Request, res: Response) {
 	const { roomId } = req.params;
 
 	const chatRoom = await chatRoomsDB.findChatRoomByRoomId(roomId);
+	if (!chatRoom) throw new NotFoundError("聊天室不存在");
 
 	res.status(200).json({
 		success: true,
@@ -28,7 +29,7 @@ export async function getChatRoomHandler(req: Request, res: Response) {
 	});
 }
 
-export async function createGroupChatHandler(req: Request, res: Response) {
+export async function createChatRoomHandler(req: Request, res: Response) {
 	const user = req.user;
 	const { name, members } = req.body as CreateGroupChatSchemaType;
 	if (!user) throw new AuthorizationError();
@@ -39,5 +40,18 @@ export async function createGroupChatHandler(req: Request, res: Response) {
 		success: true,
 		message: "成功創建聊天室",
 		data: chatRooms,
+	});
+}
+
+export async function deleteChatRoomHandler(req: Request, res: Response) {
+	const { roomId } = req.params;
+
+	const chatRoom = await chatRoomsDB.deleteChatRoomByRoomId(roomId);
+	if (!chatRoom) throw new NotFoundError("聊天室不存在");
+
+	res.status(200).json({
+		success: true,
+		message: "成功刪除聊天室",
+		data: chatRoom,
 	});
 }
