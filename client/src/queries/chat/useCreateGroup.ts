@@ -22,7 +22,7 @@ export default function useCreateGroup() {
 	>({
 		mutationFn: chatService.createGroupChat,
 		onMutate: (newGroup) => {
-			queryClient.cancelQueries({ queryKey: chatKeys.all });
+			queryClient.cancelQueries({ queryKey: chatKeys.lists() });
 			const prevGroups = queryClient.getQueryData(
 				chatKeys.lists()
 			) as ChatRoomRecord[];
