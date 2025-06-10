@@ -1,12 +1,10 @@
-import {
-	FriendshipResponseSchema,
-	type FriendshipResponseType,
-} from "@convo/shared";
+import { FriendshipResponseSchema, type FriendshipDto } from "@convo/shared";
 import axiosClient from "./client";
 
 export const friendshipService = {
-	getUserFriends: async (): Promise<FriendshipResponseType> => {
+	getUserFriends: async (): Promise<FriendshipDto[]> => {
 		const { data } = await axiosClient.get("/friendships");
-		return FriendshipResponseSchema.parse(data);
+		const validatedData = FriendshipResponseSchema.parse(data);
+		return validatedData.data;
 	},
 };

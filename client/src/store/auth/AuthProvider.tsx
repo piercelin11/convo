@@ -15,10 +15,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		async function checkUserSession() {
 			try {
-				const response = await authService.getSession();
+				const data = await authService.getSession();
 
-				if (response.success && response.data) {
-					setUser(response.data);
+				if (data) {
+					setUser(data);
 					setIsAuthenticated(true);
 				}
 			} catch (error) {

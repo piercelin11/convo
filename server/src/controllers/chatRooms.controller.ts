@@ -3,11 +3,11 @@ import { AuthorizationError } from "@/utils/error.utils.js";
 import { CreateGroupChatSchemaType } from "@convo/shared";
 import { Request, Response } from "express";
 
-export async function handleUsersChatRoom(req: Request, res: Response) {
+export async function getChatRoomsHandler(req: Request, res: Response) {
 	const user = req.user;
 	if (!user) throw new AuthorizationError();
 
-	const chatRooms = await chatRoomsDB.findChatRoomByUserId(user.id);
+	const chatRooms = await chatRoomsDB.findChatRoomsByUserId(user.id);
 
 	res.status(200).json({
 		success: true,
@@ -16,7 +16,19 @@ export async function handleUsersChatRoom(req: Request, res: Response) {
 	});
 }
 
-export async function handleCreateGroupChat(req: Request, res: Response) {
+export async function getChatRoomHandler(req: Request, res: Response) {
+	const { roomId } = req.params;
+
+	const chatRoom = await chatRoomsDB.findChatRoomByRoomId(roomId);
+
+	res.status(200).json({
+		success: true,
+		message: "成功獲取指定 id 的聊天室",
+		data: chatRoom,
+	});
+}
+
+export async function createGroupChatHandler(req: Request, res: Response) {
 	const user = req.user;
 	const { name, members } = req.body as CreateGroupChatSchemaType;
 	if (!user) throw new AuthorizationError();

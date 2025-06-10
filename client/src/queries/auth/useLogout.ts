@@ -1,12 +1,12 @@
 import { authService } from "@/api";
-import type { ApiResponseSchemaType, AuthResponseType } from "@convo/shared";
+import type { ApiResponseSchemaType, UserDTO } from "@convo/shared";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import authKeys from "./authKeys";
 
 export function useLogout() {
 	const queryClient = useQueryClient();
-	return useMutation<AuthResponseType, AxiosError<ApiResponseSchemaType>>({
+	return useMutation<UserDTO, AxiosError<ApiResponseSchemaType>>({
 		mutationFn: authService.logout,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: authKeys.all });

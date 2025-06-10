@@ -11,7 +11,7 @@ import {
 } from "@/services/auth.service.js";
 import { AuthorizationError } from "@/utils/index.js";
 
-export async function handleLogin(
+export async function loginHandler(
 	req: Request,
 	res: Response,
 	next: NextFunction
@@ -42,7 +42,7 @@ export async function handleLogin(
 	}
 }
 
-export async function handleRegister(
+export async function registerHandler(
 	req: Request,
 	res: Response,
 	next: NextFunction
@@ -74,7 +74,7 @@ export async function handleRegister(
 	}
 }
 
-export async function handleLogout(req: Request, res: Response) {
+export async function logoutHandler(req: Request, res: Response) {
 	res.clearCookie("authToken", {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === "production",
@@ -83,7 +83,7 @@ export async function handleLogout(req: Request, res: Response) {
 	res.status(200).json({ success: true, message: "成功登出" });
 }
 
-export async function handleSession(req: Request, res: Response) {
+export async function getUserSessionHandler(req: Request, res: Response) {
 	const userPayload = req.user;
 	if (!userPayload) throw new AuthorizationError();
 

@@ -1,8 +1,8 @@
 import { authService } from "@/api";
 import type {
 	ApiResponseSchemaType,
-	AuthResponseType,
 	RegisterSchemaType,
+	UserDTO,
 } from "@convo/shared";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -11,7 +11,7 @@ import authKeys from "./authKeys";
 export function useRegister() {
 	const queryClient = useQueryClient();
 	return useMutation<
-		AuthResponseType,
+		UserDTO,
 		AxiosError<ApiResponseSchemaType>,
 		RegisterSchemaType
 	>({

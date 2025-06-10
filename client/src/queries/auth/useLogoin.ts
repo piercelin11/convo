@@ -3,15 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import authKeys from "./authKeys";
 import type {
 	ApiResponseSchemaType,
-	AuthResponseType,
 	LoginSchemaType,
+	UserDTO,
 } from "@convo/shared";
 import { AxiosError } from "axios";
 
 export default function useLogin() {
 	const queryClient = useQueryClient();
 	return useMutation<
-		AuthResponseType,
+		UserDTO,
 		AxiosError<ApiResponseSchemaType>,
 		LoginSchemaType
 	>({
