@@ -69,7 +69,7 @@ export default function Step2EnterRoomInfo({
 			name: formInput.name,
 			members: [...formInput.members, user.id],
 		});
-		if (result.success) setModalKey(null);
+		if (result) setModalKey(null);
 	}
 
 	return (

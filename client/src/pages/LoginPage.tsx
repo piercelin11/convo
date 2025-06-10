@@ -51,8 +51,8 @@ export default function LoginPage() {
 		try {
 			const result = await mutateAsync(validated.data);
 
-			if (result.data) {
-				login(result.data);
+			if (result) {
+				login(result);
 			}
 		} catch (error) {
 			console.error("登入時發生錯誤:", error);
