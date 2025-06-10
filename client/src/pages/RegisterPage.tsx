@@ -57,8 +57,8 @@ export default function RegisterPage() {
 		try {
 			const result = await mutateAsync(validated.data);
 
-			if (result.data) {
-				login(result.data);
+			if (result) {
+				login(result);
 			}
 		} catch (error) {
 			console.error("註冊時發生錯誤:", error);
