@@ -2,6 +2,8 @@ import { useState } from "react";
 import Button from "../ui/Button";
 import FormInput from "../ui/FormInput";
 import Modal from "../ui/Modal";
+import { assert } from "console";
+import axiosClient from "@/api/client";
 
 type ProfileModalProps = {
 	closeHandler?: () => void;
@@ -17,53 +19,13 @@ export default function ProfileModal({
 	const [usernameError, setUsernameError] = useState<string | null>(null);
 	const [ageError, setAgeError] = useState<string | null>(null);
 
-	const handleSubmit = (event: React.FormEvent) => {
+	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 
-		// 必須為整數，十進制
-		const parsedAge = parseInt(age, 10);
-
-		let isValid = true;
-
-		// 使用者名稱驗證
-		if (!username.trim()) {
-			setUsernameError("使用者名稱不能為空");
-			isValid = false;
-		} else if (username.trim().length < 3) {
-			setUsernameError("使用者名稱至少需要 3 個字元");
-			isValid = false;
-		} else if (username.trim().length > 20) {
-			setUsernameError("使用者名稱不能超過 20 個字元");
-			isValid = false;
-		} else if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) {
-			setUsernameError("使用者名稱只能包含英文字母、數字和底線");
-			isValid = false;
-		} else {
-			setUsernameError(null); // 清除錯誤訊息
-		}
-
-		// 年齡驗證
-		if (!age.trim()) {
-			setAgeError("年齡不能為空");
-			isValid = false;
-		} else if (isNaN(parsedAge)) {
-			setAgeError("年齡必須是數字");
-			isValid = false;
-		} else if (!Number.isInteger(parsedAge)) {
-			setAgeError("年齡必須是整數");
-			isValid = false;
-		} else if (parsedAge < 0) {
-			setAgeError("年齡不能小於 0");
-			isValid = false;
-		} else {
-			setAgeError(null); // 清除錯誤訊息
-		}
-
-		if (isValid) {
-			console.info(username, parsedAge);
-			setAge("");
-			setUsername("");
-		}
+		const data = await axiosClient.post("/api/users", {
+			username: username,
+			age: age,
+		});
 	};
 
 	const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
