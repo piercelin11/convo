@@ -2,6 +2,7 @@ import {
 	AuthenticationError,
 	AuthorizationError,
 	DatabaseError,
+	NotFoundError,
 } from "@/utils/error.utils.js";
 import { NextFunction, Request, Response } from "express";
 
@@ -42,6 +43,14 @@ export default async function errorHandler(
 				message: err.message,
 			});
 		}
+		return;
+	}
+
+	if (err instanceof NotFoundError) {
+		res.status(err.statusCode).json({
+			success: false,
+			message: err.message,
+		});
 		return;
 	}
 

@@ -17,6 +17,11 @@ export const chatService = {
 		const validatedData = ChatRoomResponseSchema.parse(data);
 		return validatedData.data;
 	},
+	deleteChatRoom: async (roomId: string): Promise<ChatRoomRecord> => {
+		const { data } = await axiosClient.delete(`/chat-rooms/${roomId}`);
+		const validatedData = ChatRoomResponseSchema.parse(data);
+		return validatedData.data;
+	},
 	createGroupChat: async (
 		formData: CreateGroupChatSchemaType
 	): Promise<ChatRoomRecord> => {

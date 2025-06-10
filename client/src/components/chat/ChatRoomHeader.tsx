@@ -1,23 +1,21 @@
 import Avatar from "@/components/ui/Avatar";
 import Dropdown from "@/components/ui/Dropdown";
-import { DropdownItem } from "@/components/ui/DropdownItem";
 import IconBtn from "@/components/ui/IconBtn";
 import { env } from "@/config/env";
-import { useChatQuery } from "@/queries/chat/useChatQuery";
-import type { ChatPageParams } from "@/types/params";
 import { ArrowLeft, MoreVertical, Search } from "react-feather";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import ChatRoomMenu from "./ChatRoomMenu";
+import type { ChatRoomRecord } from "@convo/shared";
+
+type ChatRoomHeaderProps = {
+	data: ChatRoomRecord;
+};
 
 /**
  * 聊天室上方顯示聊天室資訊與其他功能的 Header
  * @returns 一個包含`img`、文字資訊以及搜尋與更多選項按鈕的 JSX 元素
  */
-export default function ChatRoomHeader() {
-	const { roomId } = useParams<ChatPageParams>();
-	const { data } = useChatQuery(roomId!);
-
-	const array = Array.from({ length: 5 }, (_, index) => index);
-
+export default function ChatRoomHeader({ data }: ChatRoomHeaderProps) {
 	return (
 		<div className="h-header flex items-center justify-between px-4">
 			<div className="flex items-center gap-2">
@@ -42,9 +40,7 @@ export default function ChatRoomHeader() {
 					}
 					align="right"
 				>
-					{array.map((item) => (
-						<DropdownItem key={item}>{item}</DropdownItem>
-					))}
+					<ChatRoomMenu roomId={data.id} />
 				</Dropdown>
 			</div>
 		</div>
