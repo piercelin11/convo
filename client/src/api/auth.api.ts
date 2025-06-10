@@ -1,28 +1,30 @@
 import {
 	AuthResponseSchema,
-	type AuthResponseType,
 	type LoginSchemaType,
 	type RegisterSchemaType,
+	type UserDTO,
 } from "@convo/shared";
 import axiosClient from "./client";
 
 export const authService = {
-	login: async (credentials: LoginSchemaType): Promise<AuthResponseType> => {
+	login: async (credentials: LoginSchemaType): Promise<UserDTO> => {
 		const { data } = await axiosClient.post("/auth/login", credentials);
-		return AuthResponseSchema.parse(data);
+		const validatedData = AuthResponseSchema.parse(data);
+		return validatedData.data;
 	},
-	register: async (
-		credentials: RegisterSchemaType
-	): Promise<AuthResponseType> => {
+	register: async (credentials: RegisterSchemaType): Promise<UserDTO> => {
 		const { data } = await axiosClient.post("/auth/register", credentials);
-		return AuthResponseSchema.parse(data);
+		const validatedData = AuthResponseSchema.parse(data);
+		return validatedData.data;
 	},
-	logout: async (): Promise<AuthResponseType> => {
+	logout: async (): Promise<UserDTO> => {
 		const { data } = await axiosClient.post("/auth/logout");
-		return AuthResponseSchema.parse(data);
+		const validatedData = AuthResponseSchema.parse(data);
+		return validatedData.data;
 	},
-	getSession: async (): Promise<AuthResponseType> => {
+	getSession: async (): Promise<UserDTO> => {
 		const { data } = await axiosClient.get("/auth/session");
-		return AuthResponseSchema.parse(data);
+		const validatedData = AuthResponseSchema.parse(data);
+		return validatedData.data;
 	},
 };

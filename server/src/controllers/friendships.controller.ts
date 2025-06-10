@@ -2,7 +2,7 @@ import * as friendshipsDb from "@/db/friendship.db.js";
 import { AuthorizationError } from "@/utils/error.utils.js";
 import { Request, Response } from "express";
 
-export async function handleGetFriendships(req: Request, res: Response) {
+export async function getFriendshipsHandler(req: Request, res: Response) {
 	const user = req.user;
 	if (!user) throw new AuthorizationError();
 

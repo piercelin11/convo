@@ -3,7 +3,7 @@ import ChatRoomItem from "./ChatRoomItem";
 import SidebarHeader from "./SidebarHeader";
 import { cn } from "@sglara/cn";
 import { Link } from "react-router-dom";
-import { useChatQuery } from "@/queries/chat/useChatQuery";
+import { useChatsQuery } from "@/queries/chat/useChatsQuery";
 
 /**
  * 聊天界面的側邊欄
@@ -11,7 +11,7 @@ import { useChatQuery } from "@/queries/chat/useChatQuery";
  */
 export default function ChatSidebar() {
 	const isMobile = useMediaQuery("max", 640);
-	const { data: response } = useChatQuery();
+	const { data } = useChatsQuery();
 
 	return (
 		<aside
@@ -29,7 +29,7 @@ export default function ChatSidebar() {
 				tabIndex={-1}
 			>
 				<ul>
-					{response?.data.map((item) => (
+					{data?.map((item) => (
 						<Link key={item.id} to={`/${item.id}`}>
 							<ChatRoomItem name={item.name!} updateAt={item.updated_at} />
 						</Link>

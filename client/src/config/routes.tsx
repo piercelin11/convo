@@ -21,7 +21,7 @@ const routesConfig: RouteObject[] = [
 						element: <HomePage />,
 					},
 					{
-						path: "/:chatRoomId",
+						path: "/:roomId",
 						element: <ChatRoomPage />,
 					},
 				],

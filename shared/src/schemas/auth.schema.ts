@@ -25,7 +25,7 @@ export const RegisterSchema = z
 export type RegisterSchemaType = z.infer<typeof RegisterSchema>;
 
 export const AuthResponseSchema = ApiResponseSchema.extend({
-	data: UserDTOSchema.optional(),
+	data: UserDTOSchema,
 });
 
 export type AuthResponseType = z.infer<typeof AuthResponseSchema>;

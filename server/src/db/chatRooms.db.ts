@@ -2,7 +2,7 @@ import pool from "@/config/database.js";
 import { BadRequestError, DatabaseError } from "@/utils/index.js";
 import { ChatRoomRecord } from "@convo/shared";
 
-export async function findChatRoomByUserId(
+export async function findChatRoomsByUserId(
 	userId: string
 ): Promise<ChatRoomRecord[]> {
 	const query = `
@@ -43,11 +43,50 @@ export async function findChatRoomByUserId(
 	}
 }
 
+export async function findChatRoomByRoomId(
+	roomId: string
+): Promise<ChatRoomRecord> {
+	const query = `
+        SELECT * 
+        FROM chat_rooms
+        WHERE id = $1
+        `;
+	const values = [roomId];
+
+	try {
+		const result = await pool.query(query, values);
+		const chatRoom = result.rows[0];
+		return chatRoom;
+	} catch (error) {
+		console.error(
+			`[chatDb]: 獲取聊天室 id 為 ${roomId} 的聊天室時發生錯誤:`,
+			error
+		);
+		if (
+			error instanceof Error &&
+			"code" in error &&
+			error.code === "ENOTFOUND"
+		) {
+			console.error("[chatDb]檢查網路連線或資料庫連結是否正確");
+			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
+				cause: error,
+			});
+		} else
+			throw new DatabaseError(
+				`獲取聊天室 id 為 ${roomId} 的聊天室時發生錯誤`,
+				false,
+				{
+					cause: error,
+				}
+			);
+	}
+}
+
 export async function createGroupChat(
 	name: string,
 	creatorId: string,
 	members: string[]
-): Promise<ChatRoomRecord[]> {
+): Promise<ChatRoomRecord> {
 	const client = await pool.connect();
 	try {
 		await client.query("BEGIN");
@@ -78,7 +117,7 @@ export async function createGroupChat(
 		await client.query(creatRoomMembersQuery, memberValues);
 		await client.query("COMMIT");
 
-		return result.rows;
+		return result.rows[0];
 	} catch (error) {
 		await client.query("ROLLBACK");
 		console.error(
