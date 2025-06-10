@@ -1,5 +1,4 @@
-import pool from "@/config/database.js";
-import { DatabaseError } from "@/utils/error.utils.js";
+import { dbQuery } from "@/utils/db.utils.js";
 import { UserRecord } from "@convo/shared";
 
 /**
@@ -13,32 +12,10 @@ export async function findUserByUsername(
 	const query = `SELECT * FROM users WHERE username = $1`;
 	const values = [username];
 
-	try {
-		const result = await pool.query(query, values);
-		const user: UserRecord = result.rows[0];
+	const result = await dbQuery<UserRecord>(query, values);
+	const user = result.rows[0];
 
-		return user;
-	} catch (error) {
-		console.error(
-			`[userDb]: 獲取使用者名稱為 ${username} 的資料時發生錯誤:`,
-			error
-		);
-		if (
-			error instanceof Error &&
-			"code" in error &&
-			error.code === "ENOTFOUND"
-		) {
-			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
-			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
-				cause: error,
-			});
-		} else
-			throw new DatabaseError(
-				`獲取使用者名稱為 ${username} 的資料時發生錯誤`,
-				false,
-				{ cause: error }
-			);
-	}
+	return user;
 }
 
 /**
@@ -50,32 +27,10 @@ export async function findUserByEmail(email: string): Promise<UserRecord> {
 	const query = `SELECT * FROM users WHERE email = $1`;
 	const values = [email];
 
-	try {
-		const result = await pool.query(query, values);
-		const user: UserRecord = result.rows[0];
+	const result = await dbQuery<UserRecord>(query, values);
+	const user = result.rows[0];
 
-		return user;
-	} catch (error) {
-		console.error(
-			`[userDb]: 獲取電子郵件為 ${email} 的使用者資料時發生錯誤:`,
-			error
-		);
-		if (
-			error instanceof Error &&
-			"code" in error &&
-			error.code === "ENOTFOUND"
-		) {
-			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
-			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
-				cause: error,
-			});
-		} else
-			throw new DatabaseError(
-				`獲取電子郵件為 ${email} 的使用者資料時發生錯誤`,
-				false,
-				{ cause: error }
-			);
-	}
+	return user;
 }
 
 /**
@@ -87,27 +42,10 @@ export async function findUserById(id: string): Promise<UserRecord> {
 	const query = `SELECT * FROM users WHERE id = $1`;
 	const values = [id];
 
-	try {
-		const result = await pool.query(query, values);
-		const user: UserRecord = result.rows[0];
+	const result = await dbQuery<UserRecord>(query, values);
+	const user = result.rows[0];
 
-		return user;
-	} catch (error) {
-		console.error(`[userDb]獲取 id 為 ${id} 的使用者資料時發生錯誤:`, error);
-		if (
-			error instanceof Error &&
-			"code" in error &&
-			error.code === "ENOTFOUND"
-		) {
-			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
-			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
-				cause: error,
-			});
-		} else
-			throw new DatabaseError(`發生未預期錯誤`, false, {
-				cause: error,
-			});
-	}
+	return user;
 }
 
 /**
@@ -127,25 +65,8 @@ export async function createUser(
 		VALUES ($1, $2, $3) RETURNING *`;
 	const values = [username, email, password];
 
-	try {
-		const result = await pool.query(query, values);
-		const user: UserRecord = result.rows[0];
+	const result = await dbQuery<UserRecord>(query, values);
+	const user = result.rows[0];
 
-		return user;
-	} catch (error) {
-		console.error(`[userDb]: 輸入使用者 ${username} 資料時發生錯誤:`, error);
-		if (
-			error instanceof Error &&
-			"code" in error &&
-			error.code === "ENOTFOUND"
-		) {
-			console.error("[userDb]檢查網路連線或資料庫連結是否正確");
-			throw new DatabaseError(`發生未預期錯誤，請檢查網路是否正確連線`, true, {
-				cause: error,
-			});
-		} else
-			throw new DatabaseError(`輸入使用者 ${username} 資料時發生錯誤`, false, {
-				cause: error,
-			});
-	}
+	return user;
 }
