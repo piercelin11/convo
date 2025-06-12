@@ -53,3 +53,13 @@ export class DatabaseError extends CustomError {
 		super(message, 500, isOperational, options);
 	}
 }
+
+export class InternalServerError extends CustomError {
+	constructor(
+		message = "伺服器發生錯誤",
+		readonly isOperational: boolean = false,
+		options?: { cause: unknown }
+	) {
+		super(message, 500, isOperational, options);
+	}
+}

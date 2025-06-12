@@ -8,6 +8,16 @@ const EnvSchema = z.object({
 	JWT_PRIVATE_KEY: z
 		.string()
 		.min(1, { message: "JWT_PRIVATE_KEY 環境變數未設定！" }),
+	AWS_ACCESS_KEY_ID: z
+		.string()
+		.min(1, { message: "AWS_ACCESS_KEY_ID 環境變數未設定！" }),
+	AWS_SECRET_ACCESS_KEY: z
+		.string()
+		.min(1, { message: "AWS_SECRET_ACCESS_KEY 環境變數未設定！" }),
+	AWS_REGION: z.string().min(1, { message: "AWS_REGION 環境變數未設定！" }),
+	S3_BUCKET_NAME: z
+		.string()
+		.min(1, { message: "S3_BUCKET_NAME 環境變數未設定！" }),
 });
 
 /**

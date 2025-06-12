@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { nullable, z } from "zod/v4";
 
 /**
  * 使用者表格在資料庫的原始記錄型別
@@ -43,6 +43,7 @@ export const ChatRoomRecordSchema = z.object({
 	creator_id: z.uuid().nullable(),
 	created_at: z.coerce.date(),
 	updated_at: z.coerce.date(),
+	image_url: z.url().nullable(),
 });
 export type ChatRoomRecord = z.infer<typeof ChatRoomRecordSchema>;
 

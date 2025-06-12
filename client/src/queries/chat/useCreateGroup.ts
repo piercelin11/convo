@@ -1,4 +1,4 @@
-import { chatService } from "@/api";
+import { chatService, uploadService } from "@/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import chatKeys from "./chatKeys";
 import type {
@@ -12,15 +12,39 @@ type CreateGroupContext = {
 	prevGroups: ChatRoomRecord[] | undefined;
 };
 
+type MutationPayloadType = Omit<CreateGroupChatSchemaType, "img"> & {
+	file: File | null;
+};
+
 export default function useCreateGroup() {
 	const queryClient = useQueryClient();
 	return useMutation<
 		ChatRoomRecord,
 		AxiosError<ApiResponseSchemaType>,
-		CreateGroupChatSchemaType,
+		MutationPayloadType,
 		CreateGroupContext
 	>({
-		mutationFn: chatService.createGroupChat,
+		mutationFn: async ({ name, members, file }) => {
+			let img: string | null = null;
+			if (file) {
+				const { signedUrl, imageUrl } =
+					await uploadService.getChatRoomImgPresignedUrl({
+						fileName: file.name,
+						contentType: file.type,
+					});
+
+				await uploadService.uploadImgToS3(signedUrl, file);
+				img = imageUrl;
+			}
+
+			const groupData: CreateGroupChatSchemaType = {
+				name,
+				members,
+				img,
+			};
+			const data = await chatService.createGroupChat(groupData);
+			return data;
+		},
 		onMutate: (newGroup) => {
 			queryClient.cancelQueries({ queryKey: chatKeys.lists() });
 			const prevGroups = queryClient.getQueryData(

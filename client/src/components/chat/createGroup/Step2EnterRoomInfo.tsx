@@ -2,14 +2,11 @@ import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
+import UploadFileInput from "@/components/ui/UploadImgInput";
 import useCreateGroup from "@/queries/chat/useCreateGroup";
 import { useSession } from "@/store/auth/useAuth";
 import useModalContext from "@/store/modal/useModalContext";
-import {
-	CreateGroupChatSchema,
-	type CreateGroupChatSchemaType,
-	type FriendshipDto,
-} from "@convo/shared";
+import { CreateGroupChatFormSchema, type FriendshipDto } from "@convo/shared";
 import { useState } from "react";
 import { X } from "react-feather";
 import z from "zod/v4";
@@ -28,17 +25,12 @@ export default function Step2EnterRoomInfo({
 	const user = useSession();
 	const { setModalKey } = useModalContext();
 	const selectedFriendIds = selectedFriends.map((friend) => friend.id);
-	const [formInput, setFormInput] = useState<CreateGroupChatSchemaType>({
-		name: "",
-		members: selectedFriendIds,
-	});
+	const [name, setName] = useState("");
+	const [file, setFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-		setFormInput((prev) => ({
-			...prev,
-			name: e.target.value,
-		}));
+		setName(e.target.value);
 	}
 
 	function handleXClick(id: string) {
@@ -46,29 +38,29 @@ export default function Step2EnterRoomInfo({
 			(friend) => friend.id !== id
 		);
 		setSelectedFriends(newSelectedFriends);
-		setFormInput((prev) => ({
-			...prev,
-			member: newSelectedFriends.map((friend) => friend.id),
-		}));
 	}
 
 	const { mutateAsync, error: mutationError, isPending } = useCreateGroup();
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		const validated = CreateGroupChatSchema.safeParse(formInput);
+
+		const groupData = {
+			name,
+			members: [...selectedFriendIds, user.id],
+			file,
+		};
+
+		const validated = CreateGroupChatFormSchema.safeParse(groupData);
 		if (!validated.success) {
-			const formErrors = z.flattenError(validated.error).fieldErrors;
-			setError(formErrors.name ? formErrors.name[0] : null);
+			const fieldErrors = z.flattenError(validated.error).fieldErrors;
+			setError(fieldErrors.name ? fieldErrors.name[0] : null);
 			return;
 		} else {
 			setError(null);
 		}
 
-		const result = await mutateAsync({
-			name: formInput.name,
-			members: [...formInput.members, user.id],
-		});
+		const result = await mutateAsync(validated.data);
 		if (result) setModalKey(null);
 	}
 
@@ -77,6 +69,7 @@ export default function Step2EnterRoomInfo({
 			className="flex h-full flex-col space-y-5 pb-26"
 			onSubmit={handleSubmit}
 		>
+			<UploadFileInput setFile={setFile} />
 			<FormInput
 				id="group-name"
 				name="group"
@@ -85,6 +78,7 @@ export default function Step2EnterRoomInfo({
 				placeholder="eg: Convo"
 				onChange={handleInputChange}
 				errorMessage={error}
+				value={name}
 			/>
 			<div className="flex flex-wrap gap-2">
 				<div className="flex items-center gap-1 rounded-full border border-neutral-700 px-2 py-1">

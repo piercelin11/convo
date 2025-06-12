@@ -31,10 +31,15 @@ export async function getChatRoomHandler(req: Request, res: Response) {
 
 export async function createChatRoomHandler(req: Request, res: Response) {
 	const user = req.user;
-	const { name, members } = req.body as CreateGroupChatSchemaType;
+	const { name, members, img } = req.body as CreateGroupChatSchemaType;
 	if (!user) throw new AuthorizationError();
 
-	const chatRooms = await chatRoomsDB.createGroupChat(name, user.id, members);
+	const chatRooms = await chatRoomsDB.createGroupChat(
+		name,
+		user.id,
+		members,
+		img
+	);
 
 	res.status(200).json({
 		success: true,

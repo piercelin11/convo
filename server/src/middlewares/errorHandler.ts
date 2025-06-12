@@ -2,6 +2,7 @@ import {
 	AuthenticationError,
 	AuthorizationError,
 	DatabaseError,
+	InternalServerError,
 	NotFoundError,
 } from "@/utils/error.utils.js";
 import { NextFunction, Request, Response } from "express";
@@ -47,6 +48,14 @@ export default async function errorHandler(
 	}
 
 	if (err instanceof NotFoundError) {
+		res.status(err.statusCode).json({
+			success: false,
+			message: err.message,
+		});
+		return;
+	}
+
+	if (err instanceof InternalServerError) {
 		res.status(err.statusCode).json({
 			success: false,
 			message: err.message,
