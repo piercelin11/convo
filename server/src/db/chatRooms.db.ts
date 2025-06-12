@@ -37,15 +37,20 @@ export async function findChatRoomByRoomId(
 export async function createGroupChat(
 	name: string,
 	creatorId: string,
-	members: string[]
+	members: string[],
+	img?: string | null
 ): Promise<ChatRoomRecord> {
 	const result = await dbTransaction<ChatRoomRecord>(async (client) => {
 		const creatChatRoomQuery = `
-			INSERT INTO chat_rooms (name, type, creator_id)
-			VALUES ($1, 'group', $2)
+			INSERT INTO chat_rooms (name, type, creator_id, image_url)
+			VALUES ($1, 'group', $2, $3)
 			RETURNING *
 		`;
-		const result = await client.query(creatChatRoomQuery, [name, creatorId]);
+		const result = await client.query(creatChatRoomQuery, [
+			name,
+			creatorId,
+			img,
+		]);
 		const chatRoomId = result.rows[0].id;
 
 		const memberValues: string[] = [];

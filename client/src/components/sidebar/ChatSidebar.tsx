@@ -31,7 +31,11 @@ export default function ChatSidebar() {
 				<ul>
 					{data?.map((item) => (
 						<Link key={item.id} to={`/${item.id}`}>
-							<ChatRoomItem name={item.name!} updateAt={item.updated_at} />
+							<ChatRoomItem
+								name={item.name!}
+								updateAt={item.updated_at}
+								imgUrl={item.image_url}
+							/>
 						</Link>
 					))}
 				</ul>
