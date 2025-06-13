@@ -1,6 +1,10 @@
 import { env } from "@/config/env.js";
 import { InternalServerError } from "@/utils/error.utils.js";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+	DeleteObjectCommand,
+	PutObjectCommand,
+	S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { nanoid } from "nanoid";
 
@@ -36,5 +40,20 @@ export async function getPresignedUrl(
 	} catch (error) {
 		console.error("生成預簽名 URL 時發生未知錯誤:", error);
 		throw new InternalServerError("生成預簽名 URL 時發生未知錯誤");
+	}
+}
+
+export async function deleteImgByUrl(objectKey: string) {
+	try {
+		const deleteParams = {
+			Bucket: BUCKET_NAME,
+			Key: objectKey,
+		};
+		const command = new DeleteObjectCommand(deleteParams);
+
+		await s3Client.send(command);
+	} catch (error) {
+		console.error(`刪除雲端圖片 ${objectKey} 時發生錯誤:`, error);
+		throw new InternalServerError("刪除雲端圖片時發生錯誤");
 	}
 }

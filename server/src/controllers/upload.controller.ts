@@ -1,13 +1,13 @@
-import { getPresignedUrl } from "@/services/upload.service.js";
+import { deleteImgByUrl, getPresignedUrl } from "@/services/upload.service.js";
 import { AuthorizationError } from "@/utils/index.js";
-import { UploadSchemaType } from "@convo/shared";
+import { DeleteImgSchemaType, UploadImgSchemaType } from "@convo/shared";
 import { Request, Response } from "express";
 
-export async function chatRoomsImageUploadHandler(req: Request, res: Response) {
+export async function chatRoomsImgUploadHandler(req: Request, res: Response) {
 	const user = req.user;
 	if (!user) throw new AuthorizationError();
 
-	const { fileName, contentType } = req.body as UploadSchemaType;
+	const { fileName, contentType } = req.body as UploadImgSchemaType;
 
 	const { signedUrl, imageUrl } = await getPresignedUrl(
 		"chat-rooms",
@@ -23,5 +23,15 @@ export async function chatRoomsImageUploadHandler(req: Request, res: Response) {
 			signedUrl,
 			imageUrl,
 		},
+	});
+}
+
+export async function deleteImgHandler(req: Request, res: Response) {
+	const { objectKey } = req.params as DeleteImgSchemaType;
+	await deleteImgByUrl(objectKey);
+
+	res.status(200).json({
+		success: true,
+		message: "成功刪除圖片",
 	});
 }
