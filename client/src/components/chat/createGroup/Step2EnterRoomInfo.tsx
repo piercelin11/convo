@@ -4,9 +4,10 @@ import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import UploadFileInput from "@/components/ui/UploadImgInput";
 import useCreateGroup from "@/queries/chat/useCreateGroup";
+import useUploadRoomImg from "@/queries/chat/useUploadRoomImg";
 import { useSession } from "@/store/auth/useAuth";
 import useModalContext from "@/store/modal/useModalContext";
-import { CreateGroupChatFormSchema, type FriendshipDto } from "@convo/shared";
+import { CreateGroupChatSchema, type FriendshipDto } from "@convo/shared";
 import { useState } from "react";
 import { X } from "react-feather";
 import z from "zod/v4";
@@ -40,18 +41,29 @@ export default function Step2EnterRoomInfo({
 		setSelectedFriends(newSelectedFriends);
 	}
 
-	const { mutateAsync, error: mutationError, isPending } = useCreateGroup();
+	const {
+		mutateAsync: CreateGroup,
+		error: mutationError,
+		isPending: isCreating,
+	} = useCreateGroup();
+	const { mutateAsync: UploadRoomImg, isPending: isUploading } =
+		useUploadRoomImg();
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+		let imageUrl: string | null = null;
+
+		if (file) {
+			imageUrl = await UploadRoomImg(file);
+		}
 
 		const groupData = {
 			name,
 			members: [...selectedFriendIds, user.id],
-			file,
+			img: imageUrl,
 		};
 
-		const validated = CreateGroupChatFormSchema.safeParse(groupData);
+		const validated = CreateGroupChatSchema.safeParse(groupData);
 		if (!validated.success) {
 			const fieldErrors = z.flattenError(validated.error).fieldErrors;
 			setError(fieldErrors.name ? fieldErrors.name[0] : null);
@@ -60,7 +72,7 @@ export default function Step2EnterRoomInfo({
 			setError(null);
 		}
 
-		const result = await mutateAsync(validated.data);
+		const result = await CreateGroup(validated.data);
 		if (result) setModalKey(null);
 	}
 
@@ -110,12 +122,20 @@ export default function Step2EnterRoomInfo({
 				<Button
 					className="bg-neutral-800 text-neutral-400"
 					onClick={prevStep}
-					disabled={isPending}
+					disabled={isCreating || isUploading}
 				>
-					{isPending ? "建立中..." : "上一步"}
+					{isUploading
+						? "上傳圖片中..."
+						: isCreating
+							? "建立群組中..."
+							: "上一步"}
 				</Button>
-				<Button disabled={isPending} type="submit">
-					{isPending ? "建立中..." : "建立"}
+				<Button disabled={isCreating || isUploading} type="submit">
+					{isUploading
+						? "上傳圖片中..."
+						: isCreating
+							? "建立群組中..."
+							: "建立群組"}
 				</Button>
 			</div>
 		</form>
