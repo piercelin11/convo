@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 import { ApiResponseSchema } from "./api.schema";
 
-export const UploadSchema = z.object({
+export const UploadImgSchema = z.object({
 	fileName: z.string().min(1, { message: "檔案名稱不能為空" }),
 	contentType: z
 		.string()
@@ -9,7 +9,13 @@ export const UploadSchema = z.object({
 		.refine((val) => val.startsWith("image/"), { message: "只允許圖片檔案" }),
 });
 
-export type UploadSchemaType = z.infer<typeof UploadSchema>;
+export type UploadImgSchemaType = z.infer<typeof UploadImgSchema>;
+
+export const DeleteImgSchema = z.object({
+	objectKey: z.string().min(1, { message: "物件鍵不能為空" }),
+});
+
+export type DeleteImgSchemaType = z.infer<typeof DeleteImgSchema>;
 
 export const UploadResponseDataSchema = z.object({
 	signedUrl: z.url(),

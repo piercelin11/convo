@@ -1,4 +1,4 @@
-import { chatService } from "@/api";
+import { chatService, uploadService } from "@/api";
 import type { ApiResponseSchemaType, ChatRoomRecord } from "@convo/shared";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -16,7 +16,14 @@ export default function useDeleteChat() {
 		string,
 		DeleteChatContext
 	>({
-		mutationFn: chatService.deleteChatRoom,
+		mutationFn: async (roomId: string) => {
+			const data = await chatService.getChatRoom(roomId);
+			if (data.image_url) {
+				await uploadService.deleteImgFromS3(data.image_url);
+			}
+			const result = chatService.deleteChatRoom(roomId);
+			return result;
+		},
 		onMutate: (roomId) => {
 			queryClient.cancelQueries({ queryKey: chatKeys.lists() });
 			const prevGroups = queryClient.getQueryData(
@@ -30,6 +37,9 @@ export default function useDeleteChat() {
 
 			return { prevGroups };
 		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
+		},
 		onError: (error, _variables, context) => {
 			if (error instanceof AxiosError)
 				console.error("刪除聊天室時發生錯誤:", error);
@@ -37,9 +47,6 @@ export default function useDeleteChat() {
 
 			if (context)
 				queryClient.setQueryData(chatKeys.lists(), context.prevGroups);
-		},
-		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
 		},
 	});
 }
