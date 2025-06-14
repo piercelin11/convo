@@ -9,7 +9,7 @@ import {
 	loginUser,
 	registerUser,
 } from "@/services/auth.service.js";
-import { AuthorizationError } from "@/utils/index.js";
+import { AuthenticationError } from "@/utils/index.js";
 
 export async function loginHandler(
 	req: Request,
@@ -85,7 +85,7 @@ export async function logoutHandler(req: Request, res: Response) {
 
 export async function getUserSessionHandler(req: Request, res: Response) {
 	const userPayload = req.user;
-	if (!userPayload) throw new AuthorizationError();
+	if (!userPayload) throw new AuthenticationError();
 
 	const user = await getUserSession(userPayload.id);
 

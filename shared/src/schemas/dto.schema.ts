@@ -1,5 +1,9 @@
 import { z } from "zod/v4";
-import { FriendshipStatusSchema } from "./db.schema";
+import {
+	ChatRoomRecordSchema,
+	FriendshipStatusSchema,
+	RoomMemberRecordSchema,
+} from "./db.schema";
 
 /**
  * 用於對外傳輸的使用者資料物件 (Data Transfer Object)
@@ -27,3 +31,10 @@ export const FriendshipDtoSchema = z.object({
 	friendship_status: FriendshipStatusSchema,
 });
 export type FriendshipDto = z.infer<typeof FriendshipDtoSchema>;
+
+export const ChatRoomWithMembersDtoSchema = ChatRoomRecordSchema.extend({
+	members: z.array(UserDTOSchema.extend({ joined_at: z.coerce.date() })),
+});
+export type ChatRoomWithMembersDto = z.infer<
+	typeof ChatRoomWithMembersDtoSchema
+>;
