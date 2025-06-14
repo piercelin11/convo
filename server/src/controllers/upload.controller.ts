@@ -1,5 +1,9 @@
-import { deleteImgByUrl, getPresignedUrl } from "@/services/upload.service.js";
-import { AuthorizationError } from "@/utils/index.js";
+import { deleteImg } from "@/services/upload.service.js";
+import {
+	AuthenticationError,
+	AuthorizationError,
+	getS3PresignedUrl,
+} from "@/utils/index.js";
 import { DeleteImgSchemaType, UploadImgSchemaType } from "@convo/shared";
 import { Request, Response } from "express";
 
@@ -9,7 +13,7 @@ export async function chatRoomsImgUploadHandler(req: Request, res: Response) {
 
 	const { fileName, contentType } = req.body as UploadImgSchemaType;
 
-	const { signedUrl, imageUrl } = await getPresignedUrl(
+	const { signedUrl, imageUrl } = await getS3PresignedUrl(
 		"chat-rooms",
 		user.id,
 		fileName,
@@ -27,8 +31,11 @@ export async function chatRoomsImgUploadHandler(req: Request, res: Response) {
 }
 
 export async function deleteImgHandler(req: Request, res: Response) {
+	const user = req.user;
+	if (!user) throw new AuthenticationError();
 	const { objectKey } = req.params as DeleteImgSchemaType;
-	await deleteImgByUrl(objectKey);
+
+	await deleteImg(objectKey, user.id);
 
 	res.status(200).json({
 		success: true,

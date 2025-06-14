@@ -1,4 +1,5 @@
 import * as chatRoomsDB from "@/db/chatRooms.db.js";
+import * as chatRoomsService from "@/services/chatRooms.service.js";
 import { AuthorizationError, NotFoundError } from "@/utils/error.utils.js";
 import { CreateGroupChatSchemaType } from "@convo/shared";
 import { Request, Response } from "express";
@@ -49,10 +50,11 @@ export async function createChatRoomHandler(req: Request, res: Response) {
 }
 
 export async function deleteChatRoomHandler(req: Request, res: Response) {
+	const user = req.user;
+	if (!user) throw new AuthorizationError();
 	const { roomId } = req.params;
 
-	const chatRoom = await chatRoomsDB.deleteChatRoomByRoomId(roomId);
-	if (!chatRoom) throw new NotFoundError("聊天室不存在");
+	const chatRoom = await chatRoomsService.deleteChatRoom(roomId, user.id);
 
 	res.status(200).json({
 		success: true,

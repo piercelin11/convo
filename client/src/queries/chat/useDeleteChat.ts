@@ -1,4 +1,4 @@
-import { chatService, uploadService } from "@/api";
+import { chatService } from "@/api";
 import type { ApiResponseSchemaType, ChatRoomRecord } from "@convo/shared";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -17,10 +17,6 @@ export default function useDeleteChat() {
 		DeleteChatContext
 	>({
 		mutationFn: async (roomId: string) => {
-			const data = await chatService.getChatRoom(roomId);
-			if (data.image_url) {
-				await uploadService.deleteImgFromS3(data.image_url);
-			}
 			const result = chatService.deleteChatRoom(roomId);
 			return result;
 		},
