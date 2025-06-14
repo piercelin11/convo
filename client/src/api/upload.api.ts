@@ -8,13 +8,10 @@ import axios from "axios";
 import { getObjectKeyFromS3Url } from "@/utils";
 
 export const uploadService = {
-	getChatRoomImgPresignedUrl: async (
-		fileData: UploadImgSchemaType
+	getImgPresignedUrl: async (
+		formData: UploadImgSchemaType
 	): Promise<UploadResponseDataSchemaType> => {
-		const { data } = await axiosClient.post(
-			"/upload/presigned-url/room-image",
-			fileData
-		);
+		const { data } = await axiosClient.post(`/upload/presigned-url`, formData);
 		const validatedData = UploadResponseSchema.parse(data);
 		return validatedData.data;
 	},

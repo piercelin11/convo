@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import authKeys from "./authKeys";
 
-export function useLogout() {
+export function useLogoutMutation() {
 	const queryClient = useQueryClient();
 	return useMutation<UserDTO, AxiosError<ApiResponseSchemaType>>({
 		mutationFn: authService.logout,

@@ -5,10 +5,10 @@ import { AxiosError } from "axios";
 import chatKeys from "./chatKeys";
 
 type DeleteChatContext = {
-	prevGroups: ChatRoomRecord[] | undefined;
+	prevRooms: ChatRoomRecord[] | undefined;
 };
 
-export default function useDeleteChat() {
+export default function useDeleteChatMutation() {
 	const queryClient = useQueryClient();
 	return useMutation<
 		ChatRoomRecord,
@@ -20,18 +20,17 @@ export default function useDeleteChat() {
 			const result = chatService.deleteChatRoom(roomId);
 			return result;
 		},
-		onMutate: (roomId) => {
-			queryClient.cancelQueries({ queryKey: chatKeys.lists() });
-			const prevGroups = queryClient.getQueryData(
-				chatKeys.lists()
-			) as ChatRoomRecord[];
+		onMutate: async (roomId) => {
+			await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
+			const prevRooms = queryClient.getQueryData(chatKeys.lists()) as
+				| ChatRoomRecord[]
+				| undefined;
 
-			if (prevGroups)
-				queryClient.setQueryData(chatKeys.lists(), (old: ChatRoomRecord[]) =>
-					old.filter((room) => room.id !== roomId)
-				);
+			queryClient.setQueryData(chatKeys.lists(), (oldRooms: ChatRoomRecord[]) =>
+				oldRooms.filter((room) => room.id !== roomId)
+			);
 
-			return { prevGroups };
+			return { prevRooms };
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: chatKeys.lists() });
@@ -42,7 +41,7 @@ export default function useDeleteChat() {
 			else console.error("刪除聊天室時發生未預期的錯誤:", error);
 
 			if (context)
-				queryClient.setQueryData(chatKeys.lists(), context.prevGroups);
+				queryClient.setQueryData(chatKeys.lists(), context.prevRooms);
 		},
 	});
 }

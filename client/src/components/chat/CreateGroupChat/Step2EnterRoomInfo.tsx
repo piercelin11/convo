@@ -3,11 +3,11 @@ import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import UploadFileInput from "@/components/ui/UploadImgInput";
-import useCreateGroup from "@/queries/chat/useCreateGroup";
-import useUploadRoomImg from "@/queries/chat/useUploadRoomImg";
+import useCreateRoomMutation from "@/queries/chat/useCreateRoomMutation";
+import useUploadImgMutation from "@/queries/upload/useUploadImgMutation";
 import { useSession } from "@/store/auth/useAuth";
 import useModalContext from "@/store/modal/useModalContext";
-import { CreateGroupChatSchema, type FriendshipDto } from "@convo/shared";
+import { CreateChatRoomSchema, type FriendshipDto } from "@convo/shared";
 import { useState } from "react";
 import { X } from "react-feather";
 import z from "zod/v4";
@@ -42,28 +42,28 @@ export default function Step2EnterRoomInfo({
 	}
 
 	const {
-		mutateAsync: CreateGroup,
+		mutateAsync: createGroup,
 		error: mutationError,
 		isPending: isCreating,
-	} = useCreateGroup();
-	const { mutateAsync: UploadRoomImg, isPending: isUploading } =
-		useUploadRoomImg();
+	} = useCreateRoomMutation();
+	const { mutateAsync: uploadRoomImg, isPending: isUploading } =
+		useUploadImgMutation();
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		let imageUrl: string | null = null;
 
 		if (file) {
-			imageUrl = await UploadRoomImg(file);
+			imageUrl = await uploadRoomImg({ file, s3KeyPrefix: "chat-room" });
 		}
 
-		const groupData = {
+		const roomData = {
 			name,
 			members: [...selectedFriendIds, user.id],
 			img: imageUrl,
 		};
 
-		const validated = CreateGroupChatSchema.safeParse(groupData);
+		const validated = CreateChatRoomSchema.safeParse(roomData);
 		if (!validated.success) {
 			const fieldErrors = z.flattenError(validated.error).fieldErrors;
 			setError(fieldErrors.name ? fieldErrors.name[0] : null);
@@ -72,7 +72,7 @@ export default function Step2EnterRoomInfo({
 			setError(null);
 		}
 
-		const result = await CreateGroup(validated.data);
+		const result = await createGroup(validated.data);
 		if (result) setModalKey(null);
 	}
 

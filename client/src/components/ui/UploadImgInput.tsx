@@ -5,10 +5,14 @@ import compressImg from "@/utils/compressor.utils";
 
 type UploadFileInputProps = {
 	setFile: React.Dispatch<React.SetStateAction<File | null>>;
+	imgUrl?: string | null;
 };
 
-export default function UploadImgInput({ setFile }: UploadFileInputProps) {
-	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export default function UploadImgInput({
+	setFile,
+	imgUrl,
+}: UploadFileInputProps) {
+	const [previewUrl, setPreviewUrl] = useState<string | null>(imgUrl || null);
 
 	async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const fileList = e.target.files;

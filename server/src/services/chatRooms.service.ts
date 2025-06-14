@@ -12,17 +12,43 @@ export async function deleteChatRoom(roomId: string, userId: string) {
 
 	await chatRoomsDB.deleteChatRoomByRoomId(roomId);
 
-	//確認圖片沒有被其他聊天室引用
-	if (chatRoom.image_url) {
-		const imgUrl = chatRoom.image_url;
-		const isImgUsed = !!(await chatRoomsDB.findChatRoomsByImgUrl(imgUrl))
-			.length;
+	const imgUrl = chatRoom.image_url;
+	if (imgUrl) {
+		const objectKey = parseS3UrlParts(imgUrl);
+		if (objectKey) await deleteS3Object(objectKey);
+	}
 
-		//刪除圖片
-		if (!isImgUsed) {
-			const objectKey = parseS3UrlParts(imgUrl);
-			if (objectKey) await deleteS3Object(objectKey);
-		}
+	return chatRoom;
+}
+
+export async function editChatRoom(
+	roomId: string,
+	userId: string,
+	roomName: string,
+	imgUrl?: string | null
+) {
+	//驗證使用者是否有編輯聊天室的權限
+	const chatRoomWithMembers =
+		await chatRoomsDB.findChatRoomWithMembersByRoomId(roomId);
+	if (!chatRoomWithMembers) throw new NotFoundError("聊天室不存在");
+
+	const memberIds = chatRoomWithMembers.members.map((member) => member.id);
+
+	if (!memberIds.includes(userId))
+		throw new AuthorizationError("你沒有編輯該聊天室的權限");
+
+	const chatRoom = await chatRoomsDB.updateChatRoomData(
+		roomId,
+		roomName,
+		imgUrl
+	);
+
+	const prevImgUrl = chatRoomWithMembers.image_url;
+
+	//檢查原本是否有圖片
+	if (prevImgUrl !== imgUrl && prevImgUrl) {
+		const objectKey = parseS3UrlParts(prevImgUrl);
+		if (objectKey) await deleteS3Object(objectKey);
 	}
 
 	return chatRoom;

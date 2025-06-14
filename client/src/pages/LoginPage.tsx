@@ -7,7 +7,7 @@ import { useAuth } from "@/store/auth/useAuth";
 import ResponseMessage from "@/components/ui/ResponseMessage";
 import z from "zod/v4";
 import { Link } from "react-router-dom";
-import useLogin from "@/queries/auth/useLogoin";
+import useLoginMutation from "@/queries/auth/useLogoinMutation";
 
 const defaultError = {
 	username: undefined,
@@ -22,7 +22,7 @@ export default function LoginPage() {
 	const [errors, setErrors] = useState<Partial<LoginSchemaType>>(defaultError);
 	const { login } = useAuth();
 
-	const { mutateAsync, isPending, error } = useLogin();
+	const { mutateAsync, isPending, error } = useLoginMutation();
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const name = e.target.name;

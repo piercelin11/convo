@@ -7,6 +7,7 @@ import {
 import { InternalServerError } from "./error.utils.js";
 import { nanoid } from "nanoid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { S3KeyPrefixSchemaType } from "@convo/shared";
 
 const s3Client = new S3Client({
 	region: env.AWS_REGION,
@@ -33,12 +34,12 @@ export async function deleteS3Object(objectKey: string) {
 }
 
 export async function getS3PresignedUrl(
-	uploadPath: "chat-rooms" | "user-avatar",
+	s3KeyPrefix: S3KeyPrefixSchemaType,
 	userId: string,
 	fileName: string,
 	contentType: string
 ) {
-	const s3Key = `${uploadPath}/${userId}/${nanoid()}-${fileName.replace(/\s+/g, "_")}`;
+	const s3Key = `${s3KeyPrefix}/${userId}/${nanoid()}-${fileName.replace(/\s+/g, "_")}`;
 	const command = new PutObjectCommand({
 		Bucket: BUCKET_NAME,
 		ContentType: contentType,

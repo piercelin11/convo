@@ -1,5 +1,5 @@
 import { dbQuery } from "@/utils/db.utils.js";
-import { UserRecord } from "@convo/shared";
+import { UserRecord, UserRecordSchema } from "@convo/shared";
 
 /**
  * 透過使用者名稱獲取唯一使用者資料
@@ -15,7 +15,7 @@ export async function findUserByUsername(
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return user;
+	return UserRecordSchema.parse(user);
 }
 
 /**
@@ -30,7 +30,7 @@ export async function findUserByEmail(email: string): Promise<UserRecord> {
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return user;
+	return UserRecordSchema.parse(user);
 }
 
 /**
@@ -45,7 +45,7 @@ export async function findUserById(id: string): Promise<UserRecord> {
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return user;
+	return UserRecordSchema.parse(user);
 }
 
 /**
@@ -68,5 +68,5 @@ export async function createUser(
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return user;
+	return UserRecordSchema.parse(user);
 }

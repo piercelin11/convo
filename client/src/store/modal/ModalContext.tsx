@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 // eslint-disable-next-line jsdoc/require-jsdoc
-export type ModalKeyType = "createChatRoom" | null;
+export type ModalKeyType = "createChatRoom" | "editChatRoom" | null;
 
 type ModalContextType = {
 	modalKey: ModalKeyType;

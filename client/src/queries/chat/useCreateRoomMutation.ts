@@ -4,38 +4,43 @@ import chatKeys from "./chatKeys";
 import type {
 	ApiResponseSchemaType,
 	ChatRoomRecord,
-	CreateGroupChatSchemaType,
+	CreateChatRoomSchemaType,
 } from "@convo/shared";
 import { AxiosError } from "axios";
 
 type CreateGroupContext = {
-	prevGroups: ChatRoomRecord[] | undefined;
+	prevRooms: ChatRoomRecord[] | undefined;
 	uploadedImageUrlForRollback?: string | null;
 };
 
-export default function useCreateGroup() {
+export default function useCreateRoomMutation() {
 	const queryClient = useQueryClient();
 	return useMutation<
 		ChatRoomRecord,
 		AxiosError<ApiResponseSchemaType>,
-		CreateGroupChatSchemaType,
+		CreateChatRoomSchemaType,
 		CreateGroupContext
 	>({
-		mutationFn: chatService.createGroupChat,
-		onMutate: (newGroup) => {
-			queryClient.cancelQueries({ queryKey: chatKeys.lists() });
-			const prevGroups = queryClient.getQueryData(
-				chatKeys.lists()
-			) as ChatRoomRecord[];
-			queryClient.setQueryData(chatKeys.lists(), (old: ChatRoomRecord[]) => [
-				...old,
-				{
-					id: Date.now().toString(),
-					...newGroup,
-				},
-			]);
+		mutationFn: chatService.createChatRoom,
+		onMutate: async (newGroup) => {
+			await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
 
-			return { prevGroups, uploadedImageUrlForRollback: newGroup.img };
+			const prevRooms = queryClient.getQueryData(chatKeys.lists()) as
+				| ChatRoomRecord[]
+				| undefined;
+
+			queryClient.setQueryData(
+				chatKeys.lists(),
+				(oldRooms: ChatRoomRecord[]) => [
+					...oldRooms,
+					{
+						id: Date.now().toString(),
+						...newGroup,
+					},
+				]
+			);
+
+			return { prevRooms, uploadedImageUrlForRollback: newGroup.img };
 		},
 		onError: (error, _newGroup, context) => {
 			if (error instanceof AxiosError)
@@ -46,7 +51,7 @@ export default function useCreateGroup() {
 				uploadService.deleteImgFromS3(context.uploadedImageUrlForRollback);
 
 			if (context)
-				queryClient.setQueryData(chatKeys.lists(), context.prevGroups);
+				queryClient.setQueryData(chatKeys.lists(), context.prevRooms);
 		},
 		onSettled: () => {
 			queryClient.invalidateQueries({ queryKey: chatKeys.all });

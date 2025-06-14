@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import { authService } from "@/api";
 import { AxiosError } from "axios";
-import { useLogout } from "@/queries/auth/useLogout";
+import { useLogoutMutation } from "@/queries/auth/useLogoutMutation";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [user, setUser] = useState<UserDTO | null>(null);
 	const [isLoadong, setIsLoadong] = useState(true);
 
-	const { mutate } = useLogout();
+	const { mutate } = useLogoutMutation();
 
 	useEffect(() => {
 		async function checkUserSession() {

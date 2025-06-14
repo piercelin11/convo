@@ -101,7 +101,7 @@ export async function findChatRoomWithMembersByRoomId(
 	return ChatRoomWithMembersDtoSchema.parse(chatRoomWithMembers);
 }
 
-export async function createGroupChat(
+export async function createChatRoom(
 	name: string,
 	creatorId: string,
 	members: string[],
@@ -139,6 +139,25 @@ export async function createGroupChat(
 
 		return result.rows[0];
 	});
+
+	return ChatRoomRecordSchema.parse(chatRoom);
+}
+
+export async function updateChatRoomData(
+	roomId: string,
+	name: string,
+	imgUrl?: string | null
+): Promise<ChatRoomRecord> {
+	const query = `
+	UPDATE chat_rooms
+	SET name = $1, image_url = $2
+	WHERE id = $3
+	RETURNING *
+	`;
+	const values = [name, imgUrl, roomId];
+
+	const result = await dbQuery<ChatRoomRecord>(query, values);
+	const chatRoom = result.rows[0];
 
 	return ChatRoomRecordSchema.parse(chatRoom);
 }

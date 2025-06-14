@@ -1,5 +1,6 @@
 import { dbQuery } from "@/utils/index.js";
-import { FriendshipDto } from "@convo/shared";
+import { FriendshipDto, FriendshipDtoSchema } from "@convo/shared";
+import { z } from "zod/v4";
 
 export async function findFriendshipsByUserId(
 	userId: string
@@ -25,5 +26,5 @@ export async function findFriendshipsByUserId(
 
 	const result = await dbQuery<FriendshipDto>(query, values);
 	const frienships = result.rows;
-	return frienships;
+	return z.array(FriendshipDtoSchema).parse(frienships);
 }
