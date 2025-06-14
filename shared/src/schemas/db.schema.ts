@@ -1,4 +1,4 @@
-import { nullable, z } from "zod/v4";
+import { z } from "zod/v4";
 
 /**
  * 使用者表格在資料庫的原始記錄型別

@@ -7,14 +7,15 @@ import {
 import { DeleteImgSchemaType, UploadImgSchemaType } from "@convo/shared";
 import { Request, Response } from "express";
 
-export async function chatRoomsImgUploadHandler(req: Request, res: Response) {
+export async function ImgUploadHandler(req: Request, res: Response) {
 	const user = req.user;
 	if (!user) throw new AuthorizationError();
 
-	const { fileName, contentType } = req.body as UploadImgSchemaType;
+	const { fileName, contentType, s3KeyPrefix } =
+		req.body as UploadImgSchemaType;
 
 	const { signedUrl, imageUrl } = await getS3PresignedUrl(
-		"chat-rooms",
+		s3KeyPrefix,
 		user.id,
 		fileName,
 		contentType

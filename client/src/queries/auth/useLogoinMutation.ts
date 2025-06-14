@@ -1,27 +1,27 @@
 import { authService } from "@/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import authKeys from "./authKeys";
 import type {
 	ApiResponseSchemaType,
-	RegisterSchemaType,
+	LoginSchemaType,
 	UserDTO,
 } from "@convo/shared";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import authKeys from "./authKeys";
 
-export function useRegister() {
+export default function useLoginMutation() {
 	const queryClient = useQueryClient();
 	return useMutation<
 		UserDTO,
 		AxiosError<ApiResponseSchemaType>,
-		RegisterSchemaType
+		LoginSchemaType
 	>({
-		mutationFn: authService.register,
+		mutationFn: authService.login,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: authKeys.all });
 		},
 		onError: (error) => {
-			if (error instanceof AxiosError) console.error("註冊時發生錯誤:", error);
-			else console.error("註冊時發生未預期的錯誤:", error);
+			if (error instanceof AxiosError) console.error("登入時發生錯誤:", error);
+			else console.error("登入時發生未預期的錯誤:", error);
 		},
 	});
 }

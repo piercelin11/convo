@@ -2,7 +2,6 @@ import { z } from "zod/v4";
 import {
 	ChatRoomRecordSchema,
 	FriendshipStatusSchema,
-	RoomMemberRecordSchema,
 } from "./db.schema";
 
 /**
@@ -32,6 +31,10 @@ export const FriendshipDtoSchema = z.object({
 });
 export type FriendshipDto = z.infer<typeof FriendshipDtoSchema>;
 
+/**
+ * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
+ * 成員資訊會擴充包含加入時間。
+ */
 export const ChatRoomWithMembersDtoSchema = ChatRoomRecordSchema.extend({
 	members: z.array(UserDTOSchema.extend({ joined_at: z.coerce.date() })),
 });

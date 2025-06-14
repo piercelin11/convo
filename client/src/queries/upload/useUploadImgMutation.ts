@@ -1,15 +1,22 @@
 import { uploadService } from "@/api";
+import type { S3KeyPrefixSchemaType } from "@convo/shared";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export default function useUploadRoomImg() {
+export default function useUploadImgMutation() {
 	return useMutation({
-		mutationFn: async (file: File) => {
-			const { signedUrl, imageUrl } =
-				await uploadService.getChatRoomImgPresignedUrl({
-					fileName: file.name,
-					contentType: file.type,
-				});
+		mutationFn: async ({
+			file,
+			s3KeyPrefix,
+		}: {
+			file: File;
+			s3KeyPrefix: S3KeyPrefixSchemaType;
+		}) => {
+			const { signedUrl, imageUrl } = await uploadService.getImgPresignedUrl({
+				fileName: file.name,
+				contentType: file.type,
+				s3KeyPrefix,
+			});
 
 			await uploadService.uploadImgToS3(signedUrl, file);
 			return imageUrl;

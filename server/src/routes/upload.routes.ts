@@ -1,5 +1,5 @@
 import {
-	chatRoomsImgUploadHandler,
+	ImgUploadHandler,
 	deleteImgHandler,
 } from "@/controllers/upload.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
@@ -9,9 +9,9 @@ import { Router } from "express";
 const router = Router();
 
 router.post(
-	"/presigned-url/room-image",
+	"/presigned-url",
 	validateRequest({ body: UploadImgSchema }),
-	chatRoomsImgUploadHandler
+	ImgUploadHandler
 );
 
 router.delete(

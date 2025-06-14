@@ -1,7 +1,10 @@
 import * as chatRoomsDB from "@/db/chatRooms.db.js";
 import * as chatRoomsService from "@/services/chatRooms.service.js";
 import { AuthorizationError, NotFoundError } from "@/utils/error.utils.js";
-import { CreateGroupChatSchemaType } from "@convo/shared";
+import {
+	CreateChatRoomSchemaType,
+	EditChatRoomSchemaType,
+} from "@convo/shared";
 import { Request, Response } from "express";
 
 export async function getChatRoomsHandler(req: Request, res: Response) {
@@ -32,13 +35,32 @@ export async function getChatRoomHandler(req: Request, res: Response) {
 
 export async function createChatRoomHandler(req: Request, res: Response) {
 	const user = req.user;
-	const { name, members, img } = req.body as CreateGroupChatSchemaType;
+	const { name, members, img } = req.body as CreateChatRoomSchemaType;
 	if (!user) throw new AuthorizationError();
 
-	const chatRooms = await chatRoomsDB.createGroupChat(
+	const chatRooms = await chatRoomsDB.createChatRoom(
 		name,
 		user.id,
 		members,
+		img
+	);
+
+	res.status(200).json({
+		success: true,
+		message: "成功創建聊天室",
+		data: chatRooms,
+	});
+}
+
+export async function editChatRoomHandler(req: Request, res: Response) {
+	const user = req.user;
+	const { id: roomId, name, img } = req.body as EditChatRoomSchemaType;
+	if (!user) throw new AuthorizationError();
+
+	const chatRooms = await chatRoomsService.editChatRoom(
+		roomId,
+		user.id,
+		name,
 		img
 	);
 

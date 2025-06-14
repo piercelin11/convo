@@ -1,7 +1,7 @@
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import ResponseMessage from "@/components/ui/ResponseMessage";
-import { useRegister } from "@/queries/auth/useRegister";
+import { useRegisterMutation } from "@/queries/auth/useRegisterMutation";
 import { useAuth } from "@/store/auth/useAuth";
 import { RegisterSchema, type RegisterSchemaType } from "@convo/shared";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function RegisterPage() {
 		useState<Partial<RegisterSchemaType>>(defaultError);
 	const { login } = useAuth();
 
-	const { mutateAsync, isPending, error } = useRegister();
+	const { mutateAsync, isPending, error } = useRegisterMutation();
 
 	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const name = e.target.name;

@@ -1,11 +1,16 @@
 import {
 	createChatRoomHandler,
 	deleteChatRoomHandler,
+	editChatRoomHandler,
 	getChatRoomHandler,
 	getChatRoomsHandler,
 } from "@/controllers/chatRooms.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
-import { ChatRoomParamsSchema, CreateGroupChatSchema } from "@convo/shared";
+import {
+	ChatRoomParamsSchema,
+	CreateChatRoomSchema,
+	EditChatRoomSchema,
+} from "@convo/shared";
 import { Router } from "express";
 
 const router = Router();
@@ -20,7 +25,7 @@ router.get(
 
 router.post(
 	"/group",
-	validateRequest({ body: CreateGroupChatSchema }),
+	validateRequest({ body: CreateChatRoomSchema }),
 	createChatRoomHandler
 );
 
@@ -28,6 +33,12 @@ router.delete(
 	"/:roomId",
 	validateRequest({ params: ChatRoomParamsSchema }),
 	deleteChatRoomHandler
+);
+
+router.put(
+	"/group",
+	validateRequest({ body: EditChatRoomSchema }),
+	editChatRoomHandler
 );
 
 export default router;
