@@ -22,17 +22,33 @@ export const DeleteImgSchema = z.object({
 
 export type DeleteImgSchemaType = z.infer<typeof DeleteImgSchema>;
 
+/**
+ * 上傳檔案和 S3 相關的 API 回應資料結構中的 `data` 屬性結構。
+ * 包含 `signedUrl` 以及預先產生的 `imageUrl` 屬性。
+ */
 export const UploadResponseDataSchema = z.object({
 	signedUrl: z.url(),
 	imageUrl: z.url(),
 });
 
+/**
+ * 上傳檔案和 S3 相關的 API 回應資料型別中的 `data` 屬性型別。
+ * 包含 `signedUrl` 以及預先產生的 `imageUrl` 屬性。
+ */
 export type UploadResponseDataSchemaType = z.infer<
 	typeof UploadResponseDataSchema
 >;
 
+/**
+ * 上傳檔案和 S3 相關的 API 回應資料結構。
+ * API 回應中包含 {@link UploadResponseDataSchema} 的資料結構。
+ */
 export const UploadResponseSchema = ApiResponseSchema.extend({
 	data: UploadResponseDataSchema,
 });
 
+/**
+ * 上傳檔案和 S3 相關的 API 回應資料型別。
+ * API 回應中包含 {@link UploadResponseDataSchemaType} 的資料型別。
+ */
 export type UploadResponseType = z.infer<typeof UploadResponseSchema>;
