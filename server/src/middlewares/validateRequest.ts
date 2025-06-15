@@ -8,6 +8,15 @@ type RequestValidationSchemas = {
 	params?: ZodType<any>;
 };
 
+/**
+ * 通用請求數據驗證中介軟體。
+ * 根據提供的 Zod schemas 驗證請求的 `body`、`query` 和 `params`。
+ * 如果驗證成功，會將驗證後的數據賦值回 `req` 物件對應的屬性上。
+ * 如果驗證失敗，則會發送 400 Bad Request 響應並包含詳細的驗證錯誤資訊。
+ *
+ * @param schemas - 包含 `body`、`query` 和/或 `params` 的 Zod schema 物件。
+ * @returns Express 中介軟體函式。
+ */
 export function validateRequest<S extends RequestValidationSchemas>(
 	schemas: S
 ) {
