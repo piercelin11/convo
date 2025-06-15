@@ -75,9 +75,12 @@ export default tseslint.config(
 			"jsdoc/no-types": "error",
 			"jsdoc/require-param-type": "off",
 			"jsdoc/require-returns-type": "off",
+			"jsdoc/require-property-type": "off",
 
 			"jsdoc/check-alignment": "warn",
 			"jsdoc/check-indentation": "warn",
+
+			"jsdoc/tag-lines": "off",
 
 			"@typescript-eslint/no-unused-vars": [
 				"warn",

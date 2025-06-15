@@ -2,6 +2,12 @@ import { dbQuery } from "@/utils/index.js";
 import { FriendshipDto, FriendshipDtoSchema } from "@convo/shared";
 import { z } from "zod/v4";
 
+/**
+ * 根據用戶ID查詢該用戶的所有好友關係。
+ *
+ * @param userId - 用戶的唯一識別碼 (UUID)。
+ * @returns 包含所有找到的好友DTOs陣列，這些關係的狀態為 'accepted'。
+ */
 export async function findFriendshipsByUserId(
 	userId: string
 ): Promise<FriendshipDto[]> {

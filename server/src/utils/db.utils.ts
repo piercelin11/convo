@@ -11,6 +11,16 @@ const NETWORK_ERROR_CODES = [
 	"ETIMEDOUT",
 ];
 
+/**
+ * 通用資料庫查詢函式。
+ * 執行單條 SQL 查詢，並提供統一的錯誤處理機制，特別是針對網路或資料庫連線問題。
+ *
+ * @template T - 期望從查詢結果行中返回的數據類型。
+ * @param query - 要執行的 SQL 查詢字串。
+ * @param values - 綁定到 SQL 查詢中的參數值陣列。
+ * @returns 包含查詢結果的 Promise。
+ * @throws {DatabaseError} 如果資料庫查詢失敗，會根據錯誤類型拋出操作性或非操作性的 DatabaseError。
+ */
 export async function dbQuery<T extends QueryResultRow>(
 	query: string,
 	values: any[]
@@ -37,6 +47,16 @@ export async function dbQuery<T extends QueryResultRow>(
 	}
 }
 
+/**
+ * 通用資料庫事務函式。
+ * 在單一原子操作中執行一系列資料庫查詢。如果事務中的任何操作失敗，所有變更都會被回滾。
+ * 提供統一的錯誤處理，特別是針對事務過程中的連線問題。
+ *
+ * @template T - 事務回調函式成功時預期返回的數據類型。
+ * @param callback - 一個非同步函式，接收一個 `PoolClient` 物件，用於執行事務內的查詢。
+ * @returns 事務成功時，回調函式返回的結果。
+ * @throws {DatabaseError} 如果資料庫事務失敗，會根據錯誤類型拋出操作性或非操作性的 DatabaseError。
+ */
 export async function dbTransaction<T>(
 	callback: (client: PoolClient) => Promise<T>
 ): Promise<T> {
