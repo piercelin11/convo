@@ -2,10 +2,11 @@ import { Router } from "express";
 import { editProfileSchema, EditProfileSchemaType } from "@convo/shared";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import pool from "@/config/database.js";
+import { success } from "zod/v4";
 
 const router = Router();
 
-router.post(
+router.patch(
 	"/profile",
 	validateRequest({ body: editProfileSchema }),
 	async (req, res) => {
@@ -18,13 +19,13 @@ router.post(
 			const userResult = await pool.query(userChcekSql, [userId]);
 
 			if (userResult.rows.length === 0) {
-				console.log(`使用者${userId}不存在。`);
-				return null;
+				console.error(`使用者${userId}不存在。`);
+				return;
 			}
 
 			// 更新使用者資料
 			const updateUserSql =
-				"UPDATE users SET username = $1 age = $2 WHERE id = $3 RETURNING *";
+				"UPDATE users SET username = $1,age = $2 WHERE id = $3 RETURNING *";
 			const updateUserResult = await pool.query(updateUserSql, [
 				username,
 				age,
@@ -36,7 +37,11 @@ router.post(
 				updateUserResult.rows[0]
 			);
 
-			return updateUserResult.rows[0];
+			res.status(200).json({
+				success: true,
+				message: "使用者資料已更新",
+				data: updateUserResult.rows[0],
+			});
 		} catch (error) {
 			console.error("使用 pool query 執行更新資訊出錯:", error);
 			throw error;
