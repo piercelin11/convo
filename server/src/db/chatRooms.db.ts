@@ -5,6 +5,8 @@ import {
 	ChatRoomRecordSchema,
 	ChatRoomWithMembersDto,
 	ChatRoomWithMembersDtoSchema,
+	ChatRoomWithMessagesDto,
+	ChatRoomWithMessagesDtoSchema,
 } from "@convo/shared";
 import { z } from "zod/v4";
 
@@ -60,7 +62,8 @@ export async function findChatRoomByRoomId(
 	roomId: string
 ): Promise<ChatRoomRecord> {
 	const query = `
-        SELECT * FROM chat_rooms
+        SELECT * 
+		FROM chat_rooms
         WHERE id = $1
         `;
 	const values = [roomId];
@@ -120,6 +123,72 @@ export async function findChatRoomWithMembersByRoomId(
 	}
 
 	return ChatRoomWithMembersDtoSchema.parse(chatRoomWithMembers);
+}
+
+/**
+ * 根據聊天室ID查詢聊天室及其所有聊天訊息的詳細資訊。
+ *
+ * @param roomId - 聊天室的唯一識別碼 (UUID)。
+ * @returns 包含聊天室及訊息資訊的DTO物件，如果找不到聊天室則返回`undefined`。
+ */
+export async function findChatRoomWithMessagesByRoomId(
+	roomId: string
+) /* : Promise<ChatRoomWithMessagesDto | undefined> */ {
+	const query = `
+        SELECT
+            cr.id AS id,
+            cr.name AS name,
+            cr.type AS type,
+            cr.creator_id AS creator_id,
+            cr.created_at AS created_at,
+            cr.updated_at AS updated_at,
+            cr.image_url AS image_url,
+            JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'id', m.id,
+                    'sender_id', m.sender_id,
+					'room_id', cr.id,
+                    'content', m.content,
+                    'created_at', m.created_at,
+                    'sender_username', u.username,
+					'sender_avatar_url', u.avatar_url
+                ) ORDER BY m.created_at ASC
+            ) AS messages
+        FROM
+            chat_rooms cr
+        LEFT JOIN
+            messages m ON cr.id = m.room_id
+        LEFT JOIN 
+            users u ON m.sender_id = u.id
+        WHERE
+            cr.id = $1
+        GROUP BY
+            cr.id
+        ;
+    `;
+	const values = [roomId];
+
+	// 使用新的原始型別作為 dbQuery 的泛型參數
+	const result = await dbQuery<ChatRoomWithMessagesDto>(query, values);
+	const chatRoom = result.rows[0];
+
+	if (!chatRoom) {
+		return undefined;
+	}
+
+	// 過濾掉空訊息物件
+	const processedMessages = chatRoom.messages.filter(
+		(message) => message !== null && message.id !== null
+	);
+
+	const chatRoomWithMessages: ChatRoomWithMessagesDto = {
+		...chatRoom,
+		// 覆寫 messages 屬性
+		messages: processedMessages,
+	};
+
+	// 使用 Zod 進行最終驗證
+	return ChatRoomWithMessagesDtoSchema.parse(chatRoomWithMessages);
 }
 
 /**

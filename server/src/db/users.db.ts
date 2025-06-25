@@ -8,14 +8,14 @@ import { UserRecord, UserRecordSchema } from "@convo/shared";
  */
 export async function findUserByUsername(
 	username: string
-): Promise<UserRecord> {
+): Promise<UserRecord | undefined> {
 	const query = `SELECT * FROM users WHERE username = $1`;
 	const values = [username];
 
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return UserRecordSchema.parse(user);
+	return UserRecordSchema.optional().parse(user);
 }
 
 /**
@@ -23,14 +23,16 @@ export async function findUserByUsername(
  * @param email - 電子郵件。**必填**。
  * @returns 唯一使用者資料。
  */
-export async function findUserByEmail(email: string): Promise<UserRecord> {
+export async function findUserByEmail(
+	email: string
+): Promise<UserRecord | undefined> {
 	const query = `SELECT * FROM users WHERE email = $1`;
 	const values = [email];
 
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return UserRecordSchema.parse(user);
+	return UserRecordSchema.optional().parse(user);
 }
 
 /**
@@ -38,14 +40,16 @@ export async function findUserByEmail(email: string): Promise<UserRecord> {
  * @param id - 使用者 id。**必填**。
  * @returns 唯一使用者資料。
  */
-export async function findUserById(id: string): Promise<UserRecord> {
+export async function findUserById(
+	id: string
+): Promise<UserRecord | undefined> {
 	const query = `SELECT * FROM users WHERE id = $1`;
 	const values = [id];
 
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return UserRecordSchema.parse(user);
+	return UserRecordSchema.optional().parse(user);
 }
 
 /**

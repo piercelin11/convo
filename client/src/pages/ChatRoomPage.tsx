@@ -10,12 +10,12 @@ export default function ChatRoomPage() {
 	const { roomId } = useParams<ChatPageParams>();
 	const { data, isLoading } = useChatQuery(roomId!);
 
-	if (!roomId || !data) return <NotFound />;
-	if (isLoading) return <p>載入中...</p>;
+	if (!roomId) return <NotFound />;
+	if (isLoading || !data) return <p>載入中...</p>;
 	return (
 		<section className="flex flex-1 flex-col">
 			<ChatRoomHeader data={data} />
-			<MessageContainer />
+			<MessageContainer roomId={roomId} />
 			<MessageInputArea />
 		</section>
 	);

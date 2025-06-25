@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import authRouter from "@/routes/auth.routes.js";
+import messagesRouter from "@/routes/messages.routes.js";
 import chatRoomsRouter from "@/routes/chatRooms.routes.js";
 import friendshipsRouter from "@/routes/friendships.routes.js";
 import uploadRouter from "@/routes/upload.routes.js";
@@ -25,6 +26,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/chat-rooms", authenticateToken, chatRoomsRouter);
 app.use("/api/friendships", authenticateToken, friendshipsRouter);
 app.use("/api/upload", authenticateToken, uploadRouter);
+app.use("/api/messages", authenticateToken, messagesRouter);
 
 app.use(errorHandler);
 
