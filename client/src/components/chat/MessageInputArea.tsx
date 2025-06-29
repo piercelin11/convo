@@ -1,32 +1,39 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import Button from "../ui/Button";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { Send } from "react-feather";
 import IconBtn from "../ui/IconBtn";
+import useWebSocket from "@/hooks/useWebSocket";
+import type { InboundMessageSchemaType } from "@convo/shared";
+
+type MessageInputAreaProps = {
+	roomId: string;
+};
 
 /**
  * 負責聊天室中輸入訊息與其他傳送功能相關的區塊
  * @returns 一個包含`input`的 JSX 元素
  */
-export default function MessageInputArea() {
+export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 	const [input, setInput] = useState("");
-	const wsRef = useRef<null | WebSocket>(null);
+
+	const { state, sendMessage } = useWebSocket();
+
+	useEffect(() => {
+		const joinRoomPayload: InboundMessageSchemaType = {
+			type: "join_room",
+			payload: {
+				roomId,
+			},
+		};
+		if (state === "OPEN") {
+			sendMessage(JSON.stringify(joinRoomPayload));
+		}
+	}, [roomId, sendMessage, state]);
 
 	function handleInput(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setInput(value);
 	}
-	useEffect(() => {
-		console.log("object")
-		const ws = new WebSocket("ws://localhost:3000");
-		wsRef.current = ws;
-		ws.addEventListener("open", () => {
-			console.log("已建立 WebSocket 連接");
-		});
 
-		return () => {
-			ws.close();
-		};
-	}, []);
 	return (
 		<div className="px-16 py-4">
 			<div className="flex flex-1 items-center gap-2 rounded-xl bg-neutral-900 p-4">
@@ -40,7 +47,7 @@ export default function MessageInputArea() {
 				<IconBtn
 					className="bg-neutral-100 p-2 text-neutral-950 hover:text-neutral-100"
 					onClick={() => {
-						if (wsRef.current) wsRef.current.send(input);
+						sendMessage(input);
 					}}
 				>
 					<Send size={14} />

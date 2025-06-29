@@ -16,7 +16,7 @@ export default function ChatRoomPage() {
 		<section className="flex flex-1 flex-col">
 			<ChatRoomHeader data={data} />
 			<MessageContainer roomId={roomId} />
-			<MessageInputArea />
+			<MessageInputArea roomId={roomId} />
 		</section>
 	);
 }

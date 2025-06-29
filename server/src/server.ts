@@ -8,8 +8,9 @@ import uploadRouter from "@/routes/upload.routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 import authenticateToken from "./middlewares/authenticateToken.js";
-import cookie from "cookie";
-import { WebSocket, WebSocketServer } from "ws";
+
+import userRouter from "@/routes/user.route.js";
+import initializeWebSocket from "./websocket/index.js";
 
 const app = express();
 const port = 3000;
@@ -27,6 +28,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/chat-rooms", authenticateToken, chatRoomsRouter);
 app.use("/api/friendships", authenticateToken, friendshipsRouter);
+app.use("/api/users", authenticateToken, userRouter);
 app.use("/api/upload", authenticateToken, uploadRouter);
 app.use("/api/messages", authenticateToken, messagesRouter);
 
@@ -36,13 +38,4 @@ const server = app.listen(port, () => {
 	console.info(`Server running on port ${port}.`);
 });
 
-const wss = new WebSocketServer({ server });
-
-wss.on("connection", (ws: WebSocket, req) => {
-	console.info("一個新的客戶端已透過 WebSocket 成功連接");
-	const cookieString = req.headers.cookie || "";
-	const cookies = cookie.parse(cookieString);
-	ws.on("message", (message) => {
-		console.log(message.toString());
-	});
-});
+initializeWebSocket(server);

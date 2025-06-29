@@ -1,6 +1,7 @@
 import { env } from "@/config/env.js";
 import { UserPayloadType } from "@/middlewares/authenticateToken.js";
 import jwt from "jsonwebtoken";
+import { AuthenticationError } from "./index.js";
 
 /**
  * 用於生成 JWT 的使用者資料型別。
@@ -32,4 +33,13 @@ export function generateAuthToken(user: UserTokenData) {
 	const userJWTPayload = jwt.decode(token) as UserPayloadType;
 
 	return { token, userJWTPayload };
+}
+
+export function authenticateAuthToken(token?: string) {
+	if (!token) {
+		throw new AuthenticationError("為授權的請求");
+	}
+	const userPayload = jwt.verify(token, env.JWT_PRIVATE_KEY) as UserPayloadType;
+
+	return userPayload;
 }

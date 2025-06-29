@@ -1,0 +1,72 @@
+import { authenticateAuthToken } from "@/utils/index.js";
+import { InboundMessageSchema } from "@convo/shared";
+import cookie from "cookie";
+import { Server } from "http";
+import { WebSocket, WebSocketServer } from "ws";
+import { z, ZodError } from "zod/v4";
+import handleJoinRoom from "./handler/handleJoinRoom.js";
+import handleSendChat from "./handler/handleSendChat.js";
+
+export default function initializeWebSocket(server: Server) {
+	const wss = new WebSocketServer({ server });
+
+	wss.on("connection", (ws: WebSocket, req) => {
+		const cookieString = req.headers.cookie || "";
+		const cookies = cookie.parse(cookieString);
+		const token = cookies.authToken;
+
+		authenticateAuthToken(token);
+
+		const roomsMap = new Map<string, Set<WebSocket>>();
+
+		ws.on("message", (message) => {
+			const messageString = message.toString();
+
+			try {
+				const message = JSON.parse(messageString);
+				const validatedData = InboundMessageSchema.parse(message);
+
+				switch (validatedData.type) {
+					case "join_room": {
+						handleJoinRoom(ws, roomsMap, validatedData.payload);
+						break;
+					}
+					case "send_chat": {
+						handleSendChat(ws, validatedData.payload);
+						break;
+					}
+				}
+			} catch (error) {
+				if (error instanceof SyntaxError) {
+					console.error(
+						"[WebSocket]JSON 解析錯誤：收到了無效的 JSON 格式字串。",
+						error.message
+					);
+				} else if (error instanceof ZodError) {
+					const fieldError = z.flattenError(error).fieldErrors;
+					console.error(
+						"[WebSocket]傳入伺服器的 WebSocket 訊息結構錯誤。",
+						fieldError
+					);
+				} else
+					console.error(
+						"[WebSocket]解析 WebSocket 訊息時出現未預期錯誤。",
+						error
+					);
+			}
+		});
+
+		ws.on("close", () => {
+			const { currentRoomId } = ws;
+			if (currentRoomId) {
+				const room = roomsMap.get(currentRoomId);
+				if (room) {
+					room.delete(ws);
+					if (room.size === 0) {
+						roomsMap.delete(currentRoomId);
+					}
+				}
+			}
+		});
+	});
+}

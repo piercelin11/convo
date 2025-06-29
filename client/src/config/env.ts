@@ -7,6 +7,9 @@ const EnvSchema = z.object({
 	VITE_USER_IMG_PLACEHOLDER: z
 		.string()
 		.min(1, { message: "VITE_USER_IMG_PLACEHOLDER 環境變數未設定！" }),
+	VITE_WEBSOCKET_URL: z
+		.string()
+		.min(1, { message: "VITE_WEBSOCKET_URL 環境變數未設定！" }),
 });
 
 /**
@@ -20,12 +23,12 @@ if (!validatedEnv.success) {
 	console.error(
 		"[客戶端]無效的環境變數設定！請檢查你的 .env 檔案是否正確配置。"
 	);
-	console.error(validatedEnv.error.flatten().fieldErrors);
+	console.error(z.flattenError(validatedEnv.error).fieldErrors);
 }
 
 if (!validatedEnv.data) {
 	console.error("[客戶端]環境變數讀取失敗，請檢查你的 .env 檔案是否正確配置。");
-	console.error(validatedEnv.error.flatten().fieldErrors);
+	console.error(z.flattenError(validatedEnv.error).fieldErrors);
 }
 
 export const env: ClientEnv = validatedEnv.data!;

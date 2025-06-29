@@ -1,7 +1,6 @@
-import { env } from "@/config/env.js";
 import { AuthenticationError } from "@/utils/error.utils.js";
+import { authenticateAuthToken } from "@/utils/jwt.utils.js";
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
 /**
  * JWT 的使用者 Payload 型別
@@ -48,14 +47,9 @@ export default function authenticateToken(
 	next: NextFunction
 ) {
 	const token = req.cookies.authToken;
-
-	if (!token) {
-		throw new AuthenticationError("為授權的請求");
-	}
-
 	try {
-		const userPayload = jwt.verify(token, env.JWT_PRIVATE_KEY);
-		req.user = userPayload as UserPayloadType;
+		const userPayload = authenticateAuthToken(token);
+		req.user = userPayload;
 	} catch (error) {
 		console.warn("[權限驗證中間件]權限驗證失敗");
 		if (error instanceof Error) {
