@@ -7,6 +7,7 @@ import uploadRouter from "@/routes/upload.routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 import authenticateToken from "./middlewares/authenticateToken.js";
+import userRouter from "@/routes/user.route.js";
 
 const app = express();
 const port = 3000;
@@ -24,6 +25,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/chat-rooms", authenticateToken, chatRoomsRouter);
 app.use("/api/friendships", authenticateToken, friendshipsRouter);
+app.use("/api/users", authenticateToken, userRouter);
 app.use("/api/upload", authenticateToken, uploadRouter);
 
 app.use(errorHandler);

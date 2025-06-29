@@ -1,5 +1,6 @@
 import CreateGroupChatForm from "@/components/chat/CreateGroupChat/CreateGroupChatForm";
 import EditChatRoomForm from "@/components/chat/EditGroupChat/EditChatRoomForm";
+import ProfileModal from "@/components/profile/ProfileModal";
 import Modal from "@/components/ui/Modal";
 import useModalContext from "@/store/modal/useModalContext";
 
@@ -15,6 +16,9 @@ export default function GlobalModals() {
 			}
 			case "editChatRoom": {
 				return { children: <EditChatRoomForm />, title: "編輯聊天室" };
+			}
+			case "profileEdit": {
+				return { children: <ProfileModal />, title: "編輯個人資料" };
 			}
 			default: {
 				return;

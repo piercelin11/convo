@@ -8,14 +8,14 @@ import { UserRecord, UserRecordSchema } from "@convo/shared";
  */
 export async function findUserByUsername(
 	username: string
-): Promise<UserRecord> {
+): Promise<UserRecord | undefined> {
 	const query = `SELECT * FROM users WHERE username = $1`;
 	const values = [username];
 
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return UserRecordSchema.parse(user);
+	return UserRecordSchema.optional().parse(user);
 }
 
 /**

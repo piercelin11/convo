@@ -6,4 +6,4 @@ export * from "./schemas/common.schema";
 export * from "./schemas/api.schema";
 export * from "./schemas/friendship.schema";
 export * from "./schemas/upload.schema";
-
+export * from "./schemas/user.schema";

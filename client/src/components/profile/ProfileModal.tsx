@@ -1,107 +1,97 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import FormInput from "../ui/FormInput";
-import Modal from "../ui/Modal";
+import axiosClient from "@/api/client";
+import { editProfileSchema } from "@convo/shared";
+import z from "zod/v4";
+import ResponseMessage from "../ui/ResponseMessage";
+import axios from "axios";
 
-type ProfileModalProps = {
-	closeHandler?: () => void;
-	isOpen: boolean;
+type FormErrorsType = {
+	username?: string;
+	age?: string;
 };
 
-export default function ProfileModal({
-	closeHandler,
-	isOpen,
-}: ProfileModalProps) {
-	const [username, setUsername] = useState<string>("");
-	const [age, setAge] = useState<string>("");
-	const [usernameError, setUsernameError] = useState<string | null>(null);
-	const [ageError, setAgeError] = useState<string | null>(null);
+export default function ProfileModal() {
+	const [formInput, setFormInput] = useState({
+		username: "",
+		age: "",
+	});
 
-	const handleSubmit = (event: React.FormEvent) => {
+	function formInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const name = e.target.name;
+		const value = e.target.value;
+		setFormInput((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	}
+
+	const [errors, setErrors] = useState<FormErrorsType>({});
+	const [errorText, setErrorText] = useState("");
+
+	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 
-		// 必須為整數，十進制
-		const parsedAge = parseInt(age, 10);
+		setErrors({});
+		setErrorText("");
 
-		let isValid = true;
+		try {
+			const validated = editProfileSchema.safeParse(formInput);
 
-		// 使用者名稱驗證
-		if (!username.trim()) {
-			setUsernameError("使用者名稱不能為空");
-			isValid = false;
-		} else if (username.trim().length < 3) {
-			setUsernameError("使用者名稱至少需要 3 個字元");
-			isValid = false;
-		} else if (username.trim().length > 20) {
-			setUsernameError("使用者名稱不能超過 20 個字元");
-			isValid = false;
-		} else if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) {
-			setUsernameError("使用者名稱只能包含英文字母、數字和底線");
-			isValid = false;
-		} else {
-			setUsernameError(null); // 清除錯誤訊息
+			if (!validated.success) {
+				const formattedErrors = z.flattenError(validated.error).fieldErrors;
+				setErrors({
+					username: formattedErrors.username?.[0],
+					age: formattedErrors.age?.[0],
+				});
+				return;
+			}
+
+			await axiosClient.patch("/users/profile", {
+				username: validated.data?.username,
+				age: validated.data?.age?.toString(),
+			});
+		} catch (error) {
+			console.error("個資表單資料傳送錯誤", error);
+
+			// 從瀏覽器請求失敗的錯誤訊息
+			if (axios.isAxiosError(error) && error.response) {
+				setErrorText(error.response?.data.message);
+			} else {
+				setErrorText("個資表單發送出現未預期錯誤");
+			}
 		}
-
-		// 年齡驗證
-		if (!age.trim()) {
-			setAgeError("年齡不能為空");
-			isValid = false;
-		} else if (isNaN(parsedAge)) {
-			setAgeError("年齡必須是數字");
-			isValid = false;
-		} else if (!Number.isInteger(parsedAge)) {
-			setAgeError("年齡必須是整數");
-			isValid = false;
-		} else if (parsedAge < 0) {
-			setAgeError("年齡不能小於 0");
-			isValid = false;
-		} else {
-			setAgeError(null); // 清除錯誤訊息
-		}
-
-		if (isValid) {
-			console.info(username, parsedAge);
-			setAge("");
-			setUsername("");
-		}
-	};
-
-	const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setUsername(event.target.value);
-	};
-
-	const handleAgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setAge(event.target.value);
 	};
 
 	return (
 		<div>
-			<Modal closeHandler={closeHandler} isOpen={isOpen}>
-				<form onSubmit={handleSubmit}>
-					<div className="flex flex-col gap-4">
-						<FormInput
-							id="username"
-							name="Username"
-							label="Username"
-							value={username}
-							onChange={handleUsernameChange}
-						/>
-						<p>{usernameError}</p>
-						<FormInput
-							id="age"
-							name="Age"
-							label="Age"
-							value={age}
-							onChange={handleAgeChange}
-						/>
-						<p>{ageError}</p>
-					</div>
-					<div className="flex gap-10 pt-10">
-						<Button onClick={closeHandler}>cancel</Button>
-						<Button type="submit">submit</Button>
-					</div>
-				</form>
-			</Modal>
+			<form onSubmit={handleSubmit}>
+				<div className="flex flex-col gap-4">
+					<FormInput
+						id="username"
+						name="username"
+						label="Username"
+						value={formInput.username}
+						onChange={formInputChange}
+						errorMessage={errors.username}
+					/>
+
+					<FormInput
+						id="age"
+						name="age"
+						label="Age"
+						value={formInput.age?.toString()}
+						onChange={formInputChange}
+						errorMessage={errors.age?.toString()}
+					/>
+				</div>
+				<ResponseMessage type="error" message={errorText} />
+				<div className="flex gap-10 pt-10">
+					<Button>cancel</Button>
+					<Button type="submit">submit</Button>
+				</div>
+			</form>
 		</div>
 	);
 }

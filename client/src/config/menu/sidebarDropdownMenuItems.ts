@@ -50,6 +50,13 @@ const sidebarDropdownMenuItems: SidebarDropdownMenuItemsType[] = [
 		label: "建立群組",
 		modalKey: "createChatRoom",
 	},
+	{
+		id: "profile-edit",
+		actionType: "modal",
+		icon: MessageSquare,
+		label: "修改個人資料",
+		modalKey: "profileEdit",
+	},
 ];
 
 export default sidebarDropdownMenuItems;
