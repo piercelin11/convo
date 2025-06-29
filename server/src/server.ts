@@ -8,6 +8,8 @@ import uploadRouter from "@/routes/upload.routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 import authenticateToken from "./middlewares/authenticateToken.js";
+import cookie from "cookie";
+import { WebSocket, WebSocketServer } from "ws";
 
 const app = express();
 const port = 3000;
@@ -30,6 +32,17 @@ app.use("/api/messages", authenticateToken, messagesRouter);
 
 app.use(errorHandler);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
 	console.info(`Server running on port ${port}.`);
+});
+
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws: WebSocket, req) => {
+	console.info("一個新的客戶端已透過 WebSocket 成功連接");
+	const cookieString = req.headers.cookie || "";
+	const cookies = cookie.parse(cookieString);
+	ws.on("message", (message) => {
+		console.log(message.toString());
+	});
 });
