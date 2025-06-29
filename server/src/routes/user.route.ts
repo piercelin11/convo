@@ -2,7 +2,6 @@ import { Router } from "express";
 import { editProfileSchema, EditProfileSchemaType } from "@convo/shared";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import pool from "@/config/database.js";
-import { success } from "zod/v4";
 
 const router = Router();
 
@@ -15,11 +14,20 @@ router.patch(
 
 			// 找出使用者
 			const userId = req.user?.id;
-			const userChcekSql = "SELECT * FROM users Where id = $1";
-			const userResult = await pool.query(userChcekSql, [userId]);
 
-			if (userResult.rows.length === 0) {
-				console.error(`使用者${userId}不存在。`);
+			// 確認使用者姓名勿重複
+			const checkUsernameSql =
+				"SELECT id FROM users WHERE username =$1 AND id != $2";
+			const existingUser = await pool.query(checkUsernameSql, [
+				username,
+				userId,
+			]);
+
+			if (existingUser.rows.length > 0) {
+				res.status(409).json({
+					success: false,
+					message: "此使用者名稱已被使用，請更換一個。",
+				});
 				return;
 			}
 
@@ -32,10 +40,13 @@ router.patch(
 				userId,
 			]);
 
-			console.log(
-				"使用 pool query 更新後的使用者資訊:",
-				updateUserResult.rows[0]
-			);
+			if (updateUserResult.rows.length === 0) {
+				res.status(404).json({
+					success: false,
+					message: "找不到指定的使用者。",
+				});
+				return;
+			}
 
 			res.status(200).json({
 				success: true,
@@ -43,8 +54,12 @@ router.patch(
 				data: updateUserResult.rows[0],
 			});
 		} catch (error) {
-			console.error("使用 pool query 執行更新資訊出錯:", error);
-			throw error;
+			console.error("更新使用者資料時發生未預期的錯誤:", error);
+
+			res.status(500).json({
+				success: false,
+				message: "伺服器內部錯誤，請稍後再試。",
+			});
 		}
 	}
 );
