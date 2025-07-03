@@ -37,7 +37,7 @@ export function generateAuthToken(user: UserTokenData) {
 
 export function authenticateAuthToken(token?: string) {
 	if (!token) {
-		throw new AuthenticationError("為授權的請求");
+		throw new AuthenticationError("未授權的請求");
 	}
 	const userPayload = jwt.verify(token, env.JWT_PRIVATE_KEY) as UserPayloadType;
 

@@ -9,6 +9,7 @@ import handleSendChat from "./handler/handleSendChat.js";
 
 export default function initializeWebSocket(server: Server) {
 	const wss = new WebSocketServer({ server });
+	const roomsMap = new Map<string, Set<WebSocket>>();
 
 	wss.on("connection", (ws: WebSocket, req) => {
 		const cookieString = req.headers.cookie || "";
@@ -16,8 +17,6 @@ export default function initializeWebSocket(server: Server) {
 		const token = cookies.authToken;
 
 		authenticateAuthToken(token);
-
-		const roomsMap = new Map<string, Set<WebSocket>>();
 
 		ws.on("message", (message) => {
 			const messageString = message.toString();
@@ -27,12 +26,12 @@ export default function initializeWebSocket(server: Server) {
 				const validatedData = InboundMessageSchema.parse(message);
 
 				switch (validatedData.type) {
-					case "join_room": {
+					case "JOIN_ROOM": {
 						handleJoinRoom(ws, roomsMap, validatedData.payload);
 						break;
 					}
-					case "send_chat": {
-						handleSendChat(ws, validatedData.payload);
+					case "SEND_CHAT": {
+						handleSendChat(ws, roomsMap, validatedData.payload);
 						break;
 					}
 				}
