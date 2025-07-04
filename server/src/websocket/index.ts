@@ -37,6 +37,7 @@ export default function initializeWebSocket(server: Server) {
 				ws.send(JSON.stringify(errorMessage));
 			}
 			console.error("[WebSocket]身份驗證失敗。", error);
+			ws.close(1008, "身份驗證失敗");
 		}
 
 		ws.on("message", (message) => {

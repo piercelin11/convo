@@ -53,6 +53,10 @@ body {
 	padding: 0;
 }
 
+hr {
+	@apply text-neutral-700
+}
+
 ::-webkit-scrollbar {
 	width: 5px;
 }

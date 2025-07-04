@@ -40,7 +40,7 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 		function handleOpen() {
 			setState("OPEN");
 			reconnectAttempt.current = 0;
-			//console.info("已建立 WebSocket 連接");
+			console.info("已建立 WebSocket 連接");
 		}
 
 		function handleMessage(e: MessageEvent) {
@@ -83,7 +83,7 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 			}
 			if (cleanUpEventListener) cleanUpEventListener();
 
-			wsRef.current?.close();
+			if (wsRef.current) wsRef.current.close();
 		};
 	}, [connect]);
 

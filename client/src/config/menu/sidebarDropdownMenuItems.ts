@@ -12,7 +12,7 @@ export type SidebarDropdownMenuItemsType = {
 	 */
 	id: string;
 	/**
-	 * 點擊選單項目時的行為種類。分為登出、呼叫彈跳視窗、導向其他路由。
+	 * 點擊選單項目時的行為種類。分為登出、呼叫彈跳視窗、導向其他路由以及使用者資訊。
 	 */
 	actionType: "logout" | "modal" | "navigate";
 	/**

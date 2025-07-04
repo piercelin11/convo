@@ -50,11 +50,25 @@ export async function createMessages(
 	content: string
 ): Promise<MessageRecord> {
 	const creatMessageQuery = `
-        INSERT INTO messages (room_id, sender_id, content)
-        VALUES ($1, $2, $3)
-        RETURNING *
+         WITH new_message AS (
+            INSERT INTO messages (room_id, sender_id, content)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        )
+        SELECT
+            nm.id,
+            nm.room_id,
+            nm.sender_id,
+            nm.content,
+            nm.created_at,
+            u.username AS sender_username, -- 從 users 表中選取 username 並重新命名
+            u.avatar_url AS sender_avatar_url -- 從 users 表中選取 avatar_url 並重新命名
+        FROM
+            new_message nm
+        JOIN
+            users u ON nm.sender_id = u.id;
     `;
-	const result = await dbQuery<MessageRecord>(creatMessageQuery, [
+	const result = await dbQuery<MessageDto>(creatMessageQuery, [
 		roomId,
 		userId,
 		content,
@@ -62,5 +76,5 @@ export async function createMessages(
 
 	const message = result.rows[0];
 
-	return message;
+	return MessageDtoSchema.parse(message);
 }

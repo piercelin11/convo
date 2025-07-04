@@ -109,7 +109,7 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 	}
 
 	return (
-		<div className="px-16 py-4">
+		<div className="px-8 py-4">
 			<form
 				onSubmit={(e) => handleSubmit(e)}
 				className="flex flex-1 items-center gap-2 rounded-xl bg-neutral-900 p-4"
@@ -122,10 +122,10 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 					className="w-full flex-1 focus:outline-none"
 				/>
 				<IconBtn
-					className="bg-neutral-100 p-2 text-neutral-950 hover:text-neutral-100"
+					className="hover:bg-primary-700 bg-neutral-100 p-2.5 text-neutral-950 hover:text-neutral-100"
 					type="submit"
 				>
-					<Send size={14} />
+					<Send size={12} />
 				</IconBtn>
 			</form>
 		</div>

@@ -1,6 +1,5 @@
 import useMessageQuery from "@/queries/message/useMessageQuery";
-import { useSession } from "@/store/auth/useAuth";
-import { cn } from "@sglara/cn";
+import ChatMessage from "./ChatMessage";
 
 type MessageContainerProps = {
 	roomId: string;
@@ -12,20 +11,14 @@ type MessageContainerProps = {
  */
 export default function MessageContainer({ roomId }: MessageContainerProps) {
 	const { data, isLoading } = useMessageQuery(roomId);
-	const { id: userId } = useSession();
 
 	return (
-		<div className="flex flex-1 flex-col-reverse overflow-y-auto overscroll-contain px-8">
+		<div className="flex flex-1 flex-col-reverse gap-2 overflow-y-auto overscroll-contain px-8">
 			{isLoading || !data ? (
 				<p>載入中...</p>
 			) : (
 				data.map((message) => (
-					<p
-						className={cn({ "text-right": message.sender_id === userId })}
-						key={message.id}
-					>
-						{message.content}
-					</p>
+					<ChatMessage key={message.id} message={message} />
 				))
 			)}
 		</div>
