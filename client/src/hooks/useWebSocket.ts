@@ -1,7 +1,10 @@
 import { env } from "@/config/env";
 import { useRef, useEffect, useState, useCallback } from "react";
 
-type WebSocketState = "CONNECTING" | "OPEN" | "CLOSED";
+type WebSocketState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
+
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY_BASE = 1000;
 
 /**
  * 一個用於管理 WebSocket 連線生命週期的 React Custom Hook。
@@ -14,41 +17,83 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 	const [state, setState] = useState<WebSocketState>("CONNECTING");
 	const wsRef = useRef<null | WebSocket>(null);
 
-	useEffect(() => {
+	const reconnectTimerRef = useRef<NodeJS.Timeout | null>(null);
+	const reconnectAttempt = useRef(0);
+
+	const connect = useCallback(() => {
+		if (wsRef.current && wsRef.current.readyState < 2) return;
+		if (reconnectTimerRef.current) {
+			clearTimeout(reconnectTimerRef.current);
+		}
+
+		if (reconnectAttempt.current >= MAX_RECONNECT_ATTEMPTS) {
+			console.warn("已達最大重新連線次數，放棄連線");
+			return;
+		}
+
+		//console.info(`正在嘗試第${reconnectAttempt.current + 1}次連線`);
+		setState("CONNECTING");
+
 		const ws = new WebSocket(env.VITE_WEBSOCKET_URL);
 		wsRef.current = ws;
-		ws.addEventListener("open", () => {
+
+		function handleOpen() {
 			setState("OPEN");
-			console.info("已建立 WebSocket 連接");
-		});
+			reconnectAttempt.current = 0;
+			//console.info("已建立 WebSocket 連接");
+		}
 
-		ws.addEventListener("message", (e) => {
+		function handleMessage(e: MessageEvent) {
 			if (onMessage) onMessage(e);
-		});
+		}
 
-		ws.addEventListener("close", () => {
+		function handleClose() {
 			setState("CLOSED");
-		});
+			//console.info("WebSocket 連線關閉，準備重連...");
 
-		ws.addEventListener("error", () => {
+			const timout =
+				RECONNECT_DELAY_BASE * Math.pow(2, reconnectAttempt.current);
+			reconnectTimerRef.current = setTimeout(connect, timout);
+
+			reconnectAttempt.current++;
+		}
+
+		function handleError() {
 			setState("CLOSED");
-		});
+		}
+
+		ws.addEventListener("open", handleOpen);
+		ws.addEventListener("message", handleMessage);
+		ws.addEventListener("close", handleClose);
+		ws.addEventListener("error", handleError);
 
 		return () => {
-			ws.close();
+			ws.removeEventListener("open", handleOpen);
+			ws.removeEventListener("message", handleMessage);
+			ws.removeEventListener("close", handleClose);
+			ws.removeEventListener("error", handleError);
 		};
 	}, [onMessage]);
 
-	const sendMessage = useCallback(
-		(message: string) => {
-			if (state === "OPEN") {
-				if (wsRef.current) wsRef.current.send(message);
-			} else {
-				console.warn("WebSocket 尚未連線，無法發送訊息。");
+	useEffect(() => {
+		const cleanUpEventListener = connect();
+		return () => {
+			if (reconnectTimerRef.current) {
+				clearTimeout(reconnectTimerRef.current);
 			}
-		},
-		[state]
-	);
+			if (cleanUpEventListener) cleanUpEventListener();
+
+			wsRef.current?.close();
+		};
+	}, [connect]);
+
+	const sendMessage = useCallback((message: string) => {
+		if (wsRef.current && wsRef.current.readyState === 1) {
+			wsRef.current.send(message);
+		} else {
+			console.warn("WebSocket 尚未連線，無法發送訊息。");
+		}
+	}, []);
 
 	return { state, sendMessage };
 }

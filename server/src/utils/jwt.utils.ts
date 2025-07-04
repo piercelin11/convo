@@ -39,7 +39,15 @@ export function authenticateAuthToken(token?: string) {
 	if (!token) {
 		throw new AuthenticationError("未授權的請求");
 	}
-	const userPayload = jwt.verify(token, env.JWT_PRIVATE_KEY) as UserPayloadType;
+	try {
+		const userPayload = jwt.verify(
+			token,
+			env.JWT_PRIVATE_KEY
+		) as UserPayloadType;
 
-	return userPayload;
+		return userPayload;
+	} catch (error) {
+		console.error("使用者身份驗證失敗:", error);
+		throw new AuthenticationError("未授權的請求");
+	}
 }
