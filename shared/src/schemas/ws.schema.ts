@@ -1,5 +1,6 @@
 import { z } from "zod/v4";
 import { MessageRecordSchema } from "./db.schema";
+import { MessageDtoSchema } from "./dto.schema";
 
 //以下為客戶端傳向伺服器端的訊息結構
 
@@ -64,7 +65,7 @@ export type InboundMessageSchemaType = z.infer<typeof InboundMessageSchema>;
  */
 export const NewChatMessageSchema = z.object({
 	event: z.literal("NEW_CHAT"),
-	payload: MessageRecordSchema,
+	payload: MessageDtoSchema,
 });
 /**
  * 收到新訊息的資料型別

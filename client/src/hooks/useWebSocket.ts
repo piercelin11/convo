@@ -1,7 +1,10 @@
 import { env } from "@/config/env";
 import { useRef, useEffect, useState, useCallback } from "react";
 
-type WebSocketState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
+/**
+ * WebSocket 的連接狀態型別
+ */
+export type WebSocketState = "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED";
 
 const MAX_RECONNECT_ATTEMPTS = 5;
 const RECONNECT_DELAY_BASE = 1000;
@@ -14,7 +17,7 @@ const RECONNECT_DELAY_BASE = 1000;
  * @returns 回傳一個物件，包含當前的連線狀態 `state` 和一個用來發送訊息的函式 `sendMessage`。
  */
 export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
-	const [state, setState] = useState<WebSocketState>("CONNECTING");
+	const [readyState, setReadyState] = useState<WebSocketState>("CONNECTING");
 	const wsRef = useRef<null | WebSocket>(null);
 
 	const reconnectTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -32,13 +35,13 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 		}
 
 		//console.info(`正在嘗試第${reconnectAttempt.current + 1}次連線`);
-		setState("CONNECTING");
+		setReadyState("CONNECTING");
 
 		const ws = new WebSocket(env.VITE_WEBSOCKET_URL);
 		wsRef.current = ws;
 
 		function handleOpen() {
-			setState("OPEN");
+			setReadyState("OPEN");
 			reconnectAttempt.current = 0;
 			console.info("已建立 WebSocket 連接");
 		}
@@ -48,7 +51,7 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 		}
 
 		function handleClose() {
-			setState("CLOSED");
+			setReadyState("CLOSED");
 			//console.info("WebSocket 連線關閉，準備重連...");
 
 			const timout =
@@ -59,7 +62,7 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 		}
 
 		function handleError() {
-			setState("CLOSED");
+			setReadyState("CLOSED");
 		}
 
 		ws.addEventListener("open", handleOpen);
@@ -95,5 +98,5 @@ export default function useWebSocket(onMessage?: (e: MessageEvent) => void) {
 		}
 	}, []);
 
-	return { state, sendMessage };
+	return { readyState, sendMessage };
 }

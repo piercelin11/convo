@@ -1,22 +1,10 @@
-import {
-	useCallback,
-	useEffect,
-	useState,
-	type ChangeEvent,
-	type FormEvent,
-} from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Send } from "react-feather";
 import IconBtn from "../ui/IconBtn";
-import useWebSocket from "@/hooks/useWebSocket";
-import {
-	NewChatMessageSchema,
-	type InboundMessageSchemaType,
-	type MessageDto,
-} from "@convo/shared";
+
+import { type InboundMessageSchemaType } from "@convo/shared";
 import { useSession } from "@/store/auth/useAuth";
-import { useQueryClient } from "@tanstack/react-query";
-import messageKeys from "@/queries/message/messageKeys";
-import z, { ZodError } from "zod/v4";
+import useWebSocketContext from "@/store/webSocket/useWebSocketContext";
 
 type MessageInputAreaProps = {
 	roomId: string;
@@ -30,50 +18,7 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 	const [input, setInput] = useState("");
 	const { id: userId } = useSession();
 
-	const queryClient = useQueryClient();
-
-	//處理伺服器端傳到客戶端的廣播訊息，並樂觀更新聊天室中的訊息
-	const onMessageRecieved = useCallback(
-		(e: MessageEvent) => {
-			try {
-				const validatedData = NewChatMessageSchema.parse(JSON.parse(e.data));
-				const event = validatedData.event;
-				const messages = validatedData.payload;
-
-				if (event === "NEW_CHAT") {
-					queryClient.setQueryData(
-						messageKeys.room(roomId),
-						(oldData: MessageDto[]) => {
-							if (!oldData) return [messages];
-							return [messages, ...oldData];
-						}
-					);
-					queryClient.invalidateQueries({ queryKey: messageKeys.room(roomId) });
-				}
-			} catch (error) {
-				if (error instanceof SyntaxError) {
-					console.error(
-						"[MessageInputArea]JSON 解析錯誤：收到了無效的 JSON 格式字串。",
-						error.message
-					);
-				} else if (error instanceof ZodError) {
-					const fieldError = z.flattenError(error).fieldErrors;
-					console.error(
-						"[MessageInputArea]伺服器傳來的 WebSocket 訊息結構錯誤。",
-						fieldError
-					);
-				} else
-					console.error(
-						"[MessageInputArea]接收伺服器端回傳的 WebSocket 訊息時出現未預期錯誤。",
-						error
-					);
-			}
-		},
-		[roomId, queryClient]
-	);
-
-	//負責連線到後端的 WebSocket
-	const { state, sendMessage } = useWebSocket(onMessageRecieved);
+	const { readyState, sendMessage } = useWebSocketContext();
 
 	//初始化聊天室，將客戶端加入指定聊天室
 	useEffect(() => {
@@ -83,8 +28,8 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 				roomId,
 			},
 		};
-		if (state === "OPEN") sendMessage(JSON.stringify(joinRoomMessage));
-	}, [roomId, sendMessage, state]);
+		if (readyState === "OPEN") sendMessage(JSON.stringify(joinRoomMessage));
+	}, [roomId, sendMessage, readyState]);
 
 	function handleInput(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
@@ -102,7 +47,7 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 				text: input,
 			},
 		};
-		if (state === "OPEN") {
+		if (readyState === "OPEN") {
 			sendMessage(JSON.stringify(sendChatMessage));
 			setInput("");
 		} else console.warn("WebSocket 尚未連線");
