@@ -2,9 +2,11 @@ import type { ComfirmationOptionsType } from "@/store/modal/ModalContext";
 import Button from "./Button";
 import useModalContext from "@/store/modal/useModalContext";
 
-type ComfirmationModalProps = { options: ComfirmationOptionsType };
+type ComfirmationModalContentProps = { options: ComfirmationOptionsType };
 
-export default function ComfirmationModal({ options }: ComfirmationModalProps) {
+export default function ComfirmationModalContent({
+	options,
+}: ComfirmationModalContentProps) {
 	const { message, cancelText, confirmText, onConfirm, onCancel } = options;
 	const { onClose } = useModalContext();
 	return (

@@ -1,7 +1,5 @@
-import type { ModalKeyType } from "@/store/modal/ModalContext";
 import { Edit2, Trash } from "react-feather";
-import useModalContext from "@/store/modal/useModalContext";
-import ModalProvider from "@/store/modal/ModalProvider";
+import EditChatRoomForm from "@/components/chat/EditGroupChat/EditChatRoomForm";
 
 /**
  * 聊天室下拉選單的項目型別。
@@ -24,9 +22,13 @@ export type ChatRoomDropdownMenuItemsType = {
 	 */
 	label: string;
 	/**
-	 * 控制哪個選單開啟的 key。由 {@link useModalContext} 和 {@link ModalProvider} 控制。
+	 * 彈跳視窗中的內容。
 	 */
-	modalKey?: ModalKeyType;
+	modalContent?: React.ComponentType;
+	/**
+	 * 彈跳視窗中的標題。
+	 */
+	modalTitle?: string;
 };
 
 /**
@@ -46,7 +48,8 @@ const chatRoomDropdownMenuItems = [
 		actionType: "modal",
 		icon: Edit2,
 		label: "編輯聊天室",
-		modalKey: "editChatRoom",
+		modalContent: EditChatRoomForm,
+		modalTitle: "編輯聊天室",
 	},
 ] as ChatRoomDropdownMenuItemsType[];
 

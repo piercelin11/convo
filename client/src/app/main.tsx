@@ -15,14 +15,14 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<QueryClientProvider client={queryClient}>
 			<BrowserRouter>
-				<ModalProvider>
-					<AuthProvider>
+				<AuthProvider>
+					<ModalProvider>
 						<WebSocketProvider>
 							<App />
 							<ReactQueryDevtools initialIsOpen={false} />
 						</WebSocketProvider>
-					</AuthProvider>
-				</ModalProvider>
+					</ModalProvider>
+				</AuthProvider>
 			</BrowserRouter>
 		</QueryClientProvider>
 	</StrictMode>

@@ -15,7 +15,7 @@ const ICON_SIZE = 16;
  */
 export default function SidebarMenu() {
 	const { logout } = useAuth();
-	const { setModalKey } = useModalContext();
+	const { showCustomModal } = useModalContext();
 	const navigate = useNavigate();
 	const { username, avatar_url } = useSession();
 
@@ -26,7 +26,11 @@ export default function SidebarMenu() {
 				break;
 			}
 			case "modal": {
-				if (item.modalKey) setModalKey(item.modalKey);
+				if (item.modalContent)
+					showCustomModal({
+						content: <item.modalContent />,
+						title: item.modalTitle,
+					});
 				else console.error("[SidebarMenu]下拉選單項目缺少 modalKey");
 				break;
 			}

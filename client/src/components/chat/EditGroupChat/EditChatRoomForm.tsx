@@ -19,7 +19,7 @@ export default function EditChatRoomForm() {
 	const { roomId } = useParams<ChatPageParams>();
 	const { data, isLoading } = useChatQuery(roomId!);
 
-	const { setModalKey } = useModalContext();
+	const { onClose } = useModalContext();
 	const [name, setName] = useState(data?.name || undefined);
 	const [file, setFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -58,7 +58,7 @@ export default function EditChatRoomForm() {
 
 		await editRoom(validated.data);
 
-		setModalKey(null);
+		onClose();
 	}
 
 	if (isLoading) return <p>載入中...</p>;
