@@ -44,7 +44,6 @@ export function authenticateAuthToken(token?: string) {
 			token,
 			env.JWT_PRIVATE_KEY
 		) as UserPayloadType;
-
 		return userPayload;
 	} catch (error) {
 		console.error("使用者身份驗證失敗:", error);

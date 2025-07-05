@@ -18,18 +18,6 @@ export type UserPayloadType = {
 	exp?: number;
 };
 
-// 擴展 Express Request 介面，使其包含 `user` 屬性
-declare global {
-	namespace Express {
-		interface Request {
-			/**
-			 * 經過認證後，附加在請求物件上的使用者 Payload。
-			 */
-			user?: UserPayloadType;
-		}
-	}
-}
-
 /**
  * JWT 權限驗證中介軟體。
  * 負責從請求的 Cookie 中提取認證令牌，驗證其有效性，
