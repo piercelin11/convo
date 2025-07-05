@@ -1,45 +1,39 @@
-import { authenticateAuthToken, AuthenticationError } from "@/utils/index.js";
+import { authenticateAuthToken } from "@/utils/index.js";
 import { ErrorMessageSchemaType, InboundMessageSchema } from "@convo/shared";
 import cookie from "cookie";
 import { Server } from "http";
-import { WebSocket, WebSocketServer } from "ws";
+import { WebSocket } from "ws";
 import { z, ZodError } from "zod/v4";
 import handleJoinRoom from "./handler/handleJoinRoom.js";
 import handleSendChat from "./handler/handleSendChat.js";
 import handleLeaveRoom from "./handler/handleLeaveRoom.js";
+import { wss, userConnections, roomConnections } from "./wss.js";
+import { UserPayloadType } from "@/middlewares/authenticateToken.js";
 
 export default function initializeWebSocket(server: Server) {
-	const wss = new WebSocketServer({ server });
-	const roomsMap = new Map<string, Set<WebSocket>>();
-
-	wss.on("connection", (ws: WebSocket, req) => {
+	server.on("upgrade", (req, socket, head) => {
 		const cookieString = req.headers.cookie || "";
 		const cookies = cookie.parse(cookieString);
 		const token = cookies.authToken;
+		let user: UserPayloadType | null = null;
 
 		try {
-			authenticateAuthToken(token);
+			user = authenticateAuthToken(token);
 		} catch (error) {
-			if (error instanceof AuthenticationError) {
-				const errorMessage: ErrorMessageSchemaType = {
-					event: "ERROR",
-					payload: {
-						message: `使用者身份驗證失敗: ${error.message}`,
-					},
-				};
-				ws.send(JSON.stringify(errorMessage));
-			} else {
-				const errorMessage: ErrorMessageSchemaType = {
-					event: "ERROR",
-					payload: {
-						message: "發生未預期的錯誤，使用者身份驗證失敗",
-					},
-				};
-				ws.send(JSON.stringify(errorMessage));
-			}
 			console.error("[WebSocket]身份驗證失敗。", error);
-			ws.close(1008, "身份驗證失敗");
+			socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
+			socket.destroy();
+			return;
 		}
+
+		wss.handleUpgrade(req, socket, head, (ws) => {
+			wss.emit("connection", ws, user);
+		});
+	});
+
+	wss.on("connection", (ws: WebSocket, user: UserPayloadType) => {
+		if (!userConnections.has(user.id)) userConnections.set(user.id, ws);
+		ws.user = user;
 
 		ws.on("message", (message) => {
 			const messageString = message.toString();
@@ -50,15 +44,15 @@ export default function initializeWebSocket(server: Server) {
 
 				switch (validatedData.type) {
 					case "JOIN_ROOM": {
-						handleJoinRoom(ws, roomsMap, validatedData.payload);
+						handleJoinRoom(ws, validatedData.payload);
 						break;
 					}
 					case "LEAVE_ROOM": {
-						handleLeaveRoom(ws, roomsMap);
+						handleLeaveRoom(ws);
 						break;
 					}
 					case "SEND_CHAT": {
-						handleSendChat(ws, roomsMap, validatedData.payload);
+						handleSendChat(validatedData.payload);
 						break;
 					}
 				}
@@ -107,14 +101,16 @@ export default function initializeWebSocket(server: Server) {
 		ws.on("close", () => {
 			const { currentRoomId } = ws;
 			if (currentRoomId) {
-				const room = roomsMap.get(currentRoomId);
+				const room = roomConnections.get(currentRoomId);
 				if (room) {
 					room.delete(ws);
 					if (room.size === 0) {
-						roomsMap.delete(currentRoomId);
+						roomConnections.delete(currentRoomId);
 					}
 				}
 			}
+
+			userConnections.delete(user.id);
 		});
 	});
 }

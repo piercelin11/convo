@@ -54,7 +54,7 @@ body {
 }
 
 hr {
-	@apply text-neutral-700
+	@apply text-neutral-800
 }
 
 ::-webkit-scrollbar {

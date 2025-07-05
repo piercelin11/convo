@@ -1,16 +1,14 @@
 import WebSocket from "ws";
+import { roomConnections } from "../wss.js";
 
-export default function handleLeaveRoom(
-	ws: WebSocket,
-	roomsMap: Map<string, Set<WebSocket>>
-) {
+export default function handleLeaveRoom(ws: WebSocket) {
 	const { currentRoomId } = ws;
 	if (currentRoomId) {
-		const room = roomsMap.get(currentRoomId);
+		const room = roomConnections.get(currentRoomId);
 		if (room) {
 			room.delete(ws);
 			if (room.size === 0) {
-				roomsMap.delete(currentRoomId);
+				roomConnections.delete(currentRoomId);
 			}
 		}
 	}
