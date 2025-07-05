@@ -42,7 +42,7 @@ export default function Modal({
 						<X size={16} />
 					</button>
 				</div>
-				<div className="max-h-[65dvh] overflow-y-scroll px-6 xl:max-h-[50dvh]">
+				<div className="max-h-[65dvh] overflow-y-scroll px-6 pb-6 xl:max-h-[50dvh]">
 					{children}
 				</div>
 			</div>

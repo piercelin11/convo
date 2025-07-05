@@ -13,13 +13,21 @@ type ChatRoomMenuProps = {
 export default function ChatRoomMenu({ roomId }: ChatRoomMenuProps) {
 	const { mutate } = useDeleteChatMutation();
 	const navigate = useNavigate();
-	const { setModalKey } = useModalContext();
+	const { setModalKey, setComfirmationOptions, onClose } = useModalContext();
 
 	function handleMenuClick(item: ChatRoomDropdownMenuItemsType) {
 		switch (item.actionType) {
 			case "delete": {
-				mutate(roomId);
-				navigate("/");
+				setModalKey("comfirmation");
+				setComfirmationOptions({
+					title: "確認刪除聊天室",
+					message: "刪除聊天室後，所有訊息都會消失且無法復原",
+					onConfirm: () => {
+						mutate(roomId);
+						onClose();
+						navigate("/");
+					},
+				});
 				break;
 			}
 			case "modal": {
