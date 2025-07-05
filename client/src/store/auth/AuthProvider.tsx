@@ -22,7 +22,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 					setIsAuthenticated(true);
 				}
 			} catch (error) {
-				if (error instanceof AxiosError && error.status === 403) {
+				if (
+					error instanceof AxiosError &&
+					(error.status === 403 || error.status === 401)
+				) {
 					console.warn("請重新登入");
 				} else console.error("[AuthContext]發生未預期錯誤:", error);
 

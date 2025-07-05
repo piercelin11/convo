@@ -4,6 +4,7 @@ import {
 	editChatRoomHandler,
 	getChatRoomHandler,
 	getChatRoomsHandler,
+	getChatRoomWithMessagesHandler,
 } from "@/controllers/chatRooms.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import {
@@ -21,6 +22,12 @@ router.get(
 	"/:roomId",
 	validateRequest({ params: ChatRoomParamsSchema }),
 	getChatRoomHandler
+);
+
+router.get(
+	"/:roomId/messages",
+	validateRequest({ params: ChatRoomParamsSchema }),
+	getChatRoomWithMessagesHandler
 );
 
 router.post(

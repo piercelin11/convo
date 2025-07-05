@@ -22,7 +22,7 @@ export default function Avatar({ src, size = 50, className }: AvatarProps) {
 	return (
 		<img
 			src={src || env.VITE_USER_IMG_PLACEHOLDER}
-			className={cn("aspect-square rounded-full", className)}
+			className={cn("aspect-square rounded-full object-cover", className)}
 			width={size}
 			height={size}
 		/>

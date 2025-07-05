@@ -1,10 +1,11 @@
-import { useAuth } from "@/store/auth/useAuth";
+import { useAuth, useSession } from "@/store/auth/useAuth";
 import { DropdownItem } from "../ui/DropdownItem";
 import useModalContext from "@/store/modal/useModalContext";
 import sidebarDropdownMenuItems, {
 	type SidebarDropdownMenuItemsType,
 } from "@/config/menu/sidebarDropdownMenuItems";
 import { useNavigate } from "react-router-dom";
+import Avatar from "../ui/Avatar";
 
 const ICON_SIZE = 16;
 
@@ -16,6 +17,7 @@ export default function SidebarMenu() {
 	const { logout } = useAuth();
 	const { setModalKey } = useModalContext();
 	const navigate = useNavigate();
+	const { username, avatar_url } = useSession();
 
 	function handleMenuClick(item: SidebarDropdownMenuItemsType) {
 		switch (item.actionType) {
@@ -38,9 +40,16 @@ export default function SidebarMenu() {
 
 	return (
 		<>
+			<DropdownItem>
+				<Avatar size={24} src={avatar_url} />
+				<p>{username}</p>
+			</DropdownItem>
+			<hr />
 			{sidebarDropdownMenuItems.map((item) => (
 				<DropdownItem key={item.id} onClick={() => handleMenuClick(item)}>
-					<item.icon size={ICON_SIZE} />
+					<div className="mx-1">
+						<item.icon size={ICON_SIZE} />
+					</div>
 					<p>{item.label}</p>
 				</DropdownItem>
 			))}

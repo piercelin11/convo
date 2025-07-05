@@ -70,6 +70,37 @@ export async function getChatRoomHandler(
 }
 
 /**
+ * 處理獲取指定聊天室資訊的請求。
+ * 根據路由參數中的 `roomId` 查詢單一聊天室的詳細資訊，包含其聊天訊息。
+ *
+ * @param req - Express 請求物件，其 `params` 應包含 `roomId`。
+ * @param res - Express 響應物件，用於發送 JSON 響應。
+ * @param next - 呼叫下一個中介軟體或錯誤處理器的回調函式。
+ * @returns 包含指定聊天室資訊及聊天訊息的 JSON 響應。
+ * @throws {NotFoundError} 如果找不到指定 `roomId` 的聊天室。
+ */
+export async function getChatRoomWithMessagesHandler(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		const { roomId } = req.params;
+
+		const chatRoom = await chatRoomsDB.findChatRoomWithMessagesByRoomId(roomId);
+		if (!chatRoom) throw new NotFoundError("聊天室不存在");
+
+		res.status(200).json({
+			success: true,
+			message: "成功獲取指定 id 的聊天室",
+			data: chatRoom,
+		});
+	} catch (error) {
+		next(error);
+	}
+}
+
+/**
  * 處理創建新聊天室的請求。
  * 驗證使用者身份，並根據請求體中的資料創建一個新的聊天室，包括其成員和（可選的）頭貼圖片。
  *

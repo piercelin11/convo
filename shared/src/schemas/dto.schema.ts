@@ -31,6 +31,21 @@ export const FriendshipDtoSchema = z.object({
 });
 export type FriendshipDto = z.infer<typeof FriendshipDtoSchema>;
 
+
+/**
+ * 用於聊天訊息的資料傳輸物件
+ */
+export const MessageDtoSchema = z.object({
+	id: z.uuid(),
+	sender_username: z.string(),
+	sender_avatar_url: z.url().nullable(),
+	created_at: z.coerce.date(),
+	room_id: z.string(),
+	content: z.string(),
+	sender_id: z.string(),
+});
+export type MessageDto = z.infer<typeof MessageDtoSchema>;
+
 /**
  * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
  * 成員資訊會擴充包含加入時間。
@@ -40,4 +55,15 @@ export const ChatRoomWithMembersDtoSchema = ChatRoomRecordSchema.extend({
 });
 export type ChatRoomWithMembersDto = z.infer<
 	typeof ChatRoomWithMembersDtoSchema
+>;
+
+/**
+ * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
+ * 成員資訊會擴充包含加入時間。
+ */
+export const ChatRoomWithMessagesDtoSchema = ChatRoomRecordSchema.extend({
+	messages: z.array(MessageDtoSchema),
+});
+export type ChatRoomWithMessagesDto = z.infer<
+	typeof ChatRoomWithMessagesDtoSchema
 >;
