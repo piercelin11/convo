@@ -1,14 +1,8 @@
 import { createContext, type ReactNode } from "react";
 
-// eslint-disable-next-line jsdoc/require-jsdoc
-export type ModalKeyType =
-	| "createChatRoom"
-	| "profileEdit"
-	| "editChatRoom"
-	| "comfirmation"
-	| null;
-
-// eslint-disable-next-line jsdoc/require-jsdoc
+/**
+ * 顯示再次確認 Modal 的型別
+ */
 export type ComfirmationOptionsType = {
 	title: string;
 	message: string | ReactNode;
@@ -18,11 +12,17 @@ export type ComfirmationOptionsType = {
 	onCancel?: () => void;
 };
 
+/**
+ * 顯示客製化 Modal 的型別
+ */
+export type CustomModalContentType = {
+	content: ReactNode;
+	title?: string;
+};
+
 type ModalContextType = {
-	modalKey: ModalKeyType;
-	setModalKey: (key: ModalKeyType) => void;
-	setComfirmationOptions: (options: ComfirmationOptionsType | null) => void;
-	comfirmationOptions: ComfirmationOptionsType | null;
+	showCustomModal: (content: CustomModalContentType) => void;
+	showComfirmationModal: (options: ComfirmationOptionsType) => void;
 	onClose: () => void;
 };
 
