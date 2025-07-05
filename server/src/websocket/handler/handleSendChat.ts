@@ -1,5 +1,5 @@
 import {
-	MessageRecord,
+	MessageDto,
 	OutboundMessageSchemaType,
 	SendChatPayloadSchemaType,
 } from "@convo/shared";
@@ -12,7 +12,7 @@ export default async function handleSendChat(
 	payload: SendChatPayloadSchemaType
 ) {
 	const { roomId, text, userId } = payload;
-	let message: MessageRecord | null = null;
+	let message: MessageDto | null = null;
 
 	try {
 		message = await messagesDB.createMessages(roomId, userId, text);

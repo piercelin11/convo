@@ -29,6 +29,16 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 			},
 		};
 		if (readyState === "OPEN") sendMessage(JSON.stringify(joinRoomMessage));
+
+		return () => {
+			const leaveRoomMessage: InboundMessageSchemaType = {
+				type: "LEAVE_ROOM",
+				payload: {
+					roomId,
+				},
+			};
+			if (readyState === "OPEN") sendMessage(JSON.stringify(leaveRoomMessage));
+		};
 	}, [roomId, sendMessage, readyState]);
 
 	function handleInput(e: ChangeEvent<HTMLInputElement>) {

@@ -8,5 +8,6 @@ export * from "./schemas/friendship.schema";
 export * from "./schemas/upload.schema";
 export * from "./schemas/user.schema";
 export * from "./schemas/message.schema";
-export * from "./schemas/ws.schema";
+export * from "./schemas/ws.inbound.schema";
+export * from "./schemas/ws.outbound.schema";
 

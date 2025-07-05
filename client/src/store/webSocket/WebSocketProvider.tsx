@@ -5,6 +5,7 @@ import { OutboundMessageSchema } from "@convo/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import * as MessageHandler from "./handler";
 import z from "zod/v4";
+import { useAuth } from "../auth/useAuth";
 
 type WebSocketProviderProps = {
 	children: ReactNode;
@@ -13,6 +14,20 @@ type WebSocketProviderProps = {
 export default function WebSocketProvider({
 	children,
 }: WebSocketProviderProps) {
+	const { isAuthenticated } = useAuth();
+
+	return (
+		<>
+			{isAuthenticated ? (
+				<WebSocketManager>{children}</WebSocketManager>
+			) : (
+				children
+			)}
+		</>
+	);
+}
+
+function WebSocketManager({ children }: WebSocketProviderProps) {
 	const queryClient = useQueryClient();
 	const handleOnMessage = useCallback(
 		(e: MessageEvent) => {

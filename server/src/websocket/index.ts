@@ -6,6 +6,7 @@ import { WebSocket, WebSocketServer } from "ws";
 import { z, ZodError } from "zod/v4";
 import handleJoinRoom from "./handler/handleJoinRoom.js";
 import handleSendChat from "./handler/handleSendChat.js";
+import handleLeaveRoom from "./handler/handleLeaveRoom.js";
 
 export default function initializeWebSocket(server: Server) {
 	const wss = new WebSocketServer({ server });
@@ -52,6 +53,10 @@ export default function initializeWebSocket(server: Server) {
 						handleJoinRoom(ws, roomsMap, validatedData.payload);
 						break;
 					}
+					case "LEAVE_ROOM": {
+						handleLeaveRoom(ws, roomsMap);
+						break;
+					}
 					case "SEND_CHAT": {
 						handleSendChat(ws, roomsMap, validatedData.payload);
 						break;
@@ -72,10 +77,10 @@ export default function initializeWebSocket(server: Server) {
 					ws.send(JSON.stringify(errorMessage));
 				} else if (error instanceof ZodError) {
 					const fieldError = z.flattenError(error).fieldErrors;
-					console.error(
-						"[WebSocket]傳入伺服器的 WebSocket 訊息結構錯誤。",
-						fieldError
-					);
+					console.error("[WebSocket]傳入伺服器的 WebSocket 訊息結構錯誤", {
+						error: fieldError,
+						inboundMessage: JSON.parse(messageString),
+					});
 					const errorMessage: ErrorMessageSchemaType = {
 						event: "ERROR",
 						payload: {

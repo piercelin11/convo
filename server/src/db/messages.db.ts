@@ -1,5 +1,5 @@
 import { dbQuery } from "@/utils/index.js";
-import { MessageDto, MessageDtoSchema, MessageRecord } from "@convo/shared";
+import { MessageDto, MessageDtoSchema } from "@convo/shared";
 import { z } from "zod/v4";
 
 /**
@@ -48,7 +48,7 @@ export async function createMessages(
 	roomId: string,
 	userId: string,
 	content: string
-): Promise<MessageRecord> {
+): Promise<MessageDto> {
 	const creatMessageQuery = `
          WITH new_message AS (
             INSERT INTO messages (room_id, sender_id, content)
