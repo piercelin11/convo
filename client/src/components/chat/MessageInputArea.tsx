@@ -2,9 +2,11 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Send } from "react-feather";
 import IconBtn from "../ui/IconBtn";
 
-import { type InboundMessageSchemaType } from "@convo/shared";
+import { type InboundMessageSchemaType, type MessageDto } from "@convo/shared";
 import { useSession } from "@/store/auth/useAuth";
 import useWebSocketContext from "@/store/webSocket/useWebSocketContext";
+import { useQueryClient } from "@tanstack/react-query";
+import messageKeys from "@/queries/message/messageKeys";
 
 type MessageInputAreaProps = {
 	roomId: string;
@@ -16,7 +18,9 @@ type MessageInputAreaProps = {
  */
 export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 	const [input, setInput] = useState("");
-	const { id: userId } = useSession();
+	const { id: userId, username, avatar_url } = useSession();
+
+	const queryClient = useQueryClient();
 
 	const { readyState, sendMessage } = useWebSocketContext();
 
@@ -49,6 +53,21 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 	//傳送訊息
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+		queryClient.setQueryData(
+			messageKeys.room(roomId),
+			(oldMessages: MessageDto[]) => {
+				const message = {
+					sender_username: username,
+					sender_avatar_url: avatar_url,
+					created_at: new Date(),
+					content: input,
+					sender_id: userId,
+				};
+				if (!oldMessages) return [message];
+				return [message, ...oldMessages];
+			}
+		);
+
 		const sendChatMessage: InboundMessageSchemaType = {
 			type: "SEND_CHAT",
 			payload: {

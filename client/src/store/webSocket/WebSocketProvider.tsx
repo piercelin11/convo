@@ -14,12 +14,12 @@ type WebSocketProviderProps = {
 export default function WebSocketProvider({
 	children,
 }: WebSocketProviderProps) {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, user } = useAuth();
 
 	return (
 		<>
 			{isAuthenticated ? (
-				<WebSocketManager>{children}</WebSocketManager>
+				<WebSocketManager userId={user!.id}>{children}</WebSocketManager>
 			) : (
 				children
 			)}
@@ -27,7 +27,10 @@ export default function WebSocketProvider({
 	);
 }
 
-function WebSocketManager({ children }: WebSocketProviderProps) {
+function WebSocketManager({
+	children,
+	userId,
+}: WebSocketProviderProps & { userId: string }) {
 	const queryClient = useQueryClient();
 	const handleOnMessage = useCallback(
 		(e: MessageEvent) => {
@@ -55,7 +58,11 @@ function WebSocketManager({ children }: WebSocketProviderProps) {
 
 			switch (validatedData.event) {
 				case "NEW_CHAT": {
-					MessageHandler.handleNewMessage(queryClient, validatedData.payload);
+					MessageHandler.handleNewMessage(
+						queryClient,
+						userId,
+						validatedData.payload
+					);
 					break;
 				}
 				case "ROOM_CHANGE": {
@@ -72,7 +79,7 @@ function WebSocketManager({ children }: WebSocketProviderProps) {
 				}
 			}
 		},
-		[queryClient]
+		[queryClient, userId]
 	);
 
 	const { readyState, sendMessage } = useWebSocket(handleOnMessage);

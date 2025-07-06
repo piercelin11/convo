@@ -5,5 +5,6 @@ export declare module "ws" {
 	interface WebSocket {
 		currentRoomId?: string;
 		user?: UserPayloadType;
+		isAlive?: boolean;
 	}
 }

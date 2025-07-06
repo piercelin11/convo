@@ -34,6 +34,7 @@ export default function initializeWebSocket(server: Server) {
 	wss.on("connection", (ws: WebSocket, user: UserPayloadType) => {
 		if (!userConnections.has(user.id)) userConnections.set(user.id, ws);
 		ws.user = user;
+		ws.isAlive = true;
 
 		ws.on("message", (message) => {
 			const messageString = message.toString();
@@ -112,5 +113,23 @@ export default function initializeWebSocket(server: Server) {
 
 			userConnections.delete(user.id);
 		});
+
+		ws.on("pong", () => {
+			ws.isAlive = true;
+		});
+	});
+
+	const interval = setInterval(() => {
+		wss.clients.forEach((ws) => {
+			if (ws.isAlive === false) {
+				return ws.terminate();
+			}
+			ws.isAlive = false;
+			ws.ping();
+		});
+	}, 30000);
+
+	wss.on("close", () => {
+		clearInterval(interval);
 	});
 }
