@@ -11,16 +11,12 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import z from "zod/v4";
 
-/* type Step2EnterRoomInfoProps = {
-
-}; */
-
 export default function EditChatRoomForm() {
 	const { roomId } = useParams<ChatPageParams>();
 	const { data, isLoading } = useChatQuery(roomId!);
 
 	const { onClose } = useModalContext();
-	const [name, setName] = useState(data?.name || undefined);
+	const [name, setName] = useState(data?.name || "");
 	const [file, setFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
 

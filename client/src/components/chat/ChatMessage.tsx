@@ -13,7 +13,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
 	return (
 		<div
 			className={cn("flex gap-2", {
-				"justify-end text-right": isSender,
+				"justify-end": isSender,
 			})}
 		>
 			{!isSender && <Avatar src={message.sender_avatar_url} />}

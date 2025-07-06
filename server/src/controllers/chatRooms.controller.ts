@@ -121,8 +121,8 @@ export async function createChatRoomHandler(
 		const { name, members, img } = req.body as CreateChatRoomSchemaType;
 		if (!user) throw new AuthorizationError(); // 確保用戶已認證
 
-		// 調用資料庫服務來創建聊天室
-		const newChatRoom = await chatRoomsDB.createChatRoom(
+		// 調用服務層服務來創建聊天室
+		const newChatRoom = await chatRoomsService.createChatRoom(
 			name,
 			user.id,
 			members,

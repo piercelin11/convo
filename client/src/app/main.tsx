@@ -16,12 +16,12 @@ createRoot(document.getElementById("root")!).render(
 		<QueryClientProvider client={queryClient}>
 			<BrowserRouter>
 				<AuthProvider>
-					<ModalProvider>
-						<WebSocketProvider>
+					<WebSocketProvider>
+						<ModalProvider>
 							<App />
 							<ReactQueryDevtools initialIsOpen={false} />
-						</WebSocketProvider>
-					</ModalProvider>
+						</ModalProvider>
+					</WebSocketProvider>
 				</AuthProvider>
 			</BrowserRouter>
 		</QueryClientProvider>

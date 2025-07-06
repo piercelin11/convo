@@ -1,5 +1,4 @@
 import { dbQuery, dbTransaction } from "@/utils/index.js";
-import { BadRequestError } from "@/utils/index.js";
 import {
 	ChatRoomRecord,
 	ChatRoomRecordSchema,
@@ -24,7 +23,8 @@ export async function findChatRoomsByUserId(
         JOIN room_members AS rm 
         ON cr.id = rm.room_id
         WHERE rm.user_id = $1
-        `;
+		ORDER BY cr.latest_message_at ASC
+    `;
 	const values = [userId];
 	const result = await dbQuery<ChatRoomRecord>(query, values);
 	const chatRooms = result.rows;
@@ -60,7 +60,7 @@ export async function findChatRoomsByImgUrl(
  */
 export async function findChatRoomByRoomId(
 	roomId: string
-): Promise<ChatRoomRecord> {
+): Promise<ChatRoomRecord | undefined> {
 	const query = `
         SELECT * 
 		FROM chat_rooms
@@ -70,7 +70,7 @@ export async function findChatRoomByRoomId(
 
 	const result = await dbQuery<ChatRoomRecord>(query, values);
 	const chatRoom = result.rows[0];
-	return ChatRoomRecordSchema.parse(chatRoom);
+	return ChatRoomRecordSchema.optional().parse(chatRoom);
 }
 
 /**
@@ -199,7 +199,6 @@ export async function findChatRoomWithMessagesByRoomId(
  * @param members - 聊天室成員的用戶ID陣列，必須包含創建者。
  * @param [img] - 聊天室頭貼的URL (可選)。
  * @returns 創建成功的聊天室記錄。
- * @throws {BadRequestError} 如果創建者ID未包含在成員ID中。
  */
 export async function createChatRoom(
 	name: string,
@@ -223,9 +222,6 @@ export async function createChatRoom(
 		const memberValues: string[] = [];
 		const memberPlaceholder: string[] = [];
 		let placeholderndex = 1;
-
-		if (!members.includes(creatorId))
-			throw new BadRequestError("[chatRoomDB]創建者 id 須包含在成員 id 中");
 
 		members.forEach((memberId) => {
 			memberValues.push(chatRoomId, memberId);

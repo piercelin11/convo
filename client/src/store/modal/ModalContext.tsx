@@ -23,6 +23,8 @@ export type CustomModalContentType = {
 type ModalContextType = {
 	showCustomModal: (content: CustomModalContentType) => void;
 	showComfirmationModal: (options: ComfirmationOptionsType) => void;
+	comfirmationOptions: ComfirmationOptionsType | null;
+	customModalContent: CustomModalContentType | null;
 	onClose: () => void;
 };
 
