@@ -2,7 +2,7 @@ import z from "zod/v4";
 import { MessageDtoSchema } from "./dto.schema";
 
 /**
- * 收到新訊息的資料結構
+ * 收到新訊息的訊息結構
  * 由伺服器端傳向客戶端
  */
 export const NewChatMessageSchema = z.object({
@@ -10,13 +10,26 @@ export const NewChatMessageSchema = z.object({
 	payload: MessageDtoSchema,
 });
 /**
- * 收到新訊息的資料型別
+ * 收到新訊息的訊息型別
  * 由伺服器端傳向客戶端
  */
 export type NewChatMessageSchemaType = z.infer<typeof NewChatMessageSchema>;
 
 /**
- * 發生錯誤的資料結構
+ * 被加進聊天室的訊息結構
+ * 由伺服器端傳向客戶端
+ */
+export const NewRoomMessageSchema = z.object({
+	event: z.literal("ROOM_CHANGE"),
+});
+/**
+ * 被加進聊天室的訊息型別
+ * 由伺服器端傳向客戶端
+ */
+export type NewRoomMessageSchemaType = z.infer<typeof NewRoomMessageSchema>;
+
+/**
+ * 發生錯誤的訊息結構
  * 由伺服器端傳向客戶端
  */
 export const ErrorMessageSchema = z.object({
@@ -26,7 +39,7 @@ export const ErrorMessageSchema = z.object({
 	}),
 });
 /**
- * 發生錯誤的資料型別
+ * 發生錯誤的訊息型別
  * 由伺服器端傳向客戶端
  */
 export type ErrorMessageSchemaType = z.infer<typeof ErrorMessageSchema>;
@@ -37,7 +50,7 @@ export type ErrorMessageSchemaType = z.infer<typeof ErrorMessageSchema>;
  */
 export const OutboundMessageSchema = z.discriminatedUnion(
 	"event",
-	[NewChatMessageSchema, ErrorMessageSchema],
+	[NewChatMessageSchema, ErrorMessageSchema, NewRoomMessageSchema],
 	{ message: "伺服器端傳到客戶端的 WebSocket 訊息結構錯誤" }
 );
 /**

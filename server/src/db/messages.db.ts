@@ -49,30 +49,35 @@ export async function createMessages(
 	userId: string,
 	content: string
 ): Promise<MessageDto> {
-	const creatMessageQuery = `
-         WITH new_message AS (
+	const query = `
+        WITH inserted_message AS (
             INSERT INTO messages (room_id, sender_id, content)
             VALUES ($1, $2, $3)
             RETURNING *
+        ),
+        updated_room AS (
+            UPDATE chat_rooms
+            SET
+                latest_message_content = (SELECT content FROM inserted_message),
+                latest_message_at = (SELECT created_at FROM inserted_message),
+                latest_message_sender_id = (SELECT sender_id FROM inserted_message)
+            WHERE
+                id = (SELECT room_id FROM inserted_message)
         )
         SELECT
-            nm.id,
-            nm.room_id,
-            nm.sender_id,
-            nm.content,
-            nm.created_at,
-            u.username AS sender_username, -- 從 users 表中選取 username 並重新命名
-            u.avatar_url AS sender_avatar_url -- 從 users 表中選取 avatar_url 並重新命名
+            im.id,
+            im.room_id,
+            im.sender_id,
+            im.content,
+            im.created_at,
+            u.username AS sender_username, -- 從 users 表獲取
+            u.avatar_url AS sender_avatar_url -- 從 users 表獲取
         FROM
-            new_message nm
+            inserted_message im
         JOIN
-            users u ON nm.sender_id = u.id;
+            users u ON im.sender_id = u.id;
     `;
-	const result = await dbQuery<MessageDto>(creatMessageQuery, [
-		roomId,
-		userId,
-		content,
-	]);
+	const result = await dbQuery<MessageDto>(query, [roomId, userId, content]);
 
 	const message = result.rows[0];
 

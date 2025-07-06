@@ -1,7 +1,13 @@
-import { AuthorizationError, NotFoundError } from "@/utils/error.utils.js";
+import {
+	AuthorizationError,
+	BadRequestError,
+	NotFoundError,
+} from "@/utils/error.utils.js";
 import * as chatRoomsDB from "@/db/chatRooms.db.js";
 import { deleteS3Object, parseS3UrlParts } from "@/utils/s3.utils.js";
 import { env } from "@/config/env.js";
+import { userConnections } from "@/websocket/wss.js";
+import { NewRoomMessageSchemaType } from "@convo/shared";
 
 /**
  * 刪除指定聊天室。
@@ -15,13 +21,23 @@ import { env } from "@/config/env.js";
  */
 export async function deleteChatRoom(roomId: string, userId: string) {
 	//驗證使用者是否有刪除聊天室的權限
-	const chatRoom = await chatRoomsDB.findChatRoomByRoomId(roomId);
+	const chatRoom = await chatRoomsDB.findChatRoomWithMembersByRoomId(roomId);
 	if (!chatRoom) throw new NotFoundError("聊天室不存在");
 
 	if (chatRoom.creator_id !== userId)
 		throw new AuthorizationError("你沒有刪除該聊天室的權限");
 
 	await chatRoomsDB.deleteChatRoomByRoomId(roomId);
+
+	chatRoom.members.forEach((member) => {
+		const ws = userConnections.get(member.id);
+		if (ws) {
+			const message: NewRoomMessageSchemaType = {
+				event: "ROOM_CHANGE",
+			};
+			ws.send(JSON.stringify(message));
+		}
+	});
 
 	const imgUrl = chatRoom.image_url;
 	if (imgUrl) {
@@ -66,6 +82,16 @@ export async function editChatRoom(
 		imgUrl
 	);
 
+	chatRoomWithMembers.members.forEach((member) => {
+		const ws = userConnections.get(member.id);
+		if (ws) {
+			const message: NewRoomMessageSchemaType = {
+				event: "ROOM_CHANGE",
+			};
+			ws.send(JSON.stringify(message));
+		}
+	});
+
 	const prevImgUrl = chatRoomWithMembers.image_url;
 
 	//檢查原本是否有圖片
@@ -76,4 +102,43 @@ export async function editChatRoom(
 	}
 
 	return chatRoom;
+}
+
+/**
+ * 建立新的聊天室。
+ *
+ * @param name - 聊天室的名稱。
+ * @param creatorId - 創建聊天室的使用者ID (UUID)。
+ * @param members - 聊天室的成ID。
+ * @param img - (可選) 聊天室的圖片URL。
+ * @returns 新創建的聊天室記錄。
+ * @throws {BadRequestError} 如果成員中沒有包含創建者。
+ */
+export async function createChatRoom(
+	name: string,
+	creatorId: string,
+	members: string[],
+	img?: string | null
+) {
+	if (!members.includes(creatorId))
+		throw new BadRequestError("[chatRoomDB]創建者 id 須包含在成員 id 中");
+
+	const newChatRoom = await chatRoomsDB.createChatRoom(
+		name,
+		creatorId,
+		members,
+		img
+	);
+
+	members.forEach((id) => {
+		const ws = userConnections.get(id);
+		if (ws) {
+			const message: NewRoomMessageSchemaType = {
+				event: "ROOM_CHANGE",
+			};
+			ws.send(JSON.stringify(message));
+		}
+	});
+
+	return newChatRoom;
 }
