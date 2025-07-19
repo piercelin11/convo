@@ -46,24 +46,27 @@ export const MessageDtoSchema = z.object({
 });
 export type MessageDto = z.infer<typeof MessageDtoSchema>;
 
+
 /**
- * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
- * 成員資訊會擴充包含加入時間。
+ * 包含聊天室基本資訊及尚未讀取訊息數量的資料結構。
  */
-export const ChatRoomWithMembersDtoSchema = ChatRoomRecordSchema.extend({
-	members: z.array(UserDTOSchema.extend({ joined_at: z.coerce.date() })),
+export const ChatRoomDtoSchema = ChatRoomRecordSchema.extend({
+	last_read_at: z.coerce.date().nullable(),
+	unread_count: z.number(),
 });
-export type ChatRoomWithMembersDto = z.infer<
-	typeof ChatRoomWithMembersDtoSchema
+export type ChatRoomDto = z.infer<
+	typeof ChatRoomDtoSchema
 >;
 
 /**
  * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
  * 成員資訊會擴充包含加入時間。
  */
-export const ChatRoomWithMessagesDtoSchema = ChatRoomRecordSchema.extend({
-	messages: z.array(MessageDtoSchema),
+export const ChatRoomWithMembersDtoSchema = ChatRoomDtoSchema.extend({
+	members: z.array(UserDTOSchema.extend({ joined_at: z.coerce.date() })),
 });
-export type ChatRoomWithMessagesDto = z.infer<
-	typeof ChatRoomWithMessagesDtoSchema
+export type ChatRoomWithMembersDto = z.infer<
+	typeof ChatRoomWithMembersDtoSchema
 >;
+
+
