@@ -77,6 +77,7 @@ export const RoomMemberRecordSchema = z.object({
 	room_id: z.uuid(),
 	user_id: z.uuid(),
 	joined_at: z.coerce.date(),
+	last_read_at: z.coerce.date().nullable(),
 	// 如果未來加入 last_read_at，可以這樣寫：
 	// last_read_at: z.coerce.date().nullable().optional(),
 });
