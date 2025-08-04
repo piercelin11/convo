@@ -1,3 +1,5 @@
+import { unknown } from "zod/v4";
+
 /**
  * 基礎的自定義錯誤類別，所有其他特定錯誤類別都將繼承它。
  * 用於標準化應用程式中的錯誤處理，提供狀態碼和操作性標誌。
@@ -92,6 +94,15 @@ export class DatabaseError extends CustomError {
 		options?: { cause: unknown }
 	) {
 		super(message, 500, isOperational, options);
+	}
+}
+
+export class ConflictError extends CustomError {
+	constructor(
+		message: string = "請求與伺服器的當前狀態發生衝突",
+		options?: { cause: unknown }
+	) {
+		super(message, 409, false, options);
 	}
 }
 

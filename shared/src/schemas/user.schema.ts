@@ -1,6 +1,8 @@
 import { z } from "zod/v4";
+import { ApiResponseSchema } from "./api.schema";
+import { UserDTOSchema } from "./dto.schema";
 
-export const editProfileSchema = z.object({
+export const EditProfileSchema = z.object({
 	username: z
 		.string()
 		.trim()
@@ -25,4 +27,24 @@ export const editProfileSchema = z.object({
 		.max(120, { error: "請輸入一個合理的年齡" }),
 });
 
-export type EditProfileSchemaType = z.infer<typeof editProfileSchema>;
+export type EditProfileSchemaType = z.infer<typeof EditProfileSchema>;
+
+export const ProfileSchema = z.object({
+	id: z.string(),
+	username: z.string().min(1).max(50),
+	age: z.number().int().positive(),
+});
+
+export type ProfileSchemaType = z.infer<typeof ProfileSchema>;
+
+export const GetUserSchema = z.object({
+	userId: z.string(),
+});
+
+export type GetUserSchemaType = z.infer<typeof GetUserSchema>;
+
+export const ProfileResponseSchema = ApiResponseSchema.extend({
+	data: ProfileSchema,
+});
+
+export type ProfileResponseSchemaType = z.infer<typeof ProfileResponseSchema>;
