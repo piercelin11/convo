@@ -6,5 +6,6 @@ export declare module "ws" {
 		currentRoomId?: string;
 		user?: UserPayloadType;
 		isAlive?: boolean;
+		subscribedRoomIds?: string[];
 	}
 }

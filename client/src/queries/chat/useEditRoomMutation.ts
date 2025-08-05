@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import chatKeys from "./chatKeys";
 import type {
 	ApiResponseSchemaType,
+	ChatRoomDto,
 	ChatRoomRecord,
 	EditChatRoomSchemaType,
 } from "@convo/shared";
@@ -30,27 +31,24 @@ export default function useEditRoomMutation() {
 			});
 
 			const prevRooms = queryClient.getQueryData(chatKeys.lists()) as
-				| ChatRoomRecord[]
+				| ChatRoomDto[]
 				| undefined;
 			const prevRoom = queryClient.getQueryData(
 				chatKeys.detail(newRoomData.id)
 			) as ChatRoomRecord | undefined;
 
-			queryClient.setQueryData(
-				chatKeys.lists(),
-				(oldRooms: ChatRoomRecord[]) => {
-					return oldRooms.map((room) => {
-						if (room.id === newRoomData.id) {
-							return {
-								...room,
-								name: newRoomData.name,
-								image_url: newRoomData.img,
-							};
-						}
-						return room;
-					});
-				}
-			);
+			queryClient.setQueryData(chatKeys.lists(), (oldRooms: ChatRoomDto[]) => {
+				return oldRooms.map((room) => {
+					if (room.id === newRoomData.id) {
+						return {
+							...room,
+							name: newRoomData.name,
+							image_url: newRoomData.img,
+						};
+					}
+					return room;
+				});
+			});
 			queryClient.setQueryData(
 				chatKeys.detail(newRoomData.id),
 				(oldRoom: ChatRoomRecord) => ({
