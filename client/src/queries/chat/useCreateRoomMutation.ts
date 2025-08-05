@@ -3,13 +3,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import chatKeys from "./chatKeys";
 import type {
 	ApiResponseSchemaType,
+	ChatRoomDto,
 	ChatRoomRecord,
 	CreateChatRoomSchemaType,
 } from "@convo/shared";
 import { AxiosError } from "axios";
 
 type CreateGroupContext = {
-	prevRooms: ChatRoomRecord[] | undefined;
+	prevRooms: ChatRoomDto[] | undefined;
 	uploadedImageUrlForRollback?: string | null;
 };
 
@@ -26,19 +27,16 @@ export default function useCreateRoomMutation() {
 			await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
 
 			const prevRooms = queryClient.getQueryData(chatKeys.lists()) as
-				| ChatRoomRecord[]
+				| ChatRoomDto[]
 				| undefined;
 
-			queryClient.setQueryData(
-				chatKeys.lists(),
-				(oldRooms: ChatRoomRecord[]) => [
-					...oldRooms,
-					{
-						id: Date.now().toString(),
-						...newGroup,
-					},
-				]
-			);
+			queryClient.setQueryData(chatKeys.lists(), (oldRooms: ChatRoomDto[]) => [
+				...oldRooms,
+				{
+					id: Date.now().toString(),
+					...newGroup,
+				},
+			]);
 
 			return { prevRooms, uploadedImageUrlForRollback: newGroup.img };
 		},

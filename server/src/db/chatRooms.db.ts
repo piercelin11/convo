@@ -36,7 +36,7 @@ export async function findChatRoomsByUserId(
         WHERE 
 			rm.user_id = $1
 		ORDER BY 
-			cr.latest_message_at ASC
+			cr.latest_message_at DESC
     `;
 	const values = [userId];
 	const result = await dbQuery<ChatRoomRecord>(query, values);
@@ -154,15 +154,17 @@ export async function createChatRoom(
 	img?: string | null
 ): Promise<ChatRoomRecord> {
 	const chatRoom = await dbTransaction<ChatRoomRecord>(async (client) => {
+		const currentTime = new Date();
 		const creatChatRoomQuery = `
-            INSERT INTO chat_rooms (name, type, creator_id, image_url)
-            VALUES ($1, 'group', $2, $3)
+            INSERT INTO chat_rooms (name, type, creator_id, image_url, latest_message_at)
+            VALUES ($1, 'group', $2, $3, $4)
             RETURNING *
         `;
 		const result = await client.query(creatChatRoomQuery, [
 			name,
 			creatorId,
 			img,
+			currentTime,
 		]);
 		const chatRoomId = result.rows[0].id;
 
