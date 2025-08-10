@@ -8,15 +8,16 @@ import { useChatQuery } from "@/queries/chat/useChatQuery";
 
 export default function ChatRoomPage() {
 	const { roomId } = useParams<ChatPageParams>();
-	const { data, isLoading } = useChatQuery(roomId!);
+	const { data, isLoading, error } = useChatQuery(roomId!);
 
+	if (isLoading && !error) return <p>載入中...</p>;
 	if (!roomId || !data) return <NotFound />;
-	if (isLoading) return <p>載入中...</p>;
+
 	return (
 		<section className="flex flex-1 flex-col">
 			<ChatRoomHeader data={data} />
-			<MessageContainer />
-			<MessageInputArea />
+			<MessageContainer roomId={roomId} />
+			<MessageInputArea roomId={roomId} />
 		</section>
 	);
 }

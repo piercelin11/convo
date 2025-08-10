@@ -1,6 +1,5 @@
 import { z } from "zod/v4";
 import { ApiResponseSchema } from "./api.schema";
-import { UserDTOSchema } from "./dto.schema";
 
 export const EditProfileSchema = z.object({
 	username: z

@@ -34,7 +34,8 @@ export default function ChatSidebar() {
 						<Link key={item.id} to={`/${item.id}`}>
 							<ChatRoomItem
 								name={item.name!}
-								updateAt={item.updated_at}
+								updateAt={item.latest_message_at}
+								latestMessage={item.latest_message_content}
 								imgUrl={item.image_url}
 							/>
 						</Link>

@@ -24,7 +24,7 @@ export default function Step2EnterRoomInfo({
 	prevStep,
 }: Step2EnterRoomInfoProps) {
 	const user = useSession();
-	const { setModalKey } = useModalContext();
+	const { onClose } = useModalContext();
 	const selectedFriendIds = selectedFriends.map((friend) => friend.id);
 	const [name, setName] = useState("");
 	const [file, setFile] = useState<File | null>(null);
@@ -73,7 +73,7 @@ export default function Step2EnterRoomInfo({
 		}
 
 		const result = await createGroup(validated.data);
-		if (result) setModalKey(null);
+		if (result) onClose();
 	}
 
 	return (

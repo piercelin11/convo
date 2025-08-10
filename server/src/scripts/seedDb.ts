@@ -26,6 +26,24 @@ async function seedDb() {
 	try {
 		await client.query("BEGIN");
 
+		console.info("[seedDb]: 開始清理現有資料...");
+		// 1. 刪除好友關係 (Friendships)
+		await client.query(`DELETE FROM friendships;`);
+		console.info("[seedDb]: 已刪除所有好友關係。");
+
+		// 2. 刪除聊天室 (ChatRooms) - 如果有 ON DELETE CASCADE，會自動刪除 room_members 和 messages
+		await client.query(`DELETE FROM chat_rooms;`);
+		console.info("[seedDb]: 已刪除所有聊天室、成員及訊息 (透過 CASCADE)。");
+
+		// 3. 刪除使用者偏好設定 (UserPreferences)
+		await client.query(`DELETE FROM user_preferences;`);
+		console.info("[seedDb]: 已刪除所有使用者偏好設定。");
+
+		// 4. 刪除使用者 (Users)
+		await client.query(`DELETE FROM users;`);
+		console.info("[seedDb]: 已刪除所有使用者。");
+		console.info("[seedDb]: 現有資料清理完成。");
+
 		const allUserId = [];
 
 		console.info("[seedDb]: 開始填充種子使用者資料");
@@ -111,6 +129,39 @@ async function seedDb() {
             ON CONFLICT (room_id, user_id) DO NOTHING;`, // 處理重複插入
 			[chatRoomId, aliceId, bobId, charlieId]
 		);
+
+		console.info("[seedDb]: 開始填充聊天室訊息");
+		const messagesToSeed = [
+			{
+				roomId: chatRoomId,
+				senderId: aliceId,
+				content: "大家好，歡迎來到 Convo 群組聊天室！",
+			},
+			{
+				roomId: chatRoomId,
+				senderId: bobId,
+				content: "哈囉 Alice！很高興能加入。",
+			},
+			{
+				roomId: chatRoomId,
+				senderId: charlieId,
+				content: "嗨，我是 Charlie，大家都在嗎？",
+			},
+			{
+				roomId: chatRoomId,
+				senderId: aliceId,
+				content: "我們都準備好了，隨時可以開始聊天！",
+			},
+		];
+
+		for (const message of messagesToSeed) {
+			await client.query(
+				`INSERT INTO messages (room_id, sender_id, content)
+                 VALUES ($1, $2, $3);`,
+				[message.roomId, message.senderId, message.content]
+			);
+		}
+		console.info("[seedDb]: 聊天室訊息填充成功");
 
 		await client.query("COMMIT");
 		console.info("[seedDb]: 種子使用者資料、好友關係和聊天室填充成功");

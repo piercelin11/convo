@@ -44,6 +44,9 @@ export const ChatRoomRecordSchema = z.object({
 	created_at: z.coerce.date(),
 	updated_at: z.coerce.date(),
 	image_url: z.url().nullable(),
+	latest_message_content: z.string().nullable(),
+    latest_message_at: z.coerce.date().nullable(),
+    latest_message_sender_id: z.uuid().nullable(),
 });
 export type ChatRoomRecord = z.infer<typeof ChatRoomRecordSchema>;
 

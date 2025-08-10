@@ -4,7 +4,8 @@ import { format } from "date-fns";
 
 type ChatRoomItemProps = {
 	name: string;
-	updateAt?: Date;
+	updateAt: Date | null;
+	latestMessage: string | null;
 	imgUrl: string | null;
 };
 
@@ -15,20 +16,23 @@ type ChatRoomItemProps = {
 export default function ChatRoomItem({
 	name,
 	updateAt,
+	latestMessage,
 	imgUrl,
 }: ChatRoomItemProps) {
 	const formatedDate = format(updateAt || Date.now(), "MMM dd");
 	return (
 		<li className="flex items-center gap-2 rounded-xl p-2 hover:bg-neutral-800">
 			<Avatar src={imgUrl || env.VITE_USER_IMG_PLACEHOLDER} size={55} />
-			<div className="flex-1">
+			<div className="flex-1 overflow-hidden">
 				<div className="flex items-center">
 					<p>{name}</p>
 					<p className="text-description me-2 ml-auto text-xs">
-						{formatedDate}
+						{updateAt ? formatedDate : ""}
 					</p>
 				</div>
-				<p className="text-description">latest message</p>
+				<p className="text-description overflow-hidden text-ellipsis whitespace-nowrap">
+					{latestMessage || "開始聊天吧！"}
+				</p>
 			</div>
 		</li>
 	);

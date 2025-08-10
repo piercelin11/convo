@@ -1,4 +1,4 @@
-import GlobalModals from "@/app/GlobalModals";
+import GlobalModal from "@/app/GlobalModal";
 import { useAuth } from "@/store/auth/useAuth";
 import { Navigate, Outlet } from "react-router-dom";
 
@@ -9,7 +9,7 @@ export default function PrivateRoute() {
 	return (
 		<>
 			<Outlet />
-			<GlobalModals />
+			<GlobalModal />
 		</>
 	);
 }

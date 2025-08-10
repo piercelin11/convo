@@ -1,7 +1,6 @@
 import { LogOut, MessageSquare } from "react-feather";
-import useModalContext from "@/store/modal/useModalContext";
-import ModalProvider from "@/store/modal/ModalProvider";
-import type { ModalKeyType } from "@/store/modal/ModalContext";
+import CreateGroupChatForm from "@/components/chat/CreateGroupChat/CreateGroupChatForm";
+import ProfileModal from "@/components/profile/ProfileModal";
 
 /**
  * 側邊欄下拉選單的項目型別。
@@ -12,7 +11,7 @@ export type SidebarDropdownMenuItemsType = {
 	 */
 	id: string;
 	/**
-	 * 點擊選單項目時的行為種類。分為登出、呼叫彈跳視窗、導向其他路由。
+	 * 點擊選單項目時的行為種類。分為登出、呼叫彈跳視窗、導向其他路由以及使用者資訊。
 	 */
 	actionType: "logout" | "modal" | "navigate";
 	/**
@@ -28,9 +27,13 @@ export type SidebarDropdownMenuItemsType = {
 	 */
 	path?: string;
 	/**
-	 * 控制哪個選單開啟的 key。由 {@link useModalContext} 和 {@link ModalProvider} 控制。
+	 * 彈跳視窗中的內容。
 	 */
-	modalKey?: ModalKeyType;
+	modalContent?: React.ComponentType;
+	/**
+	 * 彈跳視窗中的標題。
+	 */
+	modalTitle?: string;
 };
 
 /**
@@ -48,14 +51,23 @@ const sidebarDropdownMenuItems: SidebarDropdownMenuItemsType[] = [
 		actionType: "modal",
 		icon: MessageSquare,
 		label: "建立群組",
-		modalKey: "createChatRoom",
+		modalContent: CreateGroupChatForm,
+		modalTitle: "建立群組",
 	},
 	{
 		id: "profile-edit",
 		actionType: "modal",
 		icon: MessageSquare,
 		label: "修改個人資料",
-		modalKey: "profileEdit",
+		modalContent: ProfileModal,
+		modalTitle: "修改個人資料",
+	},
+	{
+		id: "profile-edit",
+		actionType: "modal",
+		icon: MessageSquare,
+		label: "修改個人資料",
+		modalTitle: "profileEdit",
 	},
 ];
 
