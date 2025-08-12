@@ -10,4 +10,3 @@ export * from "./schemas/user.schema";
 export * from "./schemas/message.schema";
 export * from "./schemas/ws.inbound.schema";
 export * from "./schemas/ws.outbound.schema";
-

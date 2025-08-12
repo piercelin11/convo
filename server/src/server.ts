@@ -8,7 +8,7 @@ import uploadRouter from "@/routes/upload.routes.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 import authenticateToken from "./middlewares/authenticateToken.js";
-import userRouter from "@/routes/user.route.js";
+import userRouter from "@/routes/user.routes.js";
 import initializeWebSocket from "./websocket/index.js";
 import { wss } from "./websocket/wss.js";
 import pool from "./config/database.js";

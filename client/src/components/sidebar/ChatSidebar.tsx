@@ -4,6 +4,7 @@ import SidebarHeader from "./SidebarHeader";
 import { cn } from "@sglara/cn";
 import { Link } from "react-router-dom";
 import { useChatsQuery } from "@/queries/chat/useChatsQuery";
+import Profile from "../profile/Profile";
 
 /**
  * 聊天界面的側邊欄
@@ -41,6 +42,7 @@ export default function ChatSidebar() {
 					))}
 				</ul>
 			</div>
+			<Profile />
 		</aside>
 	);
 }

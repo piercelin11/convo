@@ -1,11 +1,13 @@
 import {
 	AuthenticationError,
 	AuthorizationError,
+	ConflictError,
 	DatabaseError,
 	InternalServerError,
 	NotFoundError,
 } from "@/utils/error.utils.js";
 import { NextFunction, Request, Response } from "express";
+import { success } from "zod/v4";
 
 /**
  * 全局錯誤處理中介軟體。
@@ -75,6 +77,14 @@ export default async function errorHandler(
 			message: err.message,
 		});
 		return;
+	}
+
+	// 處理form的該名稱已被他人使用
+	if (err instanceof ConflictError) {
+		res.status(err.statusCode).json({
+			success: false,
+			message: err.message,
+		});
 	}
 
 	// 處理所有未被上述自定義錯誤類別捕獲的「未預期」錯誤
