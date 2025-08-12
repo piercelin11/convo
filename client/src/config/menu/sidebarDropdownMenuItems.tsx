@@ -62,13 +62,6 @@ const sidebarDropdownMenuItems: SidebarDropdownMenuItemsType[] = [
 		modalContent: ProfileModal,
 		modalTitle: "修改個人資料",
 	},
-	{
-		id: "profile-edit",
-		actionType: "modal",
-		icon: MessageSquare,
-		label: "修改個人資料",
-		modalTitle: "profileEdit",
-	},
 ];
 
 export default sidebarDropdownMenuItems;

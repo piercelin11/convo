@@ -31,7 +31,6 @@ export default function ProfileModal() {
 	const { mutateAsync, error } = useProfileMutation();
 
 	const handleSubmit = async (event: React.FormEvent) => {
-	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		setErrors({});
