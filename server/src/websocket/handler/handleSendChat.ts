@@ -33,7 +33,7 @@ export default async function handleSendChat(
 
 	room.forEach((ws) => {
 		const member = ws.user;
-		if (member && acvtiveRoomViewers.get(member.id) === roomId) {
+		if (member && acvtiveRoomViewers.get(member.id) == roomId) {
 			activeUserIdsInRoom.push(member.id);
 		}
 	});
