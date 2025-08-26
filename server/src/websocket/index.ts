@@ -5,8 +5,15 @@ import { Server } from "http";
 import { WebSocket } from "ws";
 import { z, ZodError } from "zod/v4";
 import handleSendChat from "./handler/handleSendChat.js";
-import { wss, userConnections, roomConnections } from "./wss.js";
+import {
+	wss,
+	userConnections,
+	roomConnections,
+	acvtiveRoomViewers,
+} from "./wss.js";
 import { UserPayloadType } from "@/middlewares/authenticateToken.js";
+import handleJoinRoom from "./handler/handleJoinRoom.js";
+import handleLeaveRoom from "./handler/handleLeaveRoom.js";
 
 export default function initializeWebSocket(server: Server) {
 	server.on("upgrade", (req, socket, head) => {
@@ -62,6 +69,14 @@ export default function initializeWebSocket(server: Server) {
 						handleSendChat(validatedData.payload);
 						break;
 					}
+					case "JOIN_ROOM": {
+						handleJoinRoom(validatedData.payload);
+						break;
+					}
+					case "LEAVE_ROOM": {
+						handleLeaveRoom(validatedData.payload);
+						break;
+					}
 				}
 			} catch (error) {
 				if (error instanceof SyntaxError) {
@@ -109,6 +124,7 @@ export default function initializeWebSocket(server: Server) {
 			const closedUser = ws.user;
 			if (closedUser) {
 				userConnections.delete(closedUser.id);
+				acvtiveRoomViewers.delete(closedUser.id);
 
 				const subscribedRoomIds = ws.subscribedRoomIds || [];
 				subscribedRoomIds.forEach((roomId) => {
