@@ -40,12 +40,12 @@ export async function updateLastReadForUsersInRoom(
 
 	const query = `
     UPDATE room_members
-    SET last_read_at = $1
+    SET last_read_at = NOW() 
     WHERE
-      user_id = ANY($2::uuid[]) AND
-      room_id = $3
+      user_id = ANY($1::uuid[]) AND
+      room_id = $2
   `;
 
-	const values = [new Date(), userIds, roomId];
+	const values = [userIds, roomId];
 	await dbQuery<RoomMemberRecord>(query, values);
 }

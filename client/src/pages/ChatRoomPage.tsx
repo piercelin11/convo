@@ -12,9 +12,9 @@ import type { InboundMessageSchemaType } from "@convo/shared";
 
 export default function ChatRoomPage() {
 	const { roomId } = useParams<ChatPageParams>();
+	const { data, isLoading, error } = useChatQuery(roomId!);
 	const { id: userId } = useSession();
 	const { readyState, sendMessage } = useWebSocketContext();
-	const { data, isLoading, error } = useChatQuery(roomId!);
 
 	useEffect(() => {
 		if (!roomId) return;
