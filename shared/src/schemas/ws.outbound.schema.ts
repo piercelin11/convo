@@ -29,6 +29,22 @@ export const NewRoomMessageSchema = z.object({
 export type NewRoomMessageSchemaType = z.infer<typeof NewRoomMessageSchema>;
 
 /**
+ * 新成員加入聊天室已讀訊息的訊息結構
+ * 由伺服器端傳向客戶端
+ */
+export const ReadRoomMessageSchema = z.object({
+	event: z.literal("READ_ROOM"),
+	payload: z.object({
+		roomId: z.uuid(),
+	}),
+});
+/**
+ * 新成員加入聊天室已讀訊息的訊息型別
+ * 由伺服器端傳向客戶端
+ */
+export type ReadRoomSchemaType = z.infer<typeof ReadRoomMessageSchema>;
+
+/**
  * 發生錯誤的訊息結構
  * 由伺服器端傳向客戶端
  */
@@ -50,7 +66,7 @@ export type ErrorMessageSchemaType = z.infer<typeof ErrorMessageSchema>;
  */
 export const OutboundMessageSchema = z.discriminatedUnion(
 	"event",
-	[NewChatMessageSchema, ErrorMessageSchema, NewRoomMessageSchema],
+	[NewChatMessageSchema, ErrorMessageSchema, NewRoomMessageSchema, ReadRoomMessageSchema],
 	{ message: "伺服器端傳到客戶端的 WebSocket 訊息結構錯誤" }
 );
 /**

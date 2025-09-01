@@ -4,14 +4,12 @@ import {
 	editChatRoomHandler,
 	getChatRoomHandler,
 	getChatRoomsHandler,
-	readRoomHandler,
 } from "@/controllers/chatRooms.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import {
 	ChatRoomParamsSchema,
 	CreateChatRoomSchema,
 	EditChatRoomSchema,
-	ReadChatRoomSchema,
 } from "@convo/shared";
 import { Router } from "express";
 
@@ -41,12 +39,6 @@ router.put(
 	"/group",
 	validateRequest({ body: EditChatRoomSchema }),
 	editChatRoomHandler
-);
-
-router.post(
-	"/read",
-	validateRequest({ body: ReadChatRoomSchema }),
-	readRoomHandler
 );
 
 export default router;

@@ -31,18 +31,6 @@ export const EditChatRoomSchema = z.object({
  */
 export type EditChatRoomSchemaType = z.infer<typeof EditChatRoomSchema>;
 
-/**
- * 已讀聊天室所需的資料結構。
- */
-export const ReadChatRoomSchema = z.object({
-	id: z.uuid(),
-});
-
-/**
- * 已讀聊天室所需的資料型別。
- */
-export type ReadChatRoomSchemaType = z.infer<typeof ReadChatRoomSchema>;
-
 
 /**
  * 定義用於 URL 參數的聊天室相關資料結構。

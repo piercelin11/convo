@@ -5,7 +5,6 @@ import {
 	type ChatRoomRecord,
 	type EditChatRoomSchemaType,
 	type ChatRoomDto,
-	type ReadChatRoomSchemaType,
 } from "@convo/shared";
 import axiosClient from "./client";
 
@@ -38,8 +37,5 @@ export const chatService = {
 		const { data } = await axiosClient.put("/chat-rooms/group", formData);
 		const validatedData = ChatRoomResponseSchema.parse(data);
 		return validatedData.data;
-	},
-	readChatRoom: async (formData: ReadChatRoomSchemaType) => {
-		await axiosClient.post("/chat-rooms/read", formData);
 	},
 };

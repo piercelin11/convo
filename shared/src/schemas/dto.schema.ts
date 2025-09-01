@@ -39,6 +39,7 @@ export const MessageDtoSchema = z.object({
 	room_id: z.string(),
 	content: z.string(),
 	sender_id: z.string(),
+	read_by_count: z.number().int().nonnegative(),
 });
 export type MessageDto = z.infer<typeof MessageDtoSchema>;
 
