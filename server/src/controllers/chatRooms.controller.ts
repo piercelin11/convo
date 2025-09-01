@@ -1,11 +1,9 @@
 import * as chatRoomsDB from "@/db/chatRooms.db.js";
-import * as membersDB from "@/db/members.db.js";
 import * as chatRoomsService from "@/services/chatRooms.service.js"; // 服務層導入
 import { AuthorizationError, NotFoundError } from "@/utils/error.utils.js"; // 錯誤類別導入
 import {
 	CreateChatRoomSchemaType,
 	EditChatRoomSchemaType,
-	ReadChatRoomSchemaType,
 } from "@convo/shared"; // 共享型別導入
 import { Request, Response, NextFunction } from "express"; // 導入 NextFunction
 
@@ -178,36 +176,6 @@ export async function deleteChatRoomHandler(
 			success: true,
 			message: "成功刪除聊天室",
 			data: deletedChatRoom,
-		});
-	} catch (error) {
-		next(error);
-	}
-}
-
-/**
- * 處理已讀聊天室訊息的請求。
- *
- * @param req - Express 請求物件，應包含由 `authenticateToken` 附加的 `req.user`，且 `body` 應包含 `CreateChatRoomSchemaType` 驗證過的聊天室名稱、成員ID及圖片URL。
- * @param res - Express 響應物件，用於發送 JSON 響應。
- * @param next - 呼叫下一個中介軟體或錯誤處理器的回調函式。
- * @returns 包含新創建聊天室資訊的 JSON 響應。
- * @throws {AuthorizationError} 如果使用者未經授權。
- */
-export async function readRoomHandler(
-	req: Request,
-	res: Response,
-	next: NextFunction
-) {
-	try {
-		const user = req.user;
-		const { id: rommId } = req.body as ReadChatRoomSchemaType;
-		if (!user) throw new AuthorizationError(); // 確保用戶已認證
-
-		await membersDB.updateLastReadAt(rommId, user.id);
-
-		res.status(200).json({
-			success: true,
-			message: "成功已讀聊天室",
 		});
 	} catch (error) {
 		next(error);

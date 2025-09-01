@@ -1,7 +1,5 @@
 import useMessageQuery from "@/queries/message/useMessageQuery";
 import ChatMessage from "./ChatMessage";
-import { useEffect } from "react";
-import useReadRoomMutation from "@/queries/chat/useReadRoomMutation";
 
 type MessageContainerProps = {
 	roomId: string;
@@ -13,15 +11,6 @@ type MessageContainerProps = {
  */
 export default function MessageContainer({ roomId }: MessageContainerProps) {
 	const { data, isLoading } = useMessageQuery(roomId);
-	const { mutate } = useReadRoomMutation();
-
-	useEffect(() => {
-		try {
-			mutate({ id: roomId });
-		} catch (error) {
-			console.error("[MessageContainer]已讀聊天室失敗:", error);
-		}
-	}, [roomId, mutate]);
 
 	return (
 		<div className="flex flex-1 flex-col-reverse gap-2 overflow-y-auto overscroll-contain px-8">

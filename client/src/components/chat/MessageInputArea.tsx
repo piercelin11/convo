@@ -36,6 +36,7 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 			messageKeys.room(roomId),
 			(oldMessages: MessageDto[]) => {
 				const message = {
+					id: userId + input + Date.now(),
 					sender_username: username,
 					sender_avatar_url: avatar_url,
 					created_at: new Date(),
