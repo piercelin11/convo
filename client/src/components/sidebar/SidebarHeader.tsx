@@ -1,7 +1,8 @@
 import Dropdown from "@/components/ui/Dropdown";
 import IconBtn from "@/components/ui/IconBtn";
-import { Menu, Search } from "react-feather";
+import { Menu } from "react-feather";
 import SidebarMenu from "./SidebarMenu";
+import SearchBar from "../ui/SearchBar";
 
 /**
  * 聊天室介面側邊欄最上方的 Header
@@ -19,13 +20,8 @@ export default function SidebarHeader() {
 			>
 				<SidebarMenu />
 			</Dropdown>
-			<div className="flex flex-1 items-center gap-2 rounded-full bg-neutral-800 px-3 py-2">
-				<Search className="text-neutral-500" />
-				<input
-					type="text"
-					placeholder="Search"
-					className="w-full focus:outline-none"
-				/>
+			<div className="w-full">
+				<SearchBar />
 			</div>
 		</div>
 	);
