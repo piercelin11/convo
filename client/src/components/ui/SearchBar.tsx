@@ -43,10 +43,9 @@ export default function SearchBar() {
 	};
 
 	// 處理點擊結果的函式
-	const handleResultClick = (userId: string) => {
-		console.log(`Maps to user: ${userId}`);
-		setIsOpen(false);
-	};
+	// const handleResultClick = (userId: string) => {
+	// 	setIsOpen(false);
+	// };
 
 	return (
 		<div className="relative flex-1">
@@ -73,7 +72,7 @@ export default function SearchBar() {
 								<li
 									key={user.id}
 									className="flex cursor-pointer items-center p-2 hover:bg-neutral-700"
-									onMouseDown={() => handleResultClick(user.id)}
+									// onMouseDown={() => handleResultClick(user.id)}
 								>
 									<img
 										className="mr-5 aspect-square h-fit w-10 rounded-full object-cover"

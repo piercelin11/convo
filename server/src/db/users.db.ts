@@ -1,7 +1,6 @@
 import pool from "@/config/database.js";
 import { dbQuery } from "@/utils/db.utils.js";
 import { UserRecord, UserRecordSchema } from "@convo/shared";
-import { queryObjects } from "v8";
 
 /**
  * 透過使用者名稱獲取唯一使用者資料
@@ -117,7 +116,6 @@ export async function searchUsersByUsername(query: string) {
 		LIMIT 10;
 		`;
 		const { rows } = await client.query(queryText, [searchTerm]);
-		console.log(rows);
 		return rows;
 	} catch (err) {
 		console.error(err);
