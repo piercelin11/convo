@@ -1,15 +1,9 @@
-import WebSocket from "ws";
-import { roomConnections } from "../wss.js";
+import { LeaveRoomPayloadSchemaType } from "@convo/shared";
+import { acvtiveRoomViewers } from "../wss.js";
 
-export default function handleLeaveRoom(ws: WebSocket) {
-	const { currentRoomId } = ws;
-	if (currentRoomId) {
-		const room = roomConnections.get(currentRoomId);
-		if (room) {
-			room.delete(ws);
-			if (room.size === 0) {
-				roomConnections.delete(currentRoomId);
-			}
-		}
-	}
+export default async function handleLeaveRoom(
+	payload: LeaveRoomPayloadSchemaType
+) {
+	const { userId } = payload;
+	acvtiveRoomViewers.delete(userId);
 }

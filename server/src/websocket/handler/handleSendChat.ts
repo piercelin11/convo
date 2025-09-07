@@ -4,7 +4,8 @@ import {
 	SendChatPayloadSchemaType,
 } from "@convo/shared";
 import * as messagesDB from "@/db/messages.db.js";
-import { roomConnections } from "../wss.js";
+import * as memberDB from "@/db/members.db.js";
+import { acvtiveRoomViewers, roomConnections } from "../wss.js";
 
 export default async function handleSendChat(
 	payload: SendChatPayloadSchemaType
@@ -26,6 +27,19 @@ export default async function handleSendChat(
 	if (!message) {
 		console.error("[handleSendChat]輸入聊天訊息到資料庫失敗");
 		return;
+	}
+
+	const activeUserIdsInRoom: string[] = [];
+
+	room.forEach((ws) => {
+		const member = ws.user;
+		if (member && acvtiveRoomViewers.get(member.id) == roomId) {
+			activeUserIdsInRoom.push(member.id);
+		}
+	});
+
+	if (activeUserIdsInRoom.length > 0) {
+		await memberDB.updateLastReadForUsersInRoom(activeUserIdsInRoom, roomId);
 	}
 
 	const data: OutboundMessageSchemaType = {

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Send } from "react-feather";
 import IconBtn from "../ui/IconBtn";
 
@@ -24,27 +24,6 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 
 	const { readyState, sendMessage } = useWebSocketContext();
 
-	//初始化聊天室，將客戶端加入指定聊天室
-	useEffect(() => {
-		const joinRoomMessage: InboundMessageSchemaType = {
-			type: "JOIN_ROOM",
-			payload: {
-				roomId,
-			},
-		};
-		if (readyState === "OPEN") sendMessage(JSON.stringify(joinRoomMessage));
-
-		return () => {
-			const leaveRoomMessage: InboundMessageSchemaType = {
-				type: "LEAVE_ROOM",
-				payload: {
-					roomId,
-				},
-			};
-			if (readyState === "OPEN") sendMessage(JSON.stringify(leaveRoomMessage));
-		};
-	}, [roomId, sendMessage, readyState]);
-
 	function handleInput(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setInput(value);
@@ -57,6 +36,7 @@ export default function MessageInputArea({ roomId }: MessageInputAreaProps) {
 			messageKeys.room(roomId),
 			(oldMessages: MessageDto[]) => {
 				const message = {
+					id: userId + input + Date.now(),
 					sender_username: username,
 					sender_avatar_url: avatar_url,
 					created_at: new Date(),

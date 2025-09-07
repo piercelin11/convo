@@ -13,13 +13,28 @@ export async function findMessagesByRoomId(
 ): Promise<MessageDto[]> {
 	const query = `
         SELECT
-            m.id AS id,
+            m.id,
+            m.room_id,
+            m.sender_id,
+            m.content,
+            m.created_at,
             u.username AS sender_username,
             u.avatar_url AS sender_avatar_url,
-            m.created_at AS created_at,
-            m.room_id AS room_id,
-            m.content AS content,
-            m.sender_id AS sender_id
+
+            -- --- 這是新增的計算邏輯 ---
+            -- 為每一則訊息 (m)，計算有多少成員的 last_read_at 晚於或等於此訊息的建立時間
+            (
+                SELECT COUNT(*)
+                FROM room_members rm
+                WHERE
+                    -- 條件1：必須是同一個房間的成員
+                    rm.room_id = m.room_id
+                    -- 條件2：不能計算發送者自己 (自己發的訊息對自己來說永遠是已讀)
+                    AND rm.user_id != m.sender_id
+                    -- 條件3：該成員的最後已讀時間戳，必須晚於或等於此訊息的建立時間
+                    AND rm.last_read_at >= m.created_at
+            )::integer AS read_by_count
+
         FROM
             messages m
         JOIN
@@ -70,8 +85,22 @@ export async function createMessages(
             im.sender_id,
             im.content,
             im.created_at,
-            u.username AS sender_username, -- 從 users 表獲取
-            u.avatar_url AS sender_avatar_url -- 從 users 表獲取
+            u.username AS sender_username,
+            u.avatar_url AS sender_avatar_url,
+
+            -- --- 新增的計算邏輯，與 findMessagesByRoomId 中的邏輯相同 ---
+            (
+                SELECT COUNT(*)
+                FROM room_members rm
+                WHERE
+                    -- 條件1：是同一個房間的成員
+                    rm.room_id = im.room_id
+                    -- 條件2：不是發送者本人
+                    AND rm.user_id != im.sender_id
+                    -- 條件3：該成員的最後已讀時間戳，晚於或等於此訊息的建立時間
+                    AND rm.last_read_at >= im.created_at
+            )::integer AS read_by_count -- 將 COUNT(*) 的結果轉換為 integer
+
         FROM
             inserted_message im
         JOIN

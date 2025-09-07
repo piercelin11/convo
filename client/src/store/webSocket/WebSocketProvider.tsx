@@ -69,6 +69,13 @@ function WebSocketManager({
 					MessageHandler.handleNewRoom(queryClient);
 					break;
 				}
+				case "READ_ROOM": {
+					MessageHandler.handleReadRoom(
+						queryClient,
+						validatedData.payload.roomId
+					);
+					break;
+				}
 				case "ERROR": {
 					console.error("收到 WebSocket 伺服器端的錯誤訊息");
 					console.error(validatedData.payload.message);

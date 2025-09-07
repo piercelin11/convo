@@ -12,3 +12,8 @@ export const userConnections = new Map<string, WebSocket>();
  * Key: roomId (string), Value: WebSocket 連線物件的 Set
  */
 export const roomConnections = new Map<string, Set<WebSocket>>();
+/**
+ * 全域共享的實例，用於管理聊天室線上的 WebSocket 的客戶。
+ * Key: userId (string), Value: roomId (string)
+ */
+export const acvtiveRoomViewers = new Map<string, string>();

@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 import { ApiResponseSchema } from "./api.schema";
-import { ChatRoomRecordSchema, ChatRoomRecord } from "./db.schema";
-import { ChatRoomWithMessagesDtoSchema } from "./dto.schema";
+import { ChatRoomRecordSchema } from "./db.schema";
+import { ChatRoomDtoSchema } from "./dto.schema";
 
 /**
  * 建立聊天室所需的資料結構。
@@ -31,6 +31,7 @@ export const EditChatRoomSchema = z.object({
  */
 export type EditChatRoomSchemaType = z.infer<typeof EditChatRoomSchema>;
 
+
 /**
  * 定義用於 URL 參數的聊天室相關資料結構。
  * 主要用於從路由中獲取聊天室 ID。
@@ -47,15 +48,15 @@ export type ChatRoomParamsSchemaType = z.infer<typeof ChatRoomParamsSchema>;
 
 /**
  * 取得聊天室列表相關的 API 回應資料結構。
- * API 回應中包含多個聊天室記錄的資料結構 {@link ChatRoomRecordSchema}。
+ * API 回應中包含多個聊天室記錄的資料結構 {@link ChatRoomDtoSchema}。
  */
 export const ChatRoomsResponseSchema = ApiResponseSchema.extend({
-	data: z.array(ChatRoomRecordSchema),
+	data: z.array(ChatRoomDtoSchema),
 });
 
 /**
  * 取得聊天室列表相關的 API 回應資料型別。
- * API 回應中包含多個聊天室記錄的資料型別 {@link ChatRoomRecord}。
+ * API 回應中包含多個聊天室記錄的資料型別 {@link ChatRoomDtoSchema}。
  */
 export type ChatRoomsResponseType = z.infer<typeof ChatRoomsResponseSchema>;
 
@@ -69,20 +70,6 @@ export const ChatRoomResponseSchema = ApiResponseSchema.extend({
 
 /**
  * 取得聊天室列表相關的 API 回應資料型別。
- * API 回應中包含單個聊天室記錄的資料型別 {@link ChatRoomRecord}。
+ * API 回應中包含單個聊天室記錄的資料型別 {@link ChatRoomRecordSchema}。
  */
 export type ChatRoomResponseType = z.infer<typeof ChatRoomResponseSchema>;
-
-/**
- * 取得聊天室列表相關的 API 回應資料結構。
- * API 回應中包含單個聊天室記錄與聊天訊息的資料結構 {@link ChatRoomRecordSchema}。
- */
-export const ChatRoomWithMessagesResponseSchema = ApiResponseSchema.extend({
-	data: ChatRoomWithMessagesDtoSchema,
-});
-
-/**
- * 取得聊天室列表相關的 API 回應資料型別。
- * API 回應中包含單個聊天室記錄與聊天訊息的資料型別 {@link ChatRoomRecord}。
- */
-export type ChatRoomWithMessagesResponseType = z.infer<typeof ChatRoomWithMessagesResponseSchema>;

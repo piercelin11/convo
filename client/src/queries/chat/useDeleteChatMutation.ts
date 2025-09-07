@@ -1,5 +1,9 @@
 import { chatService } from "@/api";
-import type { ApiResponseSchemaType, ChatRoomRecord } from "@convo/shared";
+import type {
+	ApiResponseSchemaType,
+	ChatRoomDto,
+	ChatRoomRecord,
+} from "@convo/shared";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import chatKeys from "./chatKeys";
@@ -23,10 +27,10 @@ export default function useDeleteChatMutation() {
 		onMutate: async (roomId) => {
 			await queryClient.cancelQueries({ queryKey: chatKeys.lists() });
 			const prevRooms = queryClient.getQueryData(chatKeys.lists()) as
-				| ChatRoomRecord[]
+				| ChatRoomDto[]
 				| undefined;
 
-			queryClient.setQueryData(chatKeys.lists(), (oldRooms: ChatRoomRecord[]) =>
+			queryClient.setQueryData(chatKeys.lists(), (oldRooms: ChatRoomDto[]) =>
 				oldRooms.filter((room) => room.id !== roomId)
 			);
 

@@ -1,8 +1,5 @@
 import { z } from "zod/v4";
-import {
-	ChatRoomRecordSchema,
-	FriendshipStatusSchema,
-} from "./db.schema";
+import { ChatRoomRecordSchema, FriendshipStatusSchema } from "./db.schema";
 
 /**
  * 用於對外傳輸的使用者資料物件 (Data Transfer Object)
@@ -31,7 +28,6 @@ export const FriendshipDtoSchema = z.object({
 });
 export type FriendshipDto = z.infer<typeof FriendshipDtoSchema>;
 
-
 /**
  * 用於聊天訊息的資料傳輸物件
  */
@@ -43,27 +39,30 @@ export const MessageDtoSchema = z.object({
 	room_id: z.string(),
 	content: z.string(),
 	sender_id: z.string(),
+	read_by_count: z.number().int().nonnegative(),
 });
 export type MessageDto = z.infer<typeof MessageDtoSchema>;
 
 /**
- * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
- * 成員資訊會擴充包含加入時間。
+ * 包含聊天室基本資訊及尚未讀取訊息數量的資料結構。
  */
-export const ChatRoomWithMembersDtoSchema = ChatRoomRecordSchema.extend({
-	members: z.array(UserDTOSchema.extend({ joined_at: z.coerce.date() })),
+export const ChatRoomDtoSchema = ChatRoomRecordSchema.extend({
+	last_read_at: z.coerce.date().nullable(),
+	unread_count: z.number(),
 });
-export type ChatRoomWithMembersDto = z.infer<
-	typeof ChatRoomWithMembersDtoSchema
->;
+export type ChatRoomDto = z.infer<typeof ChatRoomDtoSchema>;
 
 /**
  * 包含聊天室基本資訊及詳細成員列表的資料傳輸物件結構。
  * 成員資訊會擴充包含加入時間。
  */
-export const ChatRoomWithMessagesDtoSchema = ChatRoomRecordSchema.extend({
-	messages: z.array(MessageDtoSchema),
+export const ChatRoomWithMembersDtoSchema = ChatRoomRecordSchema.omit({
+	latest_message_content: true,
+	latest_message_at: true,
+	latest_message_sender_id: true,
+}).extend({
+	members: z.array(UserDTOSchema.extend({ joined_at: z.coerce.date() })),
 });
-export type ChatRoomWithMessagesDto = z.infer<
-	typeof ChatRoomWithMessagesDtoSchema
+export type ChatRoomWithMembersDto = z.infer<
+	typeof ChatRoomWithMembersDtoSchema
 >;

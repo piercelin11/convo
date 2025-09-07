@@ -1,14 +1,19 @@
-import { authenticateAuthToken } from "@/utils/index.js";
+import { authenticateAuthToken, dbQuery } from "@/utils/index.js";
 import { ErrorMessageSchemaType, InboundMessageSchema } from "@convo/shared";
 import cookie from "cookie";
 import { Server } from "http";
 import { WebSocket } from "ws";
 import { z, ZodError } from "zod/v4";
-import handleJoinRoom from "./handler/handleJoinRoom.js";
 import handleSendChat from "./handler/handleSendChat.js";
-import handleLeaveRoom from "./handler/handleLeaveRoom.js";
-import { wss, userConnections, roomConnections } from "./wss.js";
+import {
+	wss,
+	userConnections,
+	roomConnections,
+	acvtiveRoomViewers,
+} from "./wss.js";
 import { UserPayloadType } from "@/middlewares/authenticateToken.js";
+import handleJoinRoom from "./handler/handleJoinRoom.js";
+import handleLeaveRoom from "./handler/handleLeaveRoom.js";
 
 export default function initializeWebSocket(server: Server) {
 	server.on("upgrade", (req, socket, head) => {
@@ -31,10 +36,26 @@ export default function initializeWebSocket(server: Server) {
 		});
 	});
 
-	wss.on("connection", (ws: WebSocket, user: UserPayloadType) => {
+	wss.on("connection", async (ws: WebSocket, user: UserPayloadType) => {
 		if (!userConnections.has(user.id)) userConnections.set(user.id, ws);
 		ws.user = user;
 		ws.isAlive = true;
+
+		const userRoomsResult = await dbQuery<{ room_id: string }>(
+			"SELECT room_id FROM room_members WHERE user_id = $1",
+			[user.id]
+		);
+
+		const roomIds = userRoomsResult.rows.map((row) => row.room_id);
+
+		roomIds.forEach((roomId) => {
+			if (!roomConnections.has(roomId)) {
+				roomConnections.set(roomId, new Set<WebSocket>());
+			}
+			roomConnections.get(roomId)!.add(ws);
+		});
+
+		ws.subscribedRoomIds = roomIds;
 
 		ws.on("message", (message) => {
 			const messageString = message.toString();
@@ -44,16 +65,16 @@ export default function initializeWebSocket(server: Server) {
 				const validatedData = InboundMessageSchema.parse(message);
 
 				switch (validatedData.type) {
+					case "SEND_CHAT": {
+						handleSendChat(validatedData.payload);
+						break;
+					}
 					case "JOIN_ROOM": {
-						handleJoinRoom(ws, validatedData.payload);
+						handleJoinRoom(validatedData.payload);
 						break;
 					}
 					case "LEAVE_ROOM": {
-						handleLeaveRoom(ws);
-						break;
-					}
-					case "SEND_CHAT": {
-						handleSendChat(validatedData.payload);
+						handleLeaveRoom(validatedData.payload);
 						break;
 					}
 				}
@@ -100,18 +121,22 @@ export default function initializeWebSocket(server: Server) {
 		});
 
 		ws.on("close", () => {
-			const { currentRoomId } = ws;
-			if (currentRoomId) {
-				const room = roomConnections.get(currentRoomId);
-				if (room) {
-					room.delete(ws);
-					if (room.size === 0) {
-						roomConnections.delete(currentRoomId);
-					}
-				}
-			}
+			const closedUser = ws.user;
+			if (closedUser) {
+				userConnections.delete(closedUser.id);
+				acvtiveRoomViewers.delete(closedUser.id);
 
-			userConnections.delete(user.id);
+				const subscribedRoomIds = ws.subscribedRoomIds || [];
+				subscribedRoomIds.forEach((roomId) => {
+					const room = roomConnections.get(roomId);
+					if (room) {
+						room.delete(ws);
+						if (room.size === 0) {
+							roomConnections.delete(roomId);
+						}
+					}
+				});
+			}
 		});
 
 		ws.on("pong", () => {
