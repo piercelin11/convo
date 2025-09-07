@@ -3,7 +3,6 @@ import {
 	SearchResponseSchema,
 	type EditProfileSchemaType,
 	type ProfileSchemaType,
-	type UserSchemaType,
 } from "@convo/shared";
 import axiosClient from "./client";
 
