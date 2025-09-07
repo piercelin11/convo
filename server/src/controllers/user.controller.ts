@@ -58,11 +58,9 @@ export async function searchUsers(
 	res: Response,
 	next: NextFunction
 ) {
-	console.log("error");
 	try {
 		// 1.驗證參數
 		const { q } = SearchUserSchema.parse(req.query);
-		console.log(q);
 
 		// 2.執行資料庫搜尋
 		const users = await userDB.searchUsersByUsername(q);
