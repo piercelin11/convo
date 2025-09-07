@@ -1,7 +1,9 @@
 import {
 	ProfileResponseSchema,
+	SearchResponseSchema,
 	type EditProfileSchemaType,
 	type ProfileSchemaType,
+	type UserSchemaType,
 } from "@convo/shared";
 import axiosClient from "./client";
 
@@ -16,6 +18,15 @@ export const userService = {
 	getUser: async (userId: string): Promise<ProfileSchemaType> => {
 		const { data } = await axiosClient.get(`/users/${userId}`);
 		const validatedData = ProfileResponseSchema.parse(data);
+		return validatedData.data;
+	},
+	searchUser: async (searchTerm: string) => {
+		const database = await axiosClient.get(`/users/search`, {
+			params: { q: searchTerm },
+		});
+
+		const validatedData = SearchResponseSchema.parse(database.data);
+		console.log(database.data);
 		return validatedData.data;
 	},
 };

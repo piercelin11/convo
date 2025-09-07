@@ -47,3 +47,26 @@ export const ProfileResponseSchema = ApiResponseSchema.extend({
 });
 
 export type ProfileResponseSchemaType = z.infer<typeof ProfileResponseSchema>;
+
+export const SearchUserSchema = z.object({
+	q: z.string().min(1, {
+		message: "請輸入搜尋內容",
+	}),
+});
+
+export type SearchUserSchemaType = z.infer<typeof SearchUserSchema>;
+
+export const UserSchema = z.object({
+	id: z.string().uuid(),
+	username: z.string(),
+	email: z.string().email(),
+	avatar_url: z.string().nullable(), // 因為 avatar_url 在資料庫中可能是 null
+});
+
+export type UserSchemaType = z.infer<typeof UserSchema>;
+
+export const SearchResponseSchema = ApiResponseSchema.extend({
+	data: z.array(UserSchema),
+});
+
+export type SearchResponseSchemaType = z.infer<typeof SearchResponseSchema>;

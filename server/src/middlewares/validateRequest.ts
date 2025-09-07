@@ -21,6 +21,7 @@ export function validateRequest<S extends RequestValidationSchemas>(
 	schemas: S
 ) {
 	return async function (req: Request, res: Response, next: NextFunction) {
+		console.log(schemas.query);
 		try {
 			if (schemas.body) {
 				req.body = await schemas.body.parseAsync(req.body);

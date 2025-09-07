@@ -1,6 +1,7 @@
 import pool from "@/config/database.js";
 import { dbQuery } from "@/utils/db.utils.js";
 import { UserRecord, UserRecordSchema } from "@convo/shared";
+import { queryObjects } from "v8";
 
 /**
  * 透過使用者名稱獲取唯一使用者資料
@@ -25,7 +26,6 @@ export async function findUserByUsername(
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
-	return UserRecordSchema.optional().parse(user);
 	return UserRecordSchema.optional().parse(user);
 }
 
@@ -103,4 +103,25 @@ export async function updateUser(
 		"UPDATE users SET username = $1, age = $2 WHERE id = $3 RETURNING *";
 	const result = await pool.query<UserRecord>(sql, [username, age, userId]);
 	return result.rows[0];
+}
+
+export async function searchUsersByUsername(query: string) {
+	const searchTerm = `%${query}%`;
+	const client = await pool.connect();
+	try {
+		const queryText = `
+		SELECT id, username, email,avatar_url
+		FROM users
+		WHERE username ILIKE $1
+		ORDER BY username ASC
+		LIMIT 10;
+		`;
+		const { rows } = await client.query(queryText, [searchTerm]);
+		console.log(rows);
+		return rows;
+	} catch (err) {
+		console.error(err);
+	} finally {
+		client.release();
+	}
 }
