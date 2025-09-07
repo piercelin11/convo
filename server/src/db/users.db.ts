@@ -1,3 +1,4 @@
+import pool from "@/config/database.js";
 import { dbQuery } from "@/utils/db.utils.js";
 import { UserRecord, UserRecordSchema } from "@convo/shared";
 
@@ -7,14 +8,24 @@ import { UserRecord, UserRecordSchema } from "@convo/shared";
  * @returns 唯一使用者資料。
  */
 export async function findUserByUsername(
-	username: string
+	username: string,
+	options?: { excludeUserId?: string }
 ): Promise<UserRecord | undefined> {
-	const query = `SELECT * FROM users WHERE username = $1`;
-	const values = [username];
+	const queryParts = [`SELECT * FROM users WHERE username = $1`];
+	const values: unknown[] = [username];
+
+	// 如果提供了 excludeUserId，則動態加入條件
+	if (options?.excludeUserId) {
+		queryParts.push(`AND id != $${values.length + 1}`);
+		values.push(options.excludeUserId);
+	}
+
+	const query = queryParts.join(" ");
 
 	const result = await dbQuery<UserRecord>(query, values);
 	const user = result.rows[0];
 
+	return UserRecordSchema.optional().parse(user);
 	return UserRecordSchema.optional().parse(user);
 }
 
@@ -73,4 +84,23 @@ export async function createUser(
 	const user = result.rows[0];
 
 	return UserRecordSchema.parse(user);
+}
+
+/**
+ * 根據使用者 ID 更新其個人資料
+ * @param userId - 要更新的使用者 ID
+ * @param username - 新的使用者名稱
+ * @param age - 新的年齡
+ * @returns 回傳更新後完整的使用者資料，若找不到使用者則為 undefined
+ */
+
+export async function updateUser(
+	userId: string,
+	username: string,
+	age: number
+): Promise<UserRecord | undefined> {
+	const sql =
+		"UPDATE users SET username = $1, age = $2 WHERE id = $3 RETURNING *";
+	const result = await pool.query<UserRecord>(sql, [username, age, userId]);
+	return result.rows[0];
 }

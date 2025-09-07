@@ -1,11 +1,10 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import FormInput from "../ui/FormInput";
-import axiosClient from "@/api/client";
-import { editProfileSchema } from "@convo/shared";
+import { EditProfileSchema } from "@convo/shared";
 import z from "zod/v4";
 import ResponseMessage from "../ui/ResponseMessage";
-import axios from "axios";
+import useProfileMutation from "@/queries/user/useProfileMutation";
 
 type FormErrorsType = {
 	username?: string;
@@ -18,6 +17,8 @@ export default function ProfileModal() {
 		age: "",
 	});
 
+	const [errors, setErrors] = useState<FormErrorsType>({});
+
 	function formInputChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const name = e.target.name;
 		const value = e.target.value;
@@ -27,17 +28,15 @@ export default function ProfileModal() {
 		}));
 	}
 
-	const [errors, setErrors] = useState<FormErrorsType>({});
-	const [errorText, setErrorText] = useState("");
+	const { mutateAsync, error } = useProfileMutation();
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 
 		setErrors({});
-		setErrorText("");
 
 		try {
-			const validated = editProfileSchema.safeParse(formInput);
+			const validated = EditProfileSchema.safeParse(formInput);
 
 			if (!validated.success) {
 				const formattedErrors = z.flattenError(validated.error).fieldErrors;
@@ -48,19 +47,10 @@ export default function ProfileModal() {
 				return;
 			}
 
-			await axiosClient.patch("/users/profile", {
-				username: validated.data?.username,
-				age: validated.data?.age?.toString(),
-			});
+			await mutateAsync(validated.data);
+			setFormInput({ username: "", age: "" });
 		} catch (error) {
 			console.error("個資表單資料傳送錯誤", error);
-
-			// 從瀏覽器請求失敗的錯誤訊息
-			if (axios.isAxiosError(error) && error.response) {
-				setErrorText(error.response?.data.message);
-			} else {
-				setErrorText("個資表單發送出現未預期錯誤");
-			}
 		}
 	};
 
@@ -86,7 +76,9 @@ export default function ProfileModal() {
 						errorMessage={errors.age?.toString()}
 					/>
 				</div>
-				<ResponseMessage type="error" message={errorText} />
+				{error?.response && (
+					<ResponseMessage type="error" message={error.response.data.message} />
+				)}
 				<div className="flex gap-10 pt-10">
 					<Button>cancel</Button>
 					<Button type="submit">submit</Button>
