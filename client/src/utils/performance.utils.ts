@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useEffect, useRef } from "react";
+
 /**
  * 建立一個節流函式 (throttle function)。
  * 當重複調用此節流函式時，它會確保原始函式在指定的時間延遲內最多只會被執行一次。
@@ -22,24 +25,43 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
- * 建立一個防抖函式 (debounce function)。
- * 當重複調用此防抖函式時，它會延遲原始函式的執行，直到距離上一次調用已經過了一段指定的時間延遲。
- * 也就是說，如果在延遲時間內再次調用，則會重新開始計時。
+ * 一個用於防抖函式呼叫的 React Custom Hook。
  *
- * @param fn - 需要進行防抖處理的原始函式。
- * @param delay - 防抖的延遲時間 (單位：毫秒)。預設值為 500 毫秒。
- * @returns 返回一個新的、經過防抖處理的函式。
+ * @param callback - 需要進行防抖處理的函式。
+ * @param delay - 防抖的延遲時間 (單位：毫秒)。
+ * @returns 返回一個新的、經過防抖處理且在元件生命週期內穩定的函式。
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
-	fn: T,
-	delay: number = 500
+export function useDebounceCallback<T extends (...args: any[]) => any>(
+	callback: T,
+	delay: number
 ): (...args: Parameters<T>) => void {
-	let timer: undefined | NodeJS.Timeout;
+	const timerRef = useRef<NodeJS.Timeout | null>(null);
+	const callbackRef = useRef(callback);
 
-	return function (...args: Parameters<T>) {
-		if (timer) clearTimeout(timer);
-		timer = setTimeout(() => {
-			fn(...args);
-		}, delay);
-	};
+	useEffect(() => {
+		callbackRef.current = callback;
+	}, [callback]);
+
+	useEffect(() => {
+		return () => {
+			if (timerRef.current) {
+				clearTimeout(timerRef.current);
+			}
+		};
+	}, []);
+
+	const debouncedCallback = useCallback(
+		(...args: Parameters<T>) => {
+			if (timerRef.current) {
+				clearTimeout(timerRef.current);
+			}
+
+			timerRef.current = setTimeout(() => {
+				callbackRef.current(...args);
+			}, delay);
+		},
+		[delay]
+	);
+
+	return debouncedCallback;
 }
