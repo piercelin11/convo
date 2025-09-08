@@ -25,7 +25,6 @@ export const userService = {
 		});
 
 		const validatedData = SearchResponseSchema.parse(database.data);
-		console.log(database.data);
 		return validatedData.data;
 	},
 };

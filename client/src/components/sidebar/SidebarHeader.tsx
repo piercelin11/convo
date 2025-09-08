@@ -4,11 +4,21 @@ import { Menu } from "react-feather";
 import SidebarMenu from "./SidebarMenu";
 import SearchBar from "../ui/SearchBar";
 
+type SidebarHeaderProps = {
+	onSearchOpen: (isSearching: boolean) => void;
+	onSearchChange: (value: string) => void;
+	searchValue: string;
+};
+
 /**
  * 聊天室介面側邊欄最上方的 Header
  * @returns 一個包含選單按鈕與搜尋用`input`的 JSX 元素
  */
-export default function SidebarHeader() {
+export default function SidebarHeader({
+	onSearchOpen,
+	onSearchChange,
+	searchValue,
+}: SidebarHeaderProps) {
 	return (
 		<div className="h-header flex items-center gap-2 px-4 py-2">
 			<Dropdown
@@ -21,7 +31,11 @@ export default function SidebarHeader() {
 				<SidebarMenu />
 			</Dropdown>
 			<div className="w-full">
-				<SearchBar />
+				<SearchBar
+					onSearchOpen={onSearchOpen}
+					onSearchChange={onSearchChange}
+					searchValue={searchValue}
+				/>
 			</div>
 		</div>
 	);
