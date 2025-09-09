@@ -1,6 +1,7 @@
-import { LogOut, MessageSquare } from "react-feather";
+import { Bell, LogOut, MessageSquare, PenTool } from "react-feather";
 import CreateGroupChatForm from "@/components/chat/CreateGroupChat/CreateGroupChatForm";
 import ProfileModal from "@/components/profile/ProfileModal";
+import NotificationModal from "@/components/notification/NotificationModal";
 
 /**
  * 側邊欄下拉選單的項目型別。
@@ -57,10 +58,18 @@ const sidebarDropdownMenuItems: SidebarDropdownMenuItemsType[] = [
 	{
 		id: "profile-edit",
 		actionType: "modal",
-		icon: MessageSquare,
+		icon: PenTool,
 		label: "修改個人資料",
 		modalContent: ProfileModal,
 		modalTitle: "修改個人資料",
+	},
+	{
+		id: "notification",
+		actionType: "modal",
+		icon: Bell,
+		label: "通知",
+		modalContent: NotificationModal,
+		modalTitle: "通知",
 	},
 ];
 
