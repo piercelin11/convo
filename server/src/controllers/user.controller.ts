@@ -3,8 +3,6 @@ import { Request, Response, NextFunction } from "express";
 import { AuthorizationError } from "@/utils/error.utils.js";
 import * as userDB from "@/db/users.db.js";
 import * as userService from "@/services/user.service.js";
-import { Console } from "console";
-import { date, success } from "zod/v4";
 
 export async function editUserHandler(
 	req: Request,

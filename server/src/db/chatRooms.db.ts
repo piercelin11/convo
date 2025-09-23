@@ -214,7 +214,6 @@ export async function updateChatRoomData(
 
 	return ChatRoomRecordSchema.parse(chatRoom);
 }
-
 /**
  * 根據聊天室ID刪除聊天室。
  *
@@ -234,4 +233,59 @@ export async function deleteChatRoomByRoomId(
 	const result = await dbQuery<ChatRoomRecord>(query, values);
 	const chatRoom = result.rows[0];
 	return ChatRoomRecordSchema.parse(chatRoom);
+}
+
+/**
+ * 根據訊息內容搜尋使用者所在的聊天室。
+ *
+ * @param userId - 使用者的唯一識別碼 (UUID)。
+ * @param searchTerm - 要搜尋的訊息關鍵字。
+ * @returns 包含符合條件的聊天室DTO陣列。
+ */
+export async function searchChatRoomsByMessageContent(
+	userId: string,
+	searchTerm: string
+): Promise<ChatRoomRecord[]> {
+	const query = `
+        SELECT
+            cr.id,
+            cr.name,
+            cr.type,
+            cr.creator_id,
+            cr.created_at,
+            cr.updated_at,
+            cr.image_url,
+            cr.latest_message_content,
+            cr.latest_message_at,
+            cr.latest_message_sender_id,
+            rm.last_read_at,
+            (
+                SELECT COUNT(*)::int
+                FROM messages m_unread
+                WHERE m_unread.room_id = cr.id
+                AND m_unread.created_at > COALESCE(rm.last_read_at, '1970-01-01')
+                AND m_unread.sender_id != $1
+            ) AS unread_count
+        FROM
+            chat_rooms cr
+        JOIN
+            room_members rm ON cr.id = rm.room_id
+        WHERE
+            rm.user_id = $1
+        AND
+            cr.id IN (
+                SELECT DISTINCT m.room_id
+                FROM messages m
+                JOIN room_members rm_search ON m.room_id = rm_search.room_id
+                WHERE rm_search.user_id = $1 AND m.content ILIKE $2
+            )
+        ORDER BY
+            cr.latest_message_at DESC;
+    `;
+	const values = [userId, `%${searchTerm}%`];
+
+	const result = await dbQuery<ChatRoomRecord>(query, values);
+	const chatRooms = result.rows;
+
+	return z.array(ChatRoomDtoSchema).parse(chatRooms);
 }
