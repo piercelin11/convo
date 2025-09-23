@@ -6,6 +6,7 @@ import {
 	EditChatRoomSchemaType,
 } from "@convo/shared"; // 共享型別導入
 import { Request, Response, NextFunction } from "express"; // 導入 NextFunction
+import { ca } from "zod/v4/locales";
 
 /**
  * 處理獲取使用者所有聊天室的請求。
@@ -177,6 +178,44 @@ export async function deleteChatRoomHandler(
 			message: "成功刪除聊天室",
 			data: deletedChatRoom,
 		});
+	} catch (error) {
+		next(error);
+	}
+}
+
+/**
+ * 處理搜尋聊天室的請求。
+ * 根據查詢參數 `q` 搜尋訊息內容，找出符合條件的聊天室。
+ *
+ * @param req - Express 請求物件，應包含 `req.user` 和查詢參數 `q`。
+ * @param res - Express 響應物件，用於發送 JSON 響應。
+ * @param next - 呼叫下一個中介軟體或錯誤處理器的回調函式。
+ * @returns 包含搜尋結果的 JSON 響應。
+ * @throws {AuthorizationError} 如果使用者未經授權。
+ */
+
+export async function searchChatRoomsHandler(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		const user = req.user;
+		if (!user) throw new AuthorizationError();
+
+		const { q } = req.query;
+
+		const chatRooms = await chatRoomsDB.searchChatRoomsByMessageContent(
+			user.id,
+			q as string
+		);
+		console.log(chatRooms);
+
+		if (!chatRooms) throw new NotFoundError("找不到聊天室");
+
+		res
+			.status(200)
+			.json({ success: true, message: "成功搜尋聊天室", data: chatRooms });
 	} catch (error) {
 		next(error);
 	}
