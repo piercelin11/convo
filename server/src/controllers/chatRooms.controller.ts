@@ -6,7 +6,6 @@ import {
 	EditChatRoomSchemaType,
 } from "@convo/shared"; // 共享型別導入
 import { Request, Response, NextFunction } from "express"; // 導入 NextFunction
-import { ca } from "zod/v4/locales";
 
 /**
  * 處理獲取使用者所有聊天室的請求。
@@ -209,7 +208,7 @@ export async function searchChatRoomsHandler(
 			user.id,
 			q as string
 		);
-		console.log(chatRooms);
+		console.info(chatRooms);
 
 		if (!chatRooms) throw new NotFoundError("找不到聊天室");
 

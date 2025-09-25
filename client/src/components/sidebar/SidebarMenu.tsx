@@ -26,12 +26,12 @@ export default function SidebarMenu() {
 				break;
 			}
 			case "modal": {
-				if (item.modalContent)
+				if (item.modalContent) {
 					showCustomModal({
 						content: <item.modalContent />,
 						title: item.modalTitle,
 					});
-				else console.error("[SidebarMenu]下拉選單項目缺少 modalKey");
+				} else console.error("[SidebarMenu]下拉選單項目缺少 modalKey");
 				break;
 			}
 			case "navigate": {

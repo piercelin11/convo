@@ -10,6 +10,7 @@ import {
 } from "@/controllers/friendships.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import { Router } from "express";
+import { requesterSchema, targetUserSchema } from "@convo/shared";
 import {
 	requesterSchema,
 	SearchFriendRequestsSchema,
