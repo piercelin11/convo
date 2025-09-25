@@ -46,8 +46,11 @@ export default function SearchContainer({ searchValue }: SearchContainerProps) {
 				return userResults.map((result) => (
 					<SearchResultItem
 						key={result.id}
+						userId={result.id}
 						imgUrl={result.avatar_url}
 						title={result.username}
+						content={result.email}
+						friendshipStatus={result.friendship_status}
 					/>
 				));
 			case "rooms":

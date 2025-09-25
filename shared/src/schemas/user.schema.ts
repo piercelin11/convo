@@ -57,10 +57,11 @@ export const SearchUserSchema = z.object({
 export type SearchUserSchemaType = z.infer<typeof SearchUserSchema>;
 
 export const UserSchema = z.object({
-	id: z.string().uuid(),
+	id: z.string(),
 	username: z.string(),
 	email: z.string().email(),
 	avatar_url: z.string().nullable(), // 因為 avatar_url 在資料庫中可能是 null
+	friendship_status: z.enum(["pending", "accepted", "blocked"]).nullable(), // 友誼狀態，可能為 null
 });
 
 export type UserSchemaType = z.infer<typeof UserSchema>;

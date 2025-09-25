@@ -7,7 +7,6 @@ import {
 	NotFoundError,
 } from "@/utils/error.utils.js";
 import { NextFunction, Request, Response } from "express";
-import { success } from "zod/v4";
 
 /**
  * 全局錯誤處理中介軟體。
