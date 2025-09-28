@@ -5,7 +5,6 @@ import { useChatsQuery } from "@/queries/chat/useChatsQuery";
 import { useState } from "react";
 import SearchContainer from "./search/SearchContainer";
 import ChatList from "./ChatList";
-import { useDebounceValue } from "@/hooks/useDebounceValue";
 
 /**
  * 聊天界面的側邊欄
@@ -17,7 +16,6 @@ export default function ChatSidebar() {
 
 	const [searchValue, setSearchValue] = useState("");
 	const [isSearching, setIsSearching] = useState(false);
-	const debouncedSearchValue = useDebounceValue(searchValue, 500);
 
 	return (
 		<aside
@@ -32,10 +30,10 @@ export default function ChatSidebar() {
 			<SidebarHeader
 				onSearchOpen={(boolean) => setIsSearching(boolean)}
 				onSearchChange={(value) => setSearchValue(value)}
-				searchValue={debouncedSearchValue}
+				searchValue={searchValue}
 			/>
 			{isSearching ? (
-				<SearchContainer searchValue={debouncedSearchValue} />
+				<SearchContainer searchValue={searchValue} />
 			) : (
 				<ChatList chatListData={data} />
 			)}
