@@ -38,4 +38,12 @@ export const chatService = {
 		const validatedData = ChatRoomResponseSchema.parse(data);
 		return validatedData.data;
 	},
+	searchChatRooms: async (searchTerm: string) => {
+		const database = await axiosClient.get(`/chat-rooms/search`, {
+			params: { q: searchTerm },
+		});
+
+		const validatedData = ChatRoomsResponseSchema.parse(database.data);
+		return validatedData.data;
+	},
 };

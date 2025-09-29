@@ -3,7 +3,7 @@ import { env } from "@/config/env";
 
 type SearchResultItemProps = {
 	imgUrl: string | null;
-	title: string;
+	title: string | null;
 	content?: string;
 };
 
