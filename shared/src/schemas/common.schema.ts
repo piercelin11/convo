@@ -22,3 +22,13 @@ export const PasswordSchema = z
  * 通用的使用者電子郵件結構。
  */
 export const EmailSchema = z.email({ message: "電子郵件格式不正確" });
+
+/**
+ * 通用的使用者搜尋結構。
+ */
+
+export const SearchQuerySchema = z.object({
+	q: z.string().min(1, { message: "Search query must not be empty" }),
+});
+
+export type SearchQuerySchemaType = z.infer<typeof SearchQuerySchema>;

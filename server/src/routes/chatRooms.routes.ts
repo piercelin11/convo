@@ -4,16 +4,20 @@ import {
 	editChatRoomHandler,
 	getChatRoomHandler,
 	getChatRoomsHandler,
+	searchChatRoomsHandler,
 } from "@/controllers/chatRooms.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import {
 	ChatRoomParamsSchema,
 	CreateChatRoomSchema,
 	EditChatRoomSchema,
+	SearchQuerySchema,
 } from "@convo/shared";
 import { Router } from "express";
 
 const router = Router();
+
+router.get("/search", searchChatRoomsHandler);
 
 router.get("/", getChatRoomsHandler);
 
