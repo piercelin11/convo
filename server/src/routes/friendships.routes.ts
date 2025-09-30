@@ -4,6 +4,7 @@ import {
 	cancelRequestHandler,
 	getFriendshipsHandler,
 	getRequestHandler,
+	rejectRequestHandler,
 	searchRequestHandlers,
 	sentRequestHandler,
 } from "@/controllers/friendships.controller.js";
@@ -14,6 +15,8 @@ import {
 	SearchFriendRequestsSchema,
 	targetUserSchema,
 } from "@convo/shared";
+import { ta } from "zod/v4/locales";
+import { rejectFriendshipRequest } from "@/services/friendship.service.js";
 
 const router = Router();
 
@@ -31,6 +34,12 @@ router.post(
 	"/accept-request",
 	validateRequest({ body: requesterSchema }),
 	acceptRequestHandler
+);
+
+router.delete(
+	"/reject-request",
+	validateRequest({ body: targetUserSchema }),
+	rejectRequestHandler
 );
 
 router.delete(

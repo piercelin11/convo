@@ -109,6 +109,39 @@ export async function acceptRequestHandler(
 }
 
 /**
+ *
+ * 拒絕好友邀請
+ */
+
+export async function rejectRequestHandler(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	try {
+		// 1. 取得你自己的 ID (使用者)
+		const requesterId = req.user?.id;
+		if (!requesterId) throw new AuthorizationError();
+
+		// 2.取得要刪除對象的ID
+		const { targetUserId } = req.body as TargetUserSchemaType;
+
+		// 3.呼叫service
+		await friendshipService.rejectFriendshipRequest({
+			requesterId,
+			targetUserId,
+		});
+		// 4.回傳成功
+		res.status(200).json({
+			success: true,
+			message: "已拒絕交友邀請",
+		});
+	} catch (error) {
+		next(error);
+	}
+}
+
+/**
  * 取消好友邀請
  */
 
