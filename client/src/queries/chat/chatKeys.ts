@@ -25,6 +25,12 @@ const chatKeys = {
 	 * @param roomId 聊天室的 ID
 	 */
 	detail: (roomId: string) => [...chatKeys.details(), roomId] as const,
+
+	/**
+	 * 代表「帶有特定搜尋詞」的聊天室列表查詢。
+	 * @param searchTerm 搜尋詞
+	 */
+	search: (searchTerm: string) => [...chatKeys.lists(), searchTerm] as const,
 };
 
 export default chatKeys;

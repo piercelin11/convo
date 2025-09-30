@@ -96,6 +96,47 @@ export const acceptFriendshipRequest = async ({
 };
 
 /**
+ * 拒絕好友邀請
+ */
+
+interface RejectFriendRequestSchema {
+	requesterId: string;
+	targetUserId: string;
+}
+
+export const rejectFriendshipRequest = async ({
+	requesterId,
+	targetUserId,
+}: RejectFriendRequestSchema) => {
+	// 1.尋找使用者發給對方、待處理的邀請
+	const pendingRequest = await FriendshipDb.findFriendshipBetweenUsers({
+		userId1: requesterId,
+		userId2: targetUserId,
+	});
+
+	// 2.如果找不到，表示邀請不存在或已處理
+	if (!pendingRequest) {
+		throw new NotFoundError("Friend request not found or already handled.");
+	}
+
+	// 3.驗證是否為代處理的邀請，使用者拒絕邀請
+	if (
+		pendingRequest.status !== "pending" ||
+		pendingRequest.addressee_id !== requesterId
+	) {
+		throw new AuthorizationError(
+			"You do not have permission to reject this friend request."
+		);
+	}
+
+	// 4.從資料庫刪除邀請
+	await FriendshipDb.deleteFriendship({
+		requesterId: targetUserId,
+		addresseeId: requesterId,
+	});
+};
+
+/**
  * 取消好友邀請
  */
 
