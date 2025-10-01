@@ -3,7 +3,7 @@ import { env } from "@/config/env";
 import { useSendFriendRequest } from "@/queries/friendship/useFriendshipQuery";
 import { useState } from "react";
 
-type SearchResultItemProps = {
+type SearchUserResultItemProps = {
 	userId: string;
 	imgUrl: string | null;
 	title: string | null;
@@ -11,13 +11,13 @@ type SearchResultItemProps = {
 	friendshipStatus: "pending" | "accepted" | "blocked" | null;
 };
 
-export default function SearchResultItem({
+export default function SearchUserResultItem({
 	userId,
 	imgUrl,
 	title,
 	content,
 	friendshipStatus,
-}: SearchResultItemProps) {
+}: SearchUserResultItemProps) {
 	const sendFriendRequestMutation = useSendFriendRequest();
 	const [requestSent, setRequestSent] = useState(false);
 
