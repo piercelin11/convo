@@ -36,10 +36,19 @@ export const friendshipService = {
 		ApiResponseSchema.parse(data);
 	},
 
-	// 取消好友邀請
+	// 取消好友邀請（發送者取消自己發出的邀請）
 	cancelFriendRequest: async (targetUserId: string): Promise<void> => {
 		const payload: TargetUserSchemaType = { targetUserId };
 		const { data } = await axiosClient.delete("/friendships/cancel-request", {
+			data: payload,
+		});
+		ApiResponseSchema.parse(data);
+	},
+
+	// 拒絕好友邀請（接收者拒絕收到的邀請）
+	rejectFriendRequest: async (targetUserId: string): Promise<void> => {
+		const payload: TargetUserSchemaType = { targetUserId };
+		const { data } = await axiosClient.delete("/friendships/reject-request", {
 			data: payload,
 		});
 		ApiResponseSchema.parse(data);

@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import {
 	useFriendRequestsQuery,
 	useAcceptFriendRequest,
+	useRejectFriendRequest,
 } from "@/queries/friendship/useFriendshipQuery";
 import type { FriendshipRequestItemType } from "@convo/shared";
 
@@ -25,12 +26,21 @@ export default function NotificationModal() {
 	} = useFriendRequestsQuery();
 
 	const acceptFriendRequestMutation = useAcceptFriendRequest();
+	const rejectFriendRequestMutation = useRejectFriendRequest();
 
 	const handleAcceptRequest = async (requesterId: string) => {
 		try {
 			await acceptFriendRequestMutation.mutateAsync(requesterId);
 		} catch (error) {
 			console.error("接受好友邀請失敗:", error);
+		}
+	};
+
+	const handleRejectRequest = async (requesterId: string) => {
+		try {
+			await rejectFriendRequestMutation.mutateAsync(requesterId);
+		} catch (error) {
+			console.error("拒絕好友邀請失敗:", error);
 		}
 	};
 
@@ -72,8 +82,13 @@ export default function NotificationModal() {
 					>
 						{acceptFriendRequestMutation.isPending ? "接受中..." : "確認"}
 					</Button>
-					{/* 暫時隱藏刪除按鈕，因為後端缺少拒絕邀請的 API */}
-					{/* <Button variant="secondary">刪除</Button> */}
+					<Button
+						variant="secondary"
+						onClick={() => handleRejectRequest(request.requester_id)}
+						disabled={rejectFriendRequestMutation.isPending}
+					>
+						{rejectFriendRequestMutation.isPending ? "刪除中..." : "刪除"}
+					</Button>
 				</div>
 			</li>
 		));

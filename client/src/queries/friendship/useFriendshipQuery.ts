@@ -48,12 +48,26 @@ export function useAcceptFriendRequest() {
 	});
 }
 
-// 取消好友邀請
+// 取消好友邀請（發送者取消自己發出的邀請）
 export function useCancelFriendRequest() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: friendshipService.cancelFriendRequest,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: friendshipKeys.friends() });
+			queryClient.invalidateQueries({ queryKey: friendshipKeys.requests() });
+			queryClient.invalidateQueries({ queryKey: ["user", "search"] });
+		},
+	});
+}
+
+// 拒絕好友邀請（接收者拒絕收到的邀請）
+export function useRejectFriendRequest() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: friendshipService.rejectFriendRequest,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: friendshipKeys.friends() });
 			queryClient.invalidateQueries({ queryKey: friendshipKeys.requests() });
