@@ -4,7 +4,7 @@ import { env } from "@/config/env";
 type SearchResultItemProps = {
 	imgUrl: string | null;
 	title: string | null;
-	content?: string;
+	content?: string | null;
 };
 
 export default function SearchResultItem({

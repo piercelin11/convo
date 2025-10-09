@@ -4,6 +4,7 @@ import { useSearchUsers } from "@/queries/user/useSearchUsers";
 import { useState } from "react";
 import Tab from "@/components/ui/Tab";
 import { useSearchRooms } from "@/queries/chat/useSearchRoom";
+import { Link } from "react-router-dom";
 
 type SearchContainerProps = {
 	searchValue: string;
@@ -52,11 +53,14 @@ export default function SearchContainer({ searchValue }: SearchContainerProps) {
 				));
 			case "rooms":
 				return roomResults.map((result) => (
-					<SearchResultItem
-						key={result.id}
-						imgUrl={result.image_url}
-						title={result.name}
-					/>
+					<Link key={result.id} to={`/${result.id}`}>
+						<SearchResultItem
+							key={result.id}
+							imgUrl={result.image_url}
+							title={result.name}
+							content={result.matched_messages?.[0]?.content}
+						/>
+					</Link>
 				));
 			default:
 				return null;

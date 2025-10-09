@@ -31,7 +31,6 @@ export const EditChatRoomSchema = z.object({
  */
 export type EditChatRoomSchemaType = z.infer<typeof EditChatRoomSchema>;
 
-
 /**
  * 定義用於 URL 參數的聊天室相關資料結構。
  * 主要用於從路由中獲取聊天室 ID。

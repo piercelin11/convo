@@ -44,11 +44,24 @@ export const MessageDtoSchema = z.object({
 export type MessageDto = z.infer<typeof MessageDtoSchema>;
 
 /**
+ * 聊天室搜尋結果中的訊息結構。
+ * 這是一個簡化的訊息模型，只包含搜尋時所需的欄位。
+ */
+export const SearchMessageDtoSchema = z.object({
+	id: z.uuid(),
+	content: z.string(),
+	sender_id: z.string().uuid(),
+	created_at: z.coerce.date(),
+});
+export type SearchMessage = z.infer<typeof SearchMessageDtoSchema>;
+
+/**
  * 包含聊天室基本資訊及尚未讀取訊息數量的資料結構。
  */
 export const ChatRoomDtoSchema = ChatRoomRecordSchema.extend({
 	last_read_at: z.coerce.date().nullable(),
 	unread_count: z.number(),
+	matched_messages: z.array(SearchMessageDtoSchema).optional(),
 });
 export type ChatRoomDto = z.infer<typeof ChatRoomDtoSchema>;
 
