@@ -3,8 +3,6 @@ import { Request, Response, NextFunction } from "express";
 import { AuthorizationError } from "@/utils/error.utils.js";
 import * as userDB from "@/db/users.db.js";
 import * as userService from "@/services/user.service.js";
-import { Console } from "console";
-import { date, success } from "zod/v4";
 
 export async function editUserHandler(
 	req: Request,
@@ -62,9 +60,13 @@ export async function searchUsers(
 		// 1.驗證參數
 		const { q } = SearchUserSchema.parse(req.query);
 
-		// 2.執行資料庫搜尋
-		const users = await userDB.searchUsersByUsername(q);
-		// 3. 回傳成功響應
+		// 2.取得當前用戶 ID（用於檢查友誼狀態）
+		const currentUserId = req.user?.id;
+
+		// 3.執行資料庫搜尋（包含友誼狀態）
+		const users = await userDB.searchUsersByUsername(q, currentUserId);
+
+		// 4. 回傳成功響應
 		res.status(200).json({
 			success: true,
 			message: "已搜尋使用者姓名",

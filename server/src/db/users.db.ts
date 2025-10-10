@@ -1,6 +1,11 @@
 import pool from "@/config/database.js";
 import { dbQuery } from "@/utils/db.utils.js";
-import { UserRecord, UserRecordSchema } from "@convo/shared";
+import {
+	UserRecord,
+	UserRecordSchema,
+	UserSchema,
+	UserSchemaType,
+} from "@convo/shared";
 
 /**
  * 透過使用者名稱獲取唯一使用者資料
@@ -104,21 +109,37 @@ export async function updateUser(
 	return result.rows[0];
 }
 
-export async function searchUsersByUsername(query: string) {
+export async function searchUsersByUsername(
+	query: string,
+	currentUserId?: string
+): Promise<UserSchemaType[]> {
 	const searchTerm = `%${query}%`;
 	const client = await pool.connect();
 	try {
 		const queryText = `
-		SELECT id, username, email,avatar_url
-		FROM users
-		WHERE username ILIKE $1
-		ORDER BY username ASC
+		SELECT
+			u.id,
+			u.username,
+			u.email,
+			u.avatar_url,
+			f.status as friendship_status
+		FROM users u
+		LEFT JOIN friendships f ON (
+			(f.requester_id = $2 AND f.addressee_id = u.id)
+			OR
+			(f.addressee_id = $2 AND f.requester_id = u.id)
+		)
+		WHERE u.username ILIKE $1
+			AND ($2 IS NULL OR u.id != $2)
+		ORDER BY u.username ASC
 		LIMIT 10;
 		`;
-		const { rows } = await client.query(queryText, [searchTerm]);
-		return rows;
+		const { rows } = await client.query(queryText, [searchTerm, currentUserId]);
+		// 驗證返回的資料符合 UserSchema，包含 friendship_status
+		return UserSchema.array().parse(rows);
 	} catch (err) {
 		console.error(err);
+		throw err; // 重新拋出錯誤，讓上層處理
 	} finally {
 		client.release();
 	}

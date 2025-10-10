@@ -11,7 +11,6 @@ import {
 	ChatRoomParamsSchema,
 	CreateChatRoomSchema,
 	EditChatRoomSchema,
-	SearchQuerySchema,
 } from "@convo/shared";
 import { Router } from "express";
 

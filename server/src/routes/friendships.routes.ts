@@ -10,13 +10,7 @@ import {
 } from "@/controllers/friendships.controller.js";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import { Router } from "express";
-import {
-	requesterSchema,
-	SearchFriendRequestsSchema,
-	targetUserSchema,
-} from "@convo/shared";
-import { ta } from "zod/v4/locales";
-import { rejectFriendshipRequest } from "@/services/friendship.service.js";
+import { requesterSchema, targetUserSchema } from "@convo/shared";
 
 const router = Router();
 

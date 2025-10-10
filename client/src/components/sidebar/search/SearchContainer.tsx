@@ -1,4 +1,5 @@
-import SearchResultItem from "./SearchResultItem";
+import SearchUserResultItem from "./SearchUserResultItem";
+import SearchRoomResultItem from "./SearchRoomResultItem";
 import { useDebounceValue } from "@/hooks/useDebounceValue";
 import { useSearchUsers } from "@/queries/user/useSearchUsers";
 import { useState } from "react";
@@ -45,19 +46,23 @@ export default function SearchContainer({ searchValue }: SearchContainerProps) {
 		switch (currentTabId) {
 			case "users":
 				return userResults.map((result) => (
-					<SearchResultItem
+					<SearchUserResultItem
 						key={result.id}
+						userId={result.id}
 						imgUrl={result.avatar_url}
 						title={result.username}
+						content={result.email}
+						friendshipStatus={result.friendship_status}
 					/>
 				));
 			case "rooms":
 				return roomResults.map((result) => (
 					<Link key={result.id} to={`/${result.id}`}>
-						<SearchResultItem
+						<SearchRoomResultItem
 							key={result.id}
-							imgUrl={result.image_url}
-							title={result.name}
+							id={result.id}
+							imageUrl={result.image_url}
+							name={result.name || ""}
 							content={result.matched_messages?.[0]?.content}
 						/>
 					</Link>

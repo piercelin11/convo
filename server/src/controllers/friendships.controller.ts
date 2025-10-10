@@ -3,6 +3,11 @@ import { RequesterSchemaType, TargetUserSchemaType } from "@convo/shared";
 import { Request, Response, NextFunction } from "express";
 import * as friendshipService from "@/services/friendship.service.js";
 import * as FriendshipDb from "@/db/friendship.db.js";
+import * as userDB from "@/db/users.db.js";
+import {
+	notifyFriendRequestReceived,
+	notifyFriendRequestAccepted,
+} from "@/websocket/friendshipNotification.js";
 
 /**
  * 處理獲取使用者好友列表的請求。
@@ -59,8 +64,22 @@ export async function sentRequestHandler(
 			targetUserId,
 		});
 
-		// 4.回傳成功
+		// 4. 獲取邀請者資訊並通過 WebSocket 通知接收者
+		const requesterInfo = await userDB.findUserById(requesterId);
+		if (requesterInfo) {
+			notifyFriendRequestReceived({
+				recipientId: targetUserId,
+				requester: {
+					id: requesterInfo.id,
+					username: requesterInfo.username,
+					avatar_url: requesterInfo.avatar_url,
+				},
+				requestId:
+					newFriendship.requester_id + "_" + newFriendship.addressee_id, // 簡單的請求ID
+			});
+		}
 
+		// 5.回傳成功
 		res.status(200).json({
 			success: true,
 			message: "成功寄送邀請",
@@ -89,7 +108,7 @@ export async function acceptRequestHandler(
 		const { requesterId } = req.body as RequesterSchemaType;
 		if (!requesterId) throw new AuthorizationError();
 
-		console.log(requesterId);
+		console.info(requesterId);
 
 		// 3.呼叫service
 		const updatedFriendship = await friendshipService.acceptFriendshipRequest({
@@ -97,7 +116,20 @@ export async function acceptRequestHandler(
 			addresseeId,
 		});
 
-		// 4.回傳成功
+		// 4. 獲取接受者資訊並通過 WebSocket 通知邀請者
+		const accepterInfo = await userDB.findUserById(addresseeId);
+		if (accepterInfo) {
+			notifyFriendRequestAccepted({
+				senderId: requesterId,
+				responder: {
+					id: accepterInfo.id,
+					username: accepterInfo.username,
+					avatar_url: accepterInfo.avatar_url,
+				},
+			});
+		}
+
+		// 5.回傳成功
 		res.status(200).json({
 			success: true,
 			message: "已接受交友邀請",
@@ -237,6 +269,9 @@ export async function getRequestHandler(
 
 /**
  * 搜尋所有好友邀請
+ * @param req - Express 請求物件
+ * @param res - Express 響應物件
+ * @param next - 呼叫下一個中介軟體或錯誤處理器的回調函式
  */
 export async function searchRequestHandlers(
 	req: Request,

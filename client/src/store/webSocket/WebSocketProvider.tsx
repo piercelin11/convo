@@ -76,6 +76,27 @@ function WebSocketManager({
 					);
 					break;
 				}
+				case "FRIEND_REQUEST_RECEIVED": {
+					MessageHandler.handleFriendRequestReceived(
+						queryClient,
+						validatedData.payload
+					);
+					break;
+				}
+				case "FRIEND_REQUEST_ACCEPTED": {
+					MessageHandler.handleFriendRequestAccepted(
+						queryClient,
+						validatedData.payload
+					);
+					break;
+				}
+				case "FRIEND_REQUEST_REJECTED": {
+					MessageHandler.handleFriendRequestRejected(
+						queryClient,
+						validatedData.payload
+					);
+					break;
+				}
 				case "ERROR": {
 					console.error("收到 WebSocket 伺服器端的錯誤訊息");
 					console.error(validatedData.payload.message);

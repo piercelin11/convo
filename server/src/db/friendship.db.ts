@@ -5,6 +5,8 @@ import {
 	FriendshipRecord,
 	FriendshipRecordSchema,
 	FriendshipStatus,
+	FriendshipRequestItemType,
+	FriendshipRequestResponseSchema,
 } from "@convo/shared";
 import { z } from "zod/v4";
 
@@ -48,7 +50,12 @@ interface CreateFriendshipParams {
 }
 
 /**
- * 在資料庫中建立一筆新的好友關係紀錄
+ * 建立新的好友關係記錄
+ * @param params - 建立好友關係的參數
+ * @param params.requesterId - 發送邀請者的 ID
+ * @param params.addresseeId - 接收邀請者的 ID
+ * @param params.status - 好友關係狀態
+ * @returns 建立的好友關係記錄
  */
 export async function createFriendship({
 	requesterId,
@@ -148,22 +155,28 @@ export async function deleteFriendship({
 	await dbQuery(query, values);
 }
 
-/**
- * 查找指定使用者收到的所有待處理的好友邀請
- */
-
 export async function findPendingRequestsForUser(
 	addresseeId: string
-): Promise<FriendshipRecord[]> {
+): Promise<FriendshipRequestItemType[]> {
 	const query = `
-    SELECT * FROM friendships
-    WHERE addressee_id = $1 AND status = 'pending'
-	ORDER BY created_at DESC;
+    SELECT
+		f.requester_id,
+		f.addressee_id,
+		f.status,
+		f.created_at,
+		f.updated_at,
+		u.username,
+		u.avatar_url
+    FROM friendships f
+	JOIN users u ON f.requester_id = u.id
+    WHERE f.addressee_id = $1 AND f.status = 'pending'
+	ORDER BY f.created_at DESC;
   `;
 
 	const values = [addresseeId];
-	const result = await dbQuery<FriendshipRecord>(query, values);
-	return FriendshipRecordSchema.array().parse(result.rows);
+	const result = await dbQuery(query, values);
+
+	return FriendshipRequestResponseSchema.array().parse(result.rows);
 }
 
 /**

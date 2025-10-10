@@ -98,23 +98,34 @@ const UserInfoSchema = z.object({
 
 /**
  * 定義單一好友邀請回應的資料結構
+ * 使用扁平結構，匹配數據庫查詢結果和前端使用
  */
-
-export const FriengshipRequestResponseSchema = z.object({
-	id: z.string(),
+export const FriendshipRequestResponseSchema = z.object({
+	requester_id: z.string(),
+	addressee_id: z.string(),
+	username: z.string(),
+	avatar_url: z.string().nullable(),
 	status: z.enum(["pending", "accepted", "blocked"]),
-	requester: UserInfoSchema,
-	create_at: z.string().datetime(),
+	created_at: z.coerce.date(),
+	updated_at: z.coerce.date(),
 });
 
 /**
  * 獲取好友邀請列表的回應 Schema
- *
  */
-
 export const FriendRequestListResponseSchema = ApiResponseSchema.extend({
-	data: z.array(FriengshipRequestResponseSchema),
+	data: z.array(FriendshipRequestResponseSchema),
 });
+
+/**
+ * 好友邀請回應項目的類型
+ */
+export type FriendshipRequestItemType = z.infer<typeof FriendshipRequestResponseSchema>;
+
+/**
+ * 好友邀請列表回應的類型
+ */
+export type FriendRequestListResponseType = z.infer<typeof FriendRequestListResponseSchema>;
 
 /**
  * 送出或接受邀請等單一動作的回應 Schema

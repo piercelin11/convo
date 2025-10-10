@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
 	EditProfileSchema,
 	GetUserSchema,
-	SearchUserSchema,
+	//SearchUserSchema,
 } from "@convo/shared";
 import { validateRequest } from "@/middlewares/validateRequest.js";
 import {
