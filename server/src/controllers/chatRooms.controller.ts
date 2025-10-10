@@ -208,7 +208,6 @@ export async function searchChatRoomsHandler(
 			user.id,
 			q as string
 		);
-		console.info(chatRooms);
 
 		if (!chatRooms) throw new NotFoundError("找不到聊天室");
 

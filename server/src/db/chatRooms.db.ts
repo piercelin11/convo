@@ -246,45 +246,48 @@ export async function searchChatRoomsByMessageContent(
 	userId: string,
 	searchTerm: string
 ): Promise<ChatRoomRecord[]> {
-	const query = `
-        SELECT
-            cr.id,
-            cr.name,
-            cr.type,
-            cr.creator_id,
-            cr.created_at,
-            cr.updated_at,
-            cr.image_url,
-            cr.latest_message_content,
-            cr.latest_message_at,
-            cr.latest_message_sender_id,
-            rm.last_read_at,
-            (
-                SELECT COUNT(*)::int
-                FROM messages m_unread
-                WHERE m_unread.room_id = cr.id
-                AND m_unread.created_at > COALESCE(rm.last_read_at, '1970-01-01')
-                AND m_unread.sender_id != $1
-            ) AS unread_count
-        FROM
-            chat_rooms cr
-        JOIN
-            room_members rm ON cr.id = rm.room_id
-        WHERE
-            rm.user_id = $1
-        AND
-            cr.id IN (
-                SELECT DISTINCT m.room_id
-                FROM messages m
-                JOIN room_members rm_search ON m.room_id = rm_search.room_id
-                WHERE rm_search.user_id = $1 AND m.content ILIKE $2
-            )
-        ORDER BY
-            cr.latest_message_at DESC;
-    `;
+	const sqlQuery = `
+    SELECT
+      cr.id,
+      cr.name,
+      cr.type,
+      cr.creator_id,
+      cr.created_at,
+      cr.updated_at,
+      cr.image_url,
+      cr.latest_message_content,
+      cr.latest_message_at,
+      cr.latest_message_sender_id,
+      rm.last_read_at,
+      COUNT(CASE
+        WHEN m_unread.created_at > COALESCE(rm.last_read_at, '1970-01-01') AND m_unread.sender_id != $1 THEN 1
+        ELSE NULL
+      END)::int AS unread_count,
+      json_agg(json_build_object(
+        'id', m_search.id,
+        'content', m_search.content,
+        'sender_id', m_search.sender_id,
+        'created_at', m_search.created_at
+      ) ORDER BY m_search.created_at) AS matched_messages
+    FROM
+      chat_rooms cr
+    JOIN
+      room_members rm ON cr.id = rm.room_id
+    LEFT JOIN
+      messages m_unread ON cr.id = m_unread.room_id
+    JOIN
+      messages m_search ON cr.id = m_search.room_id AND m_search.content ILIKE $2
+    WHERE
+      rm.user_id = $1
+    GROUP BY
+      cr.id, rm.user_id, rm.last_read_at -- 修正這裡，使用 rm.user_id 和 rm.last_read_at
+    ORDER BY
+      cr.latest_message_at DESC;
+  `;
+
 	const values = [userId, `%${searchTerm}%`];
 
-	const result = await dbQuery<ChatRoomRecord>(query, values);
+	const result = await dbQuery<ChatRoomRecord>(sqlQuery, values);
 	const chatRooms = result.rows;
 
 	return z.array(ChatRoomDtoSchema).parse(chatRooms);
